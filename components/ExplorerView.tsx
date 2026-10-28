@@ -1,0 +1,442 @@
+"use client";
+
+import React, {
+  useState,
+  useCallback,
+  useRef,
+  useEffect,
+} from "react";
+import type { TaxonNode, ViewportTransform } from "@/types/taxonomy";
+import { TREE_DATA } from "@/data/tree";
+import TreeCanvas, { type TreeCanvasControls } from "@/components/tree/TreeCanvas";
+import TreeControls from "@/components/tree/TreeControls";
+import TreeMinimap from "@/components/tree/TreeMinimap";
+import TreeSearch from "@/components/search/TreeSearch";
+import TaxonPanel from "@/components/panel/TaxonPanel";
+import PreLucaPanel from "@/components/panel/PreLucaPanel";
+import EvolutionTimeline from "@/components/timeline/EvolutionTimeline";
+import LanguageSelector from "@/components/ui/LanguageSelector";
+import { useLanguage } from "@/lib/i18n";
+
+const TIMELINE_HEIGHT = 52;
+const TOPBAR_HEIGHT = 58;
+
+interface ExplorerViewProps {
+  onBack?: () => void;
+  onOpenStory?: () => void;
+}
+
+export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps) {
+  const { t, localizeTaxon } = useLanguage();
+  // Initialize selected node from deep-link query parameter or default to "homo-sapiens"
+  const [selectedNode, setSelectedNode] = useState<TaxonNode | null>(() => {
+    if (typeof window === "undefined") return TREE_DATA.nodes["homo-sapiens"] ?? null;
+    const params = new URLSearchParams(window.location.search);
+    const paramNodeId = params.get("node") || params.get("selected");
+    if (paramNodeId && TREE_DATA.nodes[paramNodeId]) {
+      return TREE_DATA.nodes[paramNodeId];
+    }
+    return TREE_DATA.nodes["homo-sapiens"] ?? null;
+  });
+  const [showPreLuca, setShowPreLuca] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    const params = new URLSearchParams(window.location.search);
+    return params.get("layer") === "pre-luca" || params.get("preluca") === "true";
+  });
+  const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
+  const [showMinimap, setShowMinimap] = useState(true);
+  const [transform, setTransform] = useState<ViewportTransform>({
+    x: 0,
+    y: 0,
+    scale: 0.7,
+  });
+  const [externalTransform, setExternalTransform] =
+    useState<ViewportTransform | null>(null);
+  const [viewportDimensions, setViewportDimensions] = useState({
+    width: 1200,
+    height: 800,
+  });
+
+  const [canvasControls, setCanvasControls] = useState<TreeCanvasControls | null>(null);
+  const controlsRef = useRef<TreeCanvasControls | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Measure viewport
+  useEffect(() => {
+    const measure = () => {
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        setViewportDimensions({ width: rect.width, height: rect.height });
+      }
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    if (containerRef.current) ro.observe(containerRef.current);
+    return () => ro.disconnect();
+  }, []);
+
+  const handleNodeSelect = useCallback(
+    (nodeId: string) => {
+      const node = TREE_DATA.nodes[nodeId];
+      if (!node) return;
+      setSelectedNode(node);
+      controlsRef.current?.focusNode(nodeId);
+    },
+    []
+  );
+
+  const handleNodeHover = useCallback((nodeId: string | null) => {
+    setHoveredNodeId(nodeId);
+  }, []);
+
+  const handleSearchResult = useCallback(
+    (node: TaxonNode) => {
+      setSelectedNode(node);
+      // Focus after a micro-delay to let React process state
+      setTimeout(() => controlsRef.current?.focusNode(node.id), 50);
+    },
+    []
+  );
+
+  const handlePanelClose = useCallback(() => {
+    setSelectedNode(null);
+  }, []);
+
+  const handleNavigate = useCallback(
+    (nodeId: string) => {
+      const node = TREE_DATA.nodes[nodeId];
+      if (!node) return;
+      setSelectedNode(node);
+      setTimeout(() => controlsRef.current?.focusNode(nodeId), 50);
+    },
+    []
+  );
+
+  const handleFocusLuca = useCallback(() => {
+    setShowPreLuca(false);
+    const luca = TREE_DATA.nodes["luca"];
+    if (luca) {
+      setSelectedNode(luca);
+      setTimeout(() => controlsRef.current?.focusNode("luca"), 50);
+    }
+  }, []);
+
+  const handleTransformChange = useCallback((t: ViewportTransform) => {
+    setTransform(t);
+  }, []);
+
+  const handleMinimapNavigate = useCallback((t: ViewportTransform) => {
+    setExternalTransform({ ...t });
+  }, []);
+
+  const registerControls = useCallback((controls: TreeCanvasControls) => {
+    controlsRef.current = controls;
+    setCanvasControls(controls);
+  }, []);
+
+  const canvasHeight = viewportDimensions.height - TOPBAR_HEIGHT - TIMELINE_HEIGHT;
+
+  return (
+    <div
+      className="flex flex-col"
+      style={{ height: "100vh", overflow: "hidden", background: "var(--bg-primary)" }}
+    >
+      {/* ── Top Bar ─────────────────────────────────────────── */}
+      <header
+        className="glass-panel flex items-center gap-4 px-5 shrink-0"
+        style={{
+          height: `${TOPBAR_HEIGHT}px`,
+          borderBottom: "1px solid var(--surface-border)",
+          borderRadius: 0,
+          zIndex: 40,
+          position: "relative",
+        }}
+      >
+        {/* Logo / Title */}
+        <div
+          className={`flex items-center gap-3 shrink-0 ${onBack ? "cursor-pointer hover:opacity-85 transition-opacity" : ""}`}
+          onClick={onBack}
+          role={onBack ? "button" : undefined}
+          tabIndex={onBack ? 0 : undefined}
+        >
+          {/* Tree icon */}
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+            <circle cx="4" cy="11" r="2.5" fill="var(--accent-primary)" opacity="0.9" />
+            <circle cx="11" cy="5" r="2" fill="var(--accent-living)" opacity="0.8" />
+            <circle cx="11" cy="17" r="2" fill="#f59e0b" opacity="0.7" />
+            <circle cx="18" cy="2" r="1.5" fill="var(--accent-living)" opacity="0.6" />
+            <circle cx="18" cy="8" r="1.5" fill="#60a5fa" opacity="0.6" />
+            <circle cx="18" cy="14" r="1.5" fill="#f59e0b" opacity="0.6" />
+            <circle cx="18" cy="20" r="1.5" fill="#a78bfa" opacity="0.6" />
+            <line x1="6.5" y1="11" x2="9" y2="5" stroke="rgba(255,255,255,0.2)" strokeWidth="1" />
+            <line x1="6.5" y1="11" x2="9" y2="17" stroke="rgba(255,255,255,0.2)" strokeWidth="1" />
+            <line x1="13" y1="5" x2="16.5" y2="2" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
+            <line x1="13" y1="5" x2="16.5" y2="8" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
+            <line x1="13" y1="17" x2="16.5" y2="14" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
+            <line x1="13" y1="17" x2="16.5" y2="20" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
+          </svg>
+
+          <div>
+            <div
+              style={{
+                fontSize: "14px",
+                fontWeight: 700,
+                letterSpacing: "-0.02em",
+                color: "var(--text-primary)",
+                lineHeight: 1.2,
+              }}
+            >
+              {t("common.treeOfLife", "Tree of Life")}
+            </div>
+            <div
+              style={{
+                fontSize: "10px",
+                color: "var(--text-tertiary)",
+                letterSpacing: "0.04em",
+                lineHeight: 1.2,
+              }}
+            >
+              {t("common.tagline", "Evolutionary History of Life")}
+            </div>
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div
+          style={{
+            width: 1,
+            height: 30,
+            background: "var(--surface-border)",
+            flexShrink: 0,
+          }}
+        />
+
+        {/* Search */}
+        <div className="flex-1 flex items-center max-w-sm">
+          <TreeSearch
+            onSelectResult={handleSearchResult}
+          />
+        </div>
+
+        {/* Right controls */}
+        <div className="flex items-center gap-2 ml-auto shrink-0">
+          {/* Selected node indicator */}
+          {selectedNode && (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                padding: "5px 12px",
+                background: "rgba(61,142,248,0.08)",
+                border: "1px solid rgba(61,142,248,0.2)",
+                borderRadius: "8px",
+                fontSize: "12.5px",
+                color: "var(--text-secondary)",
+                maxWidth: "200px",
+              }}
+            >
+              <div
+                style={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: "50%",
+                  background: "var(--accent-primary)",
+                  flexShrink: 0,
+                }}
+              />
+              <span
+                style={{
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {localizeTaxon(selectedNode)?.name || selectedNode.name}
+              </span>
+            </div>
+          )}
+
+          {/* Pre-LUCA History launcher */}
+          <button
+            onClick={() => setShowPreLuca(true)}
+            aria-label="Explore Pre-LUCA History (Cosmic Origins, Prebiotic Chemistry, and FUCA)"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "6px",
+              padding: "5px 12px",
+              borderRadius: "100px",
+              background: "rgba(168,85,247,0.1)",
+              border: "1px solid rgba(168,85,247,0.25)",
+              fontSize: "11px",
+              fontWeight: 600,
+              color: "#c084fc",
+              cursor: "pointer",
+              transition: "all 150ms ease",
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLElement).style.background = "rgba(168,85,247,0.2)";
+              (e.currentTarget as HTMLElement).style.borderColor = "#c084fc";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLElement).style.background = "rgba(168,85,247,0.1)";
+              (e.currentTarget as HTMLElement).style.borderColor = "rgba(168,85,247,0.25)";
+            }}
+          >
+            <span>{t("topbar.preLucaBtn", "Pre-LUCA History")}</span>
+            <span style={{ fontSize: "10px" }}>✨</span>
+          </button>
+
+          {/* Story of Life launcher */}
+          {onOpenStory && (
+            <button
+              onClick={onOpenStory}
+              aria-label="Launch The Story of Life cinematic narrative"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                padding: "5px 12px",
+                borderRadius: "100px",
+                background: "rgba(61,142,248,0.1)",
+                border: "1px solid rgba(61,142,248,0.25)",
+                fontSize: "11px",
+                fontWeight: 600,
+                color: "var(--accent-primary)",
+                cursor: "pointer",
+                transition: "all 150ms ease",
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLElement).style.background = "rgba(61,142,248,0.2)";
+                (e.currentTarget as HTMLElement).style.borderColor = "var(--accent-primary)";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLElement).style.background = "rgba(61,142,248,0.1)";
+                (e.currentTarget as HTMLElement).style.borderColor = "rgba(61,142,248,0.25)";
+              }}
+            >
+              <span>{t("topbar.storyBtn", "The Story of Life")}</span>
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                <path d="M2 5h6M5 2l3 3-3 3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+          )}
+
+          {/* Phase indicator */}
+          <div
+            style={{
+              padding: "4px 10px",
+              borderRadius: "6px",
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid var(--surface-border)",
+              fontSize: "10px",
+              fontWeight: 600,
+              color: "var(--text-tertiary)",
+              letterSpacing: "0.06em",
+              textTransform: "uppercase",
+            }}
+          >
+            {t("topbar.explorerPhase", "Evolutionary Explorer")}
+          </div>
+          <LanguageSelector compact align="right" />
+        </div>
+      </header>
+
+      {/* ── Canvas Area ──────────────────────────────────────── */}
+      <div
+        ref={containerRef}
+        className="relative flex-1 overflow-hidden"
+        style={{ background: "var(--bg-primary)" }}
+      >
+        {/* Radial background glow */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            inset: 0,
+            pointerEvents: "none",
+            background:
+              "radial-gradient(ellipse 60% 50% at 30% 50%, rgba(61,142,248,0.03) 0%, transparent 70%)",
+          }}
+        />
+
+        {/* Tree Canvas */}
+        <TreeCanvas
+          treeData={TREE_DATA}
+          selectedNodeId={selectedNode?.id ?? null}
+          hoveredNodeId={hoveredNodeId}
+          onNodeSelect={handleNodeSelect}
+          onNodeHover={handleNodeHover}
+          externalTransform={externalTransform}
+          onTransformChange={handleTransformChange}
+          registerControls={registerControls}
+          initialFocusNodeId={selectedNode?.id ?? "homo-sapiens"}
+          onOpenPreLuca={() => setShowPreLuca(true)}
+        />
+
+        {/* Right controls */}
+        <TreeControls
+          controls={canvasControls}
+          showMinimap={showMinimap}
+          onToggleMinimap={() => setShowMinimap((v) => !v)}
+          isPanelOpen={Boolean(selectedNode)}
+        />
+
+        {/* Minimap */}
+        <TreeMinimap
+          treeData={TREE_DATA}
+          currentTransform={transform}
+          viewportWidth={viewportDimensions.width}
+          viewportHeight={canvasHeight}
+          onViewportChange={handleMinimapNavigate}
+          visible={showMinimap}
+          isPanelOpen={Boolean(selectedNode)}
+        />
+
+        {/* Right panel */}
+        <TaxonPanel
+          node={selectedNode}
+          onClose={handlePanelClose}
+          onNavigate={handleNavigate}
+          onOpenPreLuca={() => setShowPreLuca(true)}
+        />
+
+        {/* Pre-LUCA History Drawer */}
+        <PreLucaPanel
+          isOpen={showPreLuca}
+          onClose={() => setShowPreLuca(false)}
+          onFocusLuca={handleFocusLuca}
+          onOpenStory={onOpenStory}
+        />
+
+        {/* Disclaimer watermark */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: `${TIMELINE_HEIGHT + 8}px`,
+            left: "50%",
+            transform: "translateX(-50%)",
+            fontSize: "9.5px",
+            color: "var(--text-tertiary)",
+            letterSpacing: "0.04em",
+            opacity: 0.6,
+            pointerEvents: "none",
+            whiteSpace: "nowrap",
+          }}
+        >
+          Conceptual visualization · Scientific data integration in future phases
+        </div>
+      </div>
+
+      {/* ── Timeline ────────────────────────────────────────── */}
+      <div style={{ position: "relative", flexShrink: 0, height: `${TIMELINE_HEIGHT}px` }}>
+        <EvolutionTimeline
+          treeData={TREE_DATA}
+          transform={transform}
+          viewportWidth={viewportDimensions.width}
+        />
+      </div>
+    </div>
+  );
+}

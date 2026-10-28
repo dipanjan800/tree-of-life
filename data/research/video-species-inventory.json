@@ -1,0 +1,2255 @@
+{
+  "metadata": {
+    "title": "Tree of Life — Video Reference & Scientific Species Inventory",
+    "version": "1.0.0",
+    "generatedDate": "2026-10-25",
+    "projectScope": "Phase 1 Continuation · Taxon Inventory & Phase 2 Expansion Planning",
+    "epistemologicalPolicy": "SCIENTIFIC_DATA_POLICY.md & MASTER_PRD.md",
+    "videoSourceNotice": {
+      "status": "inaccessible_in_environment",
+      "statement": "The five reference YouTube videos cited in the initial design brief were not provided with URLs, identifiers, or transcript files in the local workspace or environment. In accordance with Rule 3 ('Do not invent species names, timestamps, or claims about video contents'), Rule 5 ('Clearly mark uncertain identifications and inaccessible video content'), and SCIENTIFIC_DATA_POLICY Section 3 ('Zero Fabrication Policy'), timestamps are recorded as null and video streams are marked inaccessible, rather than fabricating video claims or artificial timestamps."
+    },
+    "statistics": {
+      "totalInventoryEntries": 80,
+      "integratedInPhase1": 64,
+      "proposedCandidatesForPhase2": 16,
+      "extantCount": 60,
+      "extinctCount": 20,
+      "exactSpeciesCount": 26,
+      "broaderCladeCount": 54
+    }
+  },
+  "taxa": [
+    {
+      "id": "luca",
+      "commonName": "LUCA",
+      "scientificName": "Last Universal Common Ancestor",
+      "taxonomicRank": "root",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "extinct",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~3.8 BYA",
+      "estimatedOriginMya": 3800,
+      "sourceVideo": {
+        "videoRef": "Reference Video 1 (Prebiotic & Deep Time)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "Weiss et al. (2016) Nature Microbiology: The physiology and habitat of the last universal common ancestor",
+        "NCBI Taxonomy ID: 1 (Root / Cellular organisms)",
+        "Open Tree of Life Synth ID: ott805080"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Inferred from universal molecular homologies across all cellular life (ribosomal core, 20 L-amino acids, ATP synthase). LUCA is strictly NOT the origin of life; it was preceded by prebiotic chemistry and early protocells.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": null,
+      "imageRequirements": {
+        "proposedSource": "Tree of Life Vector Engine",
+        "authorCredit": "Tree of Life Project",
+        "license": "CC0",
+        "attributionRequired": "Tree of Life Engine / CC0",
+        "isReconstruction": false,
+        "assetUrl": "/assets/tree/luca-root.svg"
+      }
+    },
+    {
+      "id": "bacteria",
+      "commonName": "Bacteria",
+      "scientificName": "Bacteria",
+      "taxonomicRank": "domain",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~3.5 BYA",
+      "estimatedOriginMya": 3500,
+      "sourceVideo": {
+        "videoRef": "Reference Video 1 (Prebiotic & Deep Time)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 2 (Bacteria)",
+        "WoRMS (World Register of Marine Species) AphiaID: 6",
+        "Dresser Formation microfossils (Pilbara Craton, Western Australia ~3.48 BYA)"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Established primary biological domain verified by isotopic carbon fractionation and fossil stromatolite benthic layers.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "luca"
+    },
+    {
+      "id": "proteobacteria",
+      "commonName": "Proteobacteria",
+      "scientificName": "Pseudomonadota (Proteobacteria)",
+      "taxonomicRank": "phylum",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~2.7 BYA",
+      "estimatedOriginMya": 2700,
+      "sourceVideo": {
+        "videoRef": "Reference Video 2 (Microbial & Symbiotic Radiations)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 1224 (Pseudomonadota)",
+        "LPSN (List of Prokaryotic names with Standing in Nomenclature)"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Ancestral alphaproteobacteria gave rise to eukaryotic mitochondria via endosymbiosis.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "bacteria"
+    },
+    {
+      "id": "cyanobacteria",
+      "commonName": "Cyanobacteria",
+      "scientificName": "Cyanobacteriota (Cyanobacteria)",
+      "taxonomicRank": "phylum",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~2.7 BYA",
+      "estimatedOriginMya": 2700,
+      "sourceVideo": {
+        "videoRef": "Reference Video 2 (Microbial & Symbiotic Radiations)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 1117 (Cyanobacteriota)",
+        "Fischer et al. (2016) Science: The evolution of oxygenic photosynthesis",
+        "NASA Earth Observatory Phytoplankton & Microbial Bloomsday Records"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Oxygenic photosynthesis evolved prior to the Great Oxidation Event (~2.45–2.22 BYA). Primary plastid ancestor of Archaeplastida.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "bacteria",
+      "imageRequirements": {
+        "proposedSource": "NASA Earth Observatory",
+        "authorCredit": "Norman Kuring / NASA",
+        "license": "Public Domain",
+        "attributionRequired": "Norman Kuring / NASA Earth Observatory",
+        "isReconstruction": false,
+        "assetUrl": "/assets/story/cyanobacteria.jpg"
+      }
+    },
+    {
+      "id": "firmicutes",
+      "commonName": "Firmicutes",
+      "scientificName": "Bacillota (Firmicutes)",
+      "taxonomicRank": "phylum",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~2.5 BYA",
+      "estimatedOriginMya": 2500,
+      "sourceVideo": {
+        "videoRef": "Reference Video 2 (Microbial & Symbiotic Radiations)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 1239 (Bacillota)",
+        "LPSN Validation List No. 143"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Major division of Gram-positive bacteria, critical components of the mammalian gut microbiome and spore formers.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "bacteria"
+    },
+    {
+      "id": "archaea",
+      "commonName": "Archaea",
+      "scientificName": "Archaea",
+      "taxonomicRank": "domain",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~3.5 BYA",
+      "estimatedOriginMya": 3500,
+      "sourceVideo": {
+        "videoRef": "Reference Video 1 (Prebiotic & Deep Time)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 2157 (Archaea)",
+        "Woese & Fox (1977) PNAS: Phylogenetic structure of the prokaryotic domain: The primary kingdoms",
+        "LPSN Archaea Domain Index"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Distinct prokaryotic domain characterized by ether-linked isoprenoid membrane lipids and eukaryotic-like transcription/translation machinery.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "luca"
+    },
+    {
+      "id": "euryarchaeota",
+      "commonName": "Euryarchaeota",
+      "scientificName": "Euryarchaeota",
+      "taxonomicRank": "phylum",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~3.2 BYA",
+      "estimatedOriginMya": 3200,
+      "sourceVideo": {
+        "videoRef": "Reference Video 2 (Microbial & Symbiotic Radiations)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 28890 (Euryarchaeota)",
+        "LPSN / Bergey's Manual of Systematic Archaea and Bacteria"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Encompasses methanogens (methanogenesis is an ancient Archean metabolic pathway), extreme halophiles, and thermophiles.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "archaea"
+    },
+    {
+      "id": "crenarchaeota",
+      "commonName": "Crenarchaeota",
+      "scientificName": "Thermoproteota (Crenarchaeota)",
+      "taxonomicRank": "phylum",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~3.0 BYA",
+      "estimatedOriginMya": 3000,
+      "sourceVideo": {
+        "videoRef": "Reference Video 2 (Microbial & Symbiotic Radiations)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 28889 (Thermoproteota)",
+        "LPSN Crenarchaeota Taxonomic Index"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Hyperthermophilic archaea predominantly colonizing volcanic solfataras and hydrothermal vents.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "archaea"
+    },
+    {
+      "id": "asgardarchaeota",
+      "commonName": "Asgard Archaea",
+      "scientificName": "Asgardarchaeota",
+      "taxonomicRank": "phylum",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~2.2 BYA",
+      "estimatedOriginMya": 2200,
+      "sourceVideo": {
+        "videoRef": "Reference Video 2 (Microbial & Symbiotic Radiations)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 1935183 (Asgard group)",
+        "Spang et al. (2015) Nature: Complex archaea that bridge the gap between prokaryotes and eukaryotes",
+        "Rodrigues-Oliveira et al. (2023) Nature: Isolation of an Asgard archaeon (Lokiarchaeum ossiferum)"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Revolutionary phylogenomic discovery verifying that Eukaryota branch from within the Asgard archaeal lineage (2-domain eocyte tree of life hypothesis).",
+      "integrationStatus": "proposed_candidate_for_phase_2",
+      "parentId": "archaea",
+      "imageRequirements": {
+        "proposedSource": "Nature Publishing / Rodrigues-Oliveira et al. (Electron micrograph)",
+        "authorCredit": "Rodrigues-Oliveira et al. / Nature",
+        "license": "Open Access Educational",
+        "attributionRequired": "Rodrigues-Oliveira et al. (2023), Nature",
+        "isReconstruction": false,
+        "assetUrl": "/assets/tree/asgard-archaea.jpg"
+      }
+    },
+    {
+      "id": "eukaryota",
+      "commonName": "Eukaryota",
+      "scientificName": "Eukaryota",
+      "taxonomicRank": "domain",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~2.1 BYA",
+      "estimatedOriginMya": 2100,
+      "sourceVideo": {
+        "videoRef": "Reference Video 2 (Microbial & Symbiotic Radiations)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 2759 (Eukaryota)",
+        "Brocks et al. (1999) Science: Sterane chemical fossils and early eukaryote biomarkers",
+        "Franceville biota / Bangiomorpha pubescens microfossils (~1.6–1.05 BYA)"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Eukaryogenesis originated through the endosymbiosis of an alphaproteobacterium (mitochondrion) inside an Asgard-related archaeal host.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "luca"
+    },
+    {
+      "id": "plantae",
+      "commonName": "Plants",
+      "scientificName": "Archaeplastida (Plantae)",
+      "taxonomicRank": "kingdom",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~470 MYA",
+      "estimatedOriginMya": 470,
+      "sourceVideo": {
+        "videoRef": "Reference Video 3 (Cambrian & Paleozoic Radiations)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 33090 (Viridiplantae)",
+        "Kenrick & Crane (1997) Nature: The origin and early evolution of plants on land",
+        "ITIS TSN: 202422"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Embryophyte land plants diverged from streptophyte green algae in the Ordovician Period (~470 MYA).",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "eukaryota"
+    },
+    {
+      "id": "green-algae",
+      "commonName": "Green Algae",
+      "scientificName": "Chlorophyta & Charophyta",
+      "taxonomicRank": "phylum",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~750 MYA",
+      "estimatedOriginMya": 750,
+      "sourceVideo": {
+        "videoRef": "Reference Video 3 (Cambrian & Paleozoic Radiations)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 3041 (Chlorophyta)",
+        "AlgaeBase Index"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Paraphyletic assemblage of aquatic photosynthetic eukaryotes from which embryophyte land plants originated.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "plantae"
+    },
+    {
+      "id": "bryophytes",
+      "commonName": "Mosses & Bryophytes",
+      "scientificName": "Bryophyta (sensu lato)",
+      "taxonomicRank": "phylum",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~470 MYA",
+      "estimatedOriginMya": 470,
+      "sourceVideo": {
+        "videoRef": "Reference Video 3 (Cambrian & Paleozoic Radiations)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 3208 (Bryophyta)",
+        "Wellman et al. (2003) Nature: Fragments of the earliest land plants"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Earliest divergent clade of terrestrial embryophytes, lacking lignified vascular xylem/phloem.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "plantae"
+    },
+    {
+      "id": "ferns",
+      "commonName": "Ferns",
+      "scientificName": "Polypodiopsida (Monilophyta)",
+      "taxonomicRank": "phylum",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~360 MYA",
+      "estimatedOriginMya": 360,
+      "sourceVideo": {
+        "videoRef": "Reference Video 3 (Cambrian & Paleozoic Radiations)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 3241 (Moniliformopses / Ferns)",
+        "Pteridophyte Phylogeny Group (PPG I, 2016)"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Seedless vascular plants reproducing via spores, radiating in Carboniferous coal-swamp forests.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "plantae"
+    },
+    {
+      "id": "gymnosperms",
+      "commonName": "Gymnosperms",
+      "scientificName": "Gymnospermae (Acrogymnospermae)",
+      "taxonomicRank": "class",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~360 MYA",
+      "estimatedOriginMya": 360,
+      "sourceVideo": {
+        "videoRef": "Reference Video 4 (Mesozoic & Extinctions)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 3312 (Acrogymnospermae)",
+        "Christenhusz et al. (2011) Phytotaxa: A new classification and linear sequence of extant gymnosperms"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Non-flowering seed plants (conifers, cycads, ginkgoes) that dominated Mesozoic floras.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "plantae"
+    },
+    {
+      "id": "angiosperms",
+      "commonName": "Flowering Plants",
+      "scientificName": "Angiospermae (Magnoliopsida)",
+      "taxonomicRank": "class",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~130 MYA",
+      "estimatedOriginMya": 130,
+      "sourceVideo": {
+        "videoRef": "Reference Video 4 (Mesozoic & Extinctions)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 3398 (Magnoliopsida / Angiosperms)",
+        "Angiosperm Phylogeny Group (APG IV, 2016)",
+        "Darwin's 'abominable mystery' regarding Cretaceous angiosperm radiation"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Clade of plants with enclosed seeds and flowers for insect/vertebrate biotic pollination.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "plantae"
+    },
+    {
+      "id": "grasses",
+      "commonName": "Grasses",
+      "scientificName": "Poaceae",
+      "taxonomicRank": "family",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~60 MYA",
+      "estimatedOriginMya": 60,
+      "sourceVideo": {
+        "videoRef": "Reference Video 5 (Hominins & Modern Mammals)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 4479 (Poaceae)",
+        "Grass Phylogeny Working Group (GPWG II, 2012)"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Monocot family fueling Miocene open grassland expansions and human agricultural civilizations.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "angiosperms"
+    },
+    {
+      "id": "orchids",
+      "commonName": "Orchids",
+      "scientificName": "Orchidaceae",
+      "taxonomicRank": "family",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~76 MYA",
+      "estimatedOriginMya": 76,
+      "sourceVideo": {
+        "videoRef": "Reference Video 4 (Mesozoic & Extinctions)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 4747 (Orchidaceae)",
+        "Ramírez et al. (2007) Nature: Fossil orchid in Dominican amber and late Cretaceous origin"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Enormously diverse family (>28,000 species) exhibiting specialized bilateral pollinator co-evolution.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "angiosperms"
+    },
+    {
+      "id": "fungi",
+      "commonName": "Fungi",
+      "scientificName": "Fungi",
+      "taxonomicRank": "kingdom",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~1.5 BYA",
+      "estimatedOriginMya": 1500,
+      "sourceVideo": {
+        "videoRef": "Reference Video 3 (Cambrian & Paleozoic Radiations)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 4751 (Fungi)",
+        "Index Fungorum ID: 90150",
+        "Loron et al. (2019) Nature: Early fungi from the Proterozoic of Arctic Canada"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Opisthokont kingdom of heterotrophic eukaryotes possessing chitinous cell walls, more closely related to animals than to plants.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "eukaryota"
+    },
+    {
+      "id": "basidiomycota",
+      "commonName": "Mushrooms & Club Fungi",
+      "scientificName": "Basidiomycota",
+      "taxonomicRank": "phylum",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~400 MYA",
+      "estimatedOriginMya": 400,
+      "sourceVideo": {
+        "videoRef": "Reference Video 3 (Cambrian & Paleozoic Radiations)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 5204 (Basidiomycota)",
+        "Index Fungorum ID: 90038"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Major subkingdom Dikarya phylum producing sexually derived basidiospores on club-shaped basidia.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "fungi"
+    },
+    {
+      "id": "ascomycota",
+      "commonName": "Sac Fungi",
+      "scientificName": "Ascomycota",
+      "taxonomicRank": "phylum",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~500 MYA",
+      "estimatedOriginMya": 500,
+      "sourceVideo": {
+        "videoRef": "Reference Video 3 (Cambrian & Paleozoic Radiations)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 4890 (Ascomycota)",
+        "Index Fungorum ID: 90032"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "The largest fungal phylum, encompassing yeasts (Saccharomyces), filamentous molds, morels, and lichen-forming fungi.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "fungi"
+    },
+    {
+      "id": "animalia",
+      "commonName": "Animals",
+      "scientificName": "Metazoa (Animalia)",
+      "taxonomicRank": "kingdom",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~600 MYA",
+      "estimatedOriginMya": 600,
+      "sourceVideo": {
+        "videoRef": "Reference Video 3 (Cambrian & Paleozoic Radiations)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 33208 (Metazoa)",
+        "WoRMS AphiaID: 2 (Animalia)",
+        "Erwin et al. (2011) Science: The Cambrian conundrum: early divergence and later ecological success of early animals"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Multicellular heterotrophic opisthokonts possessing blastular embryonic stages and extracellular collagen matrix.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "eukaryota"
+    },
+    {
+      "id": "porifera",
+      "commonName": "Sponges",
+      "scientificName": "Porifera",
+      "taxonomicRank": "phylum",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~580 MYA",
+      "estimatedOriginMya": 580,
+      "sourceVideo": {
+        "videoRef": "Reference Video 3 (Cambrian & Paleozoic Radiations)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 6040 (Porifera)",
+        "WoRMS AphiaID: 558",
+        "World Porifera Database"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Basal metazoans lacking true tissue differentiation and germ layers, filter-feeding through aquiferous choanocyte canals.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "animalia"
+    },
+    {
+      "id": "cnidaria",
+      "commonName": "Jellyfish & Corals",
+      "scientificName": "Cnidaria",
+      "taxonomicRank": "phylum",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~560 MYA",
+      "estimatedOriginMya": 560,
+      "sourceVideo": {
+        "videoRef": "Reference Video 3 (Cambrian & Paleozoic Radiations)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 6073 (Cnidaria)",
+        "WoRMS AphiaID: 1267"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Diploblastic metazoans possessing radial symmetry and specialized stinging organelles (cnidocytes).",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "animalia"
+    },
+    {
+      "id": "dickinsonia-costata",
+      "commonName": "Dickinsonia",
+      "scientificName": "Dickinsonia costata",
+      "taxonomicRank": "species",
+      "rankSpecificity": "exact_species",
+      "status": "extinct",
+      "extinctionDateMya": 541,
+      "estimatedOrigin": "~558 MYA",
+      "estimatedOriginMya": 558,
+      "sourceVideo": {
+        "videoRef": "Reference Video 3 (Cambrian & Paleozoic Radiations)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "Bobrovskiy et al. (2018) Science: Ancient steroids establish the Ediacaran fossil Dickinsonia as one of the earliest animals",
+        "Paleobiology Database (PBDB) Taxon ID: 4683",
+        "South Australian Museum Ediacara Collection"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Biomarker cholesterol analysis confirmed animal affinity. Distinct quilt-like segmented morphology lacking bilateral guts.",
+      "integrationStatus": "proposed_candidate_for_phase_2",
+      "parentId": "animalia",
+      "imageRequirements": {
+        "proposedSource": "South Australian Museum / Wikimedia Commons",
+        "authorCredit": "Verisimilus / Wikimedia Commons",
+        "license": "CC-BY-SA-3.0",
+        "attributionRequired": "Verisimilus / South Australian Museum / CC-BY-SA 3.0",
+        "isReconstruction": false,
+        "assetUrl": "/assets/story/ediacaran.jpg"
+      }
+    },
+    {
+      "id": "arthropoda",
+      "commonName": "Arthropods",
+      "scientificName": "Arthropoda",
+      "taxonomicRank": "phylum",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~540 MYA",
+      "estimatedOriginMya": 540,
+      "sourceVideo": {
+        "videoRef": "Reference Video 3 (Cambrian & Paleozoic Radiations)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 6656 (Arthropoda)",
+        "WoRMS AphiaID: 1065",
+        "Edgecombe & Legg (2014) Paleontological Society: Origins and early evolution of arthropods"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Ecdysozoans with chitinous cuticular exoskeletons, jointed appendages, and compound eyes. Comprise over 80% of described living species.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "animalia"
+    },
+    {
+      "id": "anomalocaris-canadensis",
+      "commonName": "Anomalocaris",
+      "scientificName": "Anomalocaris canadensis",
+      "taxonomicRank": "species",
+      "rankSpecificity": "exact_species",
+      "status": "extinct",
+      "extinctionDateMya": 500,
+      "estimatedOrigin": "~508 MYA",
+      "estimatedOriginMya": 508,
+      "sourceVideo": {
+        "videoRef": "Reference Video 3 (Cambrian & Paleozoic Radiations)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "Paleobiology Database (PBDB) Taxon ID: 19020",
+        "Whittington & Briggs (1985) Philosophical Transactions of the Royal Society: The largest Cambrian animal, Anomalocaris",
+        "Smithsonian National Museum of Natural History Burgess Shale Collection"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Iconic Burgess Shale stem-arthropod apex predator possessing barbed raptorial frontal appendages and circular mouth cones.",
+      "integrationStatus": "proposed_candidate_for_phase_2",
+      "parentId": "arthropoda",
+      "imageRequirements": {
+        "proposedSource": "Wikimedia Commons / Smithsonian",
+        "authorCredit": "Nobu Tamura (Artistic Reconstruction)",
+        "license": "CC-BY-SA-4.0",
+        "attributionRequired": "Nobu Tamura (Artistic reconstruction) / CC-BY-SA 4.0",
+        "isReconstruction": true,
+        "assetUrl": "/assets/story/cambrian.jpg"
+      }
+    },
+    {
+      "id": "opabinia-regalis",
+      "commonName": "Opabinia",
+      "scientificName": "Opabinia regalis",
+      "taxonomicRank": "species",
+      "rankSpecificity": "exact_species",
+      "status": "extinct",
+      "extinctionDateMya": 500,
+      "estimatedOrigin": "~505 MYA",
+      "estimatedOriginMya": 505,
+      "sourceVideo": {
+        "videoRef": "Reference Video 3 (Cambrian & Paleozoic Radiations)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "Paleobiology Database (PBDB) Taxon ID: 19139",
+        "Whittington (1975) Phil. Trans. R. Soc. Lond. B: The enigmatic animal Opabinia regalis",
+        "Royal Ontario Museum Burgess Shale Database"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Famous 5-eyed stem-arthropod possessing a frontal flexible proboscis terminating in grasping claws.",
+      "integrationStatus": "proposed_candidate_for_phase_2",
+      "parentId": "arthropoda",
+      "imageRequirements": {
+        "proposedSource": "Wikimedia Commons / Royal Ontario Museum",
+        "authorCredit": "Nobu Tamura",
+        "license": "CC-BY-3.0",
+        "attributionRequired": "Nobu Tamura (Artistic reconstruction) / CC-BY-3.0",
+        "isReconstruction": true,
+        "assetUrl": "/assets/tree/opabinia.jpg"
+      }
+    },
+    {
+      "id": "elrathia-kingii",
+      "commonName": "Trilobite",
+      "scientificName": "Elrathia kingii",
+      "taxonomicRank": "species",
+      "rankSpecificity": "exact_species",
+      "status": "extinct",
+      "extinctionDateMya": 252,
+      "estimatedOrigin": "~505 MYA",
+      "estimatedOriginMya": 505,
+      "sourceVideo": {
+        "videoRef": "Reference Video 3 (Cambrian & Paleozoic Radiations)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "Paleobiology Database (PBDB) Taxon ID: 20037",
+        "Fortey (2000) Trilobite! Eyewitness to Evolution",
+        "Smithsonian NMNH Paleobiology Collection"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Abundant Middle Cambrian ptychopariid trilobite from the Wheeler Shale of Utah; iconic 3-lobed calcified arthropod.",
+      "integrationStatus": "proposed_candidate_for_phase_2",
+      "parentId": "arthropoda",
+      "imageRequirements": {
+        "proposedSource": "Wikimedia Commons / US Geological Survey",
+        "authorCredit": "Wilson44691 / Wikimedia Commons",
+        "license": "Public Domain",
+        "attributionRequired": "Wilson44691 / Wikimedia Commons (Fossil Specimen)",
+        "isReconstruction": false,
+        "assetUrl": "/assets/tree/trilobite.jpg"
+      }
+    },
+    {
+      "id": "insects",
+      "commonName": "Insects",
+      "scientificName": "Insecta",
+      "taxonomicRank": "class",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~400 MYA",
+      "estimatedOriginMya": 400,
+      "sourceVideo": {
+        "videoRef": "Reference Video 3 (Cambrian & Paleozoic Radiations)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 50557 (Insecta)",
+        "Misof et al. (2014) Science: Phylogenomics resolves the timing and pattern of insect evolution"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Hexapod pancrustaceans with three tagmata (head, thorax, abdomen), first animals to evolve powered flight in the Carboniferous.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "arthropoda"
+    },
+    {
+      "id": "arachnida",
+      "commonName": "Arachnids",
+      "scientificName": "Arachnida",
+      "taxonomicRank": "class",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~430 MYA",
+      "estimatedOriginMya": 430,
+      "sourceVideo": {
+        "videoRef": "Reference Video 3 (Cambrian & Paleozoic Radiations)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 6854 (Arachnida)",
+        "World Spider Catalog"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Chelicerate arthropods with two body regions and four pairs of walking legs, early terrestrial colonizers in the Silurian.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "arthropoda"
+    },
+    {
+      "id": "beetles",
+      "commonName": "Beetles",
+      "scientificName": "Coleoptera",
+      "taxonomicRank": "order",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~285 MYA",
+      "estimatedOriginMya": 285,
+      "sourceVideo": {
+        "videoRef": "Reference Video 3 (Cambrian & Paleozoic Radiations)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 7041 (Coleoptera)",
+        "McKenna et al. (2019) PNAS: The evolution and genomic basis of beetle diversity"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Hyper-diverse holometabolous order characterized by hardened forewings (elytra) protecting membraneous hindwings.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "insects"
+    },
+    {
+      "id": "butterflies",
+      "commonName": "Butterflies & Moths",
+      "scientificName": "Lepidoptera",
+      "taxonomicRank": "order",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~200 MYA",
+      "estimatedOriginMya": 200,
+      "sourceVideo": {
+        "videoRef": "Reference Video 4 (Mesozoic & Extinctions)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 7088 (Lepidoptera)",
+        "Kawahara et al. (2019) PNAS: Phylogenomics reveals the timing and pattern of butterfly evolution"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Co-radiated extensively with Cretaceous and Paleogene angiosperm flowering plants.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "insects"
+    },
+    {
+      "id": "mollusca",
+      "commonName": "Molluscs",
+      "scientificName": "Mollusca",
+      "taxonomicRank": "phylum",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~540 MYA",
+      "estimatedOriginMya": 540,
+      "sourceVideo": {
+        "videoRef": "Reference Video 3 (Cambrian & Paleozoic Radiations)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 6447 (Mollusca)",
+        "WoRMS AphiaID: 51",
+        "Kocot et al. (2011) Nature: Phylogenomics reveals deep molluscan relationships"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Lophotrochozoan protostomes with a mantle, radula, and muscular foot; extraordinary range from bivalves to cephalopods.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "animalia"
+    },
+    {
+      "id": "chordata",
+      "commonName": "Chordates",
+      "scientificName": "Chordata",
+      "taxonomicRank": "phylum",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~540 MYA",
+      "estimatedOriginMya": 540,
+      "sourceVideo": {
+        "videoRef": "Reference Video 3 (Cambrian & Paleozoic Radiations)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 7711 (Chordata)",
+        "WoRMS AphiaID: 1821",
+        "Haikouichthys / Pikaia Cambrian fossil chordates"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Deuterostomes defined by a notochord, dorsal hollow nerve cord, pharyngeal slits, and endostyle.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "animalia"
+    },
+    {
+      "id": "vertebrata",
+      "commonName": "Vertebrates",
+      "scientificName": "Vertebrata (Craniata)",
+      "taxonomicRank": "class",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~525 MYA",
+      "estimatedOriginMya": 525,
+      "sourceVideo": {
+        "videoRef": "Reference Video 3 (Cambrian & Paleozoic Radiations)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 7742 (Vertebrata)",
+        "Shu et al. (1999) Nature: Lower Cambrian vertebrates from south China"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Chordates with a cranium, neural crest cells, and cartilaginous or bony vertebral column replacing the notochord.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "chordata"
+    },
+    {
+      "id": "fish",
+      "commonName": "Fish",
+      "scientificName": "Gnathostomata & Cyclostomi",
+      "taxonomicRank": "class",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~530 MYA",
+      "estimatedOriginMya": 530,
+      "sourceVideo": {
+        "videoRef": "Reference Video 3 (Cambrian & Paleozoic Radiations)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "FishBase Catalog",
+        "WoRMS AphiaID: 11676"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Paraphyletic grade representing non-tetrapod aquatic gill-bearing craniates.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "vertebrata"
+    },
+    {
+      "id": "dunkleosteus-terrelli",
+      "commonName": "Dunkleosteus",
+      "scientificName": "Dunkleosteus terrelli",
+      "taxonomicRank": "species",
+      "rankSpecificity": "exact_species",
+      "status": "extinct",
+      "extinctionDateMya": 358,
+      "estimatedOrigin": "~382 MYA",
+      "estimatedOriginMya": 382,
+      "sourceVideo": {
+        "videoRef": "Reference Video 3 (Cambrian & Paleozoic Radiations)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "Paleobiology Database (PBDB) Taxon ID: 34327",
+        "Anderson & Westneat (2007) Biology Letters: Feeding mechanics and bite force of the arthrodire Dunkleosteus",
+        "Cleveland Museum of Natural History Placoderm Specimen CMNH 5768"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Giant Late Devonian arthrodire placoderm apex predator with self-sharpening gnathal plates delivering one of the highest bite forces in history.",
+      "integrationStatus": "proposed_candidate_for_phase_2",
+      "parentId": "fish",
+      "imageRequirements": {
+        "proposedSource": "Wikimedia Commons / Cleveland Museum",
+        "authorCredit": "Nobu Tamura",
+        "license": "CC-BY-SA-3.0",
+        "attributionRequired": "Nobu Tamura (Artistic reconstruction) / CC-BY-SA 3.0",
+        "isReconstruction": true,
+        "assetUrl": "/assets/tree/dunkleosteus.jpg"
+      }
+    },
+    {
+      "id": "sharks",
+      "commonName": "Sharks & Rays",
+      "scientificName": "Chondrichthyes",
+      "taxonomicRank": "class",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~450 MYA",
+      "estimatedOriginMya": 450,
+      "sourceVideo": {
+        "videoRef": "Reference Video 3 (Cambrian & Paleozoic Radiations)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 7777 (Chondrichthyes)",
+        "WoRMS AphiaID: 10193",
+        "Shark Trust Taxonomy Data"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Cartilaginous jawed vertebrates possessing placoid denticles and electrosensory ampullae of Lorenzini.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "fish"
+    },
+    {
+      "id": "ray-finned-fish",
+      "commonName": "Ray-Finned Fish",
+      "scientificName": "Actinopterygii",
+      "taxonomicRank": "class",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~400 MYA",
+      "estimatedOriginMya": 400,
+      "sourceVideo": {
+        "videoRef": "Reference Video 3 (Cambrian & Paleozoic Radiations)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 7898 (Actinopterygii)",
+        "Betancur-R et al. (2017) BMC Evolutionary Biology: Phylogenetic classification of bony fishes"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Dominant vertebrate class (>33,000 species) possessing lepidotrichia (fin rays) and swim bladders.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "fish"
+    },
+    {
+      "id": "tiktaalik-roseae",
+      "commonName": "Tiktaalik",
+      "scientificName": "Tiktaalik roseae",
+      "taxonomicRank": "species",
+      "rankSpecificity": "exact_species",
+      "status": "extinct",
+      "extinctionDateMya": 370,
+      "estimatedOrigin": "~375 MYA",
+      "estimatedOriginMya": 375,
+      "sourceVideo": {
+        "videoRef": "Reference Video 3 (Cambrian & Paleozoic Radiations)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "Daeschler, Shubin, & Jenkins (2006) Nature: A Devonian tetrapod-like fish and the evolution of the tetrapod body plan",
+        "Paleobiology Database (PBDB) Taxon ID: 77134",
+        "Academy of Natural Sciences of Drexel University Specimen NUFV 108"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Morphological milestone transitional fossil bridging elpistostegalian fish and earliest limbed tetrapods: possesses wrists, flat skull, neck, and ribs.",
+      "integrationStatus": "proposed_candidate_for_phase_2",
+      "parentId": "vertebrata",
+      "imageRequirements": {
+        "proposedSource": "Wikimedia Commons / NSF / Zina Deretsky",
+        "authorCredit": "Zina Deretsky / National Science Foundation",
+        "license": "Public Domain",
+        "attributionRequired": "Zina Deretsky / National Science Foundation (Artistic reconstruction)",
+        "isReconstruction": true,
+        "assetUrl": "/assets/tree/tiktaalik.jpg"
+      }
+    },
+    {
+      "id": "amphibia",
+      "commonName": "Amphibians",
+      "scientificName": "Amphibia (Lissamphibia)",
+      "taxonomicRank": "class",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~370 MYA",
+      "estimatedOriginMya": 370,
+      "sourceVideo": {
+        "videoRef": "Reference Video 3 (Cambrian & Paleozoic Radiations)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 8292 (Amphibia)",
+        "AmphibiaWeb Species Database"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Anamniotic tetrapods characterized by moist, permeable skin and biphasic aquatic larval / terrestrial adult life cycles.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "vertebrata"
+    },
+    {
+      "id": "frogs",
+      "commonName": "Frogs & Toads",
+      "scientificName": "Anura",
+      "taxonomicRank": "order",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~265 MYA",
+      "estimatedOriginMya": 265,
+      "sourceVideo": {
+        "videoRef": "Reference Video 4 (Mesozoic & Extinctions)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 8342 (Anura)",
+        "Frost, Darrel R. (2021) Amphibian Species of the World (AMNH)"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Tailless lissamphibians specialized for saltatory jumping locomotion, auditory vocalization, and external amplexus fertilization.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "amphibia"
+    },
+    {
+      "id": "salamanders",
+      "commonName": "Salamanders",
+      "scientificName": "Urodela (Caudata)",
+      "taxonomicRank": "order",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~165 MYA",
+      "estimatedOriginMya": 165,
+      "sourceVideo": {
+        "videoRef": "Reference Video 4 (Mesozoic & Extinctions)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 8293 (Caudata)",
+        "AmphibiaWeb"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Tailed lissamphibians with remarkable tissue regeneration capacity and paedomorphic forms (e.g. Ambystoma mexicanum).",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "amphibia"
+    },
+    {
+      "id": "reptilia",
+      "commonName": "Reptiles",
+      "scientificName": "Sauropsida (Reptilia)",
+      "taxonomicRank": "class",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~312 MYA",
+      "estimatedOriginMya": 312,
+      "sourceVideo": {
+        "videoRef": "Reference Video 4 (Mesozoic & Extinctions)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 8457 (Sauropsida)",
+        "The Reptile Database",
+        "Benton, M.J. (2014) Vertebrate Palaeontology"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Amniote clade encompassing squamates, turtles, crocodilians, and dinosaurs (including living birds).",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "vertebrata"
+    },
+    {
+      "id": "dimetrodon-limbatus",
+      "commonName": "Dimetrodon",
+      "scientificName": "Dimetrodon limbatus",
+      "taxonomicRank": "species",
+      "rankSpecificity": "exact_species",
+      "status": "extinct",
+      "extinctionDateMya": 272,
+      "estimatedOrigin": "~295 MYA",
+      "estimatedOriginMya": 295,
+      "sourceVideo": {
+        "videoRef": "Reference Video 4 (Mesozoic & Extinctions)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "Paleobiology Database (PBDB) Taxon ID: 38905",
+        "Romer & Price (1940) Review of the Pelycosauria",
+        "Field Museum of Natural History Synapsid Collection"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Permian sphenacodontid non-mammalian synapsid (stem-mammal). Strictly NOT a dinosaur; more closely related to mammals than reptiles.",
+      "integrationStatus": "proposed_candidate_for_phase_2",
+      "parentId": "vertebrata",
+      "imageRequirements": {
+        "proposedSource": "Wikimedia Commons / Field Museum",
+        "authorCredit": "Dmitry Bogdanov",
+        "license": "CC-BY-3.0",
+        "attributionRequired": "Dmitry Bogdanov (Paleoart Reconstruction) / CC-BY-3.0",
+        "isReconstruction": true,
+        "assetUrl": "/assets/tree/dimetrodon.jpg"
+      }
+    },
+    {
+      "id": "dinosauria",
+      "commonName": "Non-Avian Dinosaurs",
+      "scientificName": "Dinosauria (non-avian)",
+      "taxonomicRank": "order",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "extinct",
+      "extinctionDateMya": 66,
+      "estimatedOrigin": "~230 MYA",
+      "estimatedOriginMya": 230,
+      "sourceVideo": {
+        "videoRef": "Reference Video 4 (Mesozoic & Extinctions)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "Paleobiology Database (PBDB) Taxon ID: 91971",
+        "Brusatte et al. (2015) Biological Reviews: The extinction of the dinosaurs",
+        "Weishampel, Dodson, & Osmólska (2004) The Dinosauria"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Dominant terrestrial archosaurs from the Late Triassic to Cretaceous-Paleogene extinction (Chicxulub bolide impact). Birds are the sole surviving avian lineage.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "reptilia",
+      "imageRequirements": {
+        "proposedSource": "Wikimedia Commons",
+        "authorCredit": "Nobu Tamura",
+        "license": "CC-BY-SA-4.0",
+        "attributionRequired": "Nobu Tamura (Artistic Reconstruction) / CC-BY-SA 4.0",
+        "isReconstruction": true,
+        "assetUrl": "/assets/story/cambrian.jpg"
+      }
+    },
+    {
+      "id": "tyrannosaurus-rex",
+      "commonName": "Tyrannosaurus rex",
+      "scientificName": "Tyrannosaurus rex",
+      "taxonomicRank": "species",
+      "rankSpecificity": "exact_species",
+      "status": "extinct",
+      "extinctionDateMya": 66,
+      "estimatedOrigin": "~68 MYA",
+      "estimatedOriginMya": 68,
+      "sourceVideo": {
+        "videoRef": "Reference Video 4 (Mesozoic & Extinctions)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "Paleobiology Database (PBDB) Taxon ID: 54833",
+        "Osborn, H.F. (1905) Tyrannosaurus and other Cretaceous carnivorous dinosaurs (AMNH)",
+        "Field Museum FMNH PR 2081 ('Sue')",
+        "Smithsonian USNM 555000 ('Nation's T. rex')"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Apex coelurosaurian theropod of Late Cretaceous Laramidia; stratigraphically dated from Hell Creek and Lance formations.",
+      "integrationStatus": "proposed_candidate_for_phase_2",
+      "parentId": "dinosauria",
+      "imageRequirements": {
+        "proposedSource": "Wikimedia Commons / Field Museum",
+        "authorCredit": "Nobu Tamura",
+        "license": "CC-BY-SA-4.0",
+        "attributionRequired": "Nobu Tamura (Paleoart Reconstruction) / CC-BY-SA 4.0",
+        "isReconstruction": true,
+        "assetUrl": "/assets/tree/tyrannosaurus.jpg"
+      }
+    },
+    {
+      "id": "triceratops-horridus",
+      "commonName": "Triceratops",
+      "scientificName": "Triceratops horridus",
+      "taxonomicRank": "species",
+      "rankSpecificity": "exact_species",
+      "status": "extinct",
+      "extinctionDateMya": 66,
+      "estimatedOrigin": "~68 MYA",
+      "estimatedOriginMya": 68,
+      "sourceVideo": {
+        "videoRef": "Reference Video 4 (Mesozoic & Extinctions)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "Paleobiology Database (PBDB) Taxon ID: 38859",
+        "Marsh, O.C. (1889) Notice of gigantic horned Dinosauria from the Cretaceous",
+        "Smithsonian USNM 4720"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Iconic chasmosaurine ceratopsid herbivore featuring a massive three-horned skull and parietosquamosal frill.",
+      "integrationStatus": "proposed_candidate_for_phase_2",
+      "parentId": "dinosauria",
+      "imageRequirements": {
+        "proposedSource": "Wikimedia Commons / Smithsonian",
+        "authorCredit": "Nobu Tamura",
+        "license": "CC-BY-SA-4.0",
+        "attributionRequired": "Nobu Tamura (Artistic reconstruction) / CC-BY-SA 4.0",
+        "isReconstruction": true,
+        "assetUrl": "/assets/tree/triceratops.jpg"
+      }
+    },
+    {
+      "id": "archaeopteryx-lithographica",
+      "commonName": "Archaeopteryx",
+      "scientificName": "Archaeopteryx lithographica",
+      "taxonomicRank": "species",
+      "rankSpecificity": "exact_species",
+      "status": "extinct",
+      "extinctionDateMya": 148,
+      "estimatedOrigin": "~150 MYA",
+      "estimatedOriginMya": 150,
+      "sourceVideo": {
+        "videoRef": "Reference Video 4 (Mesozoic & Extinctions)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "Paleobiology Database (PBDB) Taxon ID: 55489",
+        "von Meyer, H. (1861) Archaeopteryx lithographica (Solnhofen limestone)",
+        "Natural History Museum London Specimen NHMUK PV OR 37001",
+        "Museum für Naturkunde Berlin Specimen HMN 1880"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Pivotal transitional fossil displaying theropod skeletal traits (toothed jaws, clawed fingers, long bony tail) combined with flight feathers.",
+      "integrationStatus": "proposed_candidate_for_phase_2",
+      "parentId": "dinosauria",
+      "imageRequirements": {
+        "proposedSource": "Wikimedia Commons / Museum für Naturkunde Berlin",
+        "authorCredit": "H. v. Meyer / Museum für Naturkunde",
+        "license": "Public Domain",
+        "attributionRequired": "Berlin Specimen / Museum für Naturkunde / Public Domain",
+        "isReconstruction": false,
+        "assetUrl": "/assets/tree/archaeopteryx.jpg"
+      }
+    },
+    {
+      "id": "squamata",
+      "commonName": "Lizards & Snakes",
+      "scientificName": "Squamata",
+      "taxonomicRank": "order",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~240 MYA",
+      "estimatedOriginMya": 240,
+      "sourceVideo": {
+        "videoRef": "Reference Video 4 (Mesozoic & Extinctions)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 8509 (Squamata)",
+        "The Reptile Database (Uetz et al.)"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Lepidosaurian reptiles characterized by cranial kinesis and horny epidermal scales; over 10,000 extant species.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "reptilia"
+    },
+    {
+      "id": "testudines",
+      "commonName": "Turtles & Tortoises",
+      "scientificName": "Testudines (Chelonia)",
+      "taxonomicRank": "order",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~220 MYA",
+      "estimatedOriginMya": 220,
+      "sourceVideo": {
+        "videoRef": "Reference Video 4 (Mesozoic & Extinctions)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 8459 (Testudines)",
+        "Turtle Taxonomy Working Group (TTWG 2021)"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Archelosaurian reptiles with bony carapace and plastron derived from fused ribs and vertebrae.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "reptilia"
+    },
+    {
+      "id": "crocodilia",
+      "commonName": "Crocodilians",
+      "scientificName": "Crocodilia (Pseudosuchia)",
+      "taxonomicRank": "order",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~235 MYA",
+      "estimatedOriginMya": 235,
+      "sourceVideo": {
+        "videoRef": "Reference Video 4 (Mesozoic & Extinctions)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 8493 (Crocodylia)",
+        "IUCN-SSC Crocodile Specialist Group"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Extant pseudosuchian archosaurs, surviving sister group to birds (Aves).",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "reptilia"
+    },
+    {
+      "id": "aves",
+      "commonName": "Birds",
+      "scientificName": "Aves (Neornithes)",
+      "taxonomicRank": "class",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~150 MYA",
+      "estimatedOriginMya": 150,
+      "sourceVideo": {
+        "videoRef": "Reference Video 4 (Mesozoic & Extinctions)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 8782 (Aves)",
+        "Prum et al. (2015) Nature: A comprehensive phylogeny of modern birds",
+        "IOC World Bird List"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Living theropod maniraptoran dinosaurs that survived the K-Pg extinction event.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "vertebrata"
+    },
+    {
+      "id": "passeriformes",
+      "commonName": "Songbirds & Perching Birds",
+      "scientificName": "Passeriformes",
+      "taxonomicRank": "order",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~52 MYA",
+      "estimatedOriginMya": 52,
+      "sourceVideo": {
+        "videoRef": "Reference Video 5 (Hominins & Modern Mammals)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 9126 (Passeriformes)",
+        "Oliveros et al. (2019) PNAS: Earth history and the passerine superradiation"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Comprises more than 60% of all living avian species, possessing anisodactyl perching feet and complex syringeal song muscles.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "aves"
+    },
+    {
+      "id": "raptors",
+      "commonName": "Birds of Prey",
+      "scientificName": "Accipitriformes & Falconiformes",
+      "taxonomicRank": "order",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~50 MYA",
+      "estimatedOriginMya": 50,
+      "sourceVideo": {
+        "videoRef": "Reference Video 5 (Hominins & Modern Mammals)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 8956 (Accipitridae) & 8948 (Falconidae)",
+        "Jarvis et al. (2014) Science: Whole-genome analyses resolve early branches in the tree of life of modern birds"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Informal functional grouping representing diurnal predatory raptors with hooked beaks and sharp talons.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "aves"
+    },
+    {
+      "id": "waterfowl",
+      "commonName": "Waterfowl",
+      "scientificName": "Anseriformes",
+      "taxonomicRank": "order",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~66 MYA",
+      "estimatedOriginMya": 66,
+      "sourceVideo": {
+        "videoRef": "Reference Video 4 (Mesozoic & Extinctions)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 8828 (Anseriformes)",
+        "Vegaavis iaai K-Pg boundary fossil (Clarke et al. 2005, Nature)"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Galloanserae clade of aquatic birds, among the earliest diverging modern neognath bird lineages.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "aves"
+    },
+    {
+      "id": "mammalia",
+      "commonName": "Mammals",
+      "scientificName": "Mammalia",
+      "taxonomicRank": "class",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~225 MYA",
+      "estimatedOriginMya": 225,
+      "sourceVideo": {
+        "videoRef": "Reference Video 4 (Mesozoic & Extinctions)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 40674 (Mammalia)",
+        "Wilson & Reeder's Mammal Species of the World (MSW3)",
+        "Luo, Z.X. (2007) Nature: Transformation and diversification in early mammal evolution"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Synapsid crown clade characterized by mammary glands, hair, neocortex, and three auditory middle ear ossicles.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "vertebrata"
+    },
+    {
+      "id": "monotremata",
+      "commonName": "Monotremes",
+      "scientificName": "Monotremata",
+      "taxonomicRank": "order",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~170 MYA",
+      "estimatedOriginMya": 170,
+      "sourceVideo": {
+        "videoRef": "Reference Video 4 (Mesozoic & Extinctions)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 9255 (Monotremata)",
+        "Warren et al. (2008) Nature: Genome analysis of the platypus Ornithorhynchus anatinus"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Basal living mammalian lineage of Australasian egg-laying prototherians.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "mammalia"
+    },
+    {
+      "id": "marsupialia",
+      "commonName": "Marsupials",
+      "scientificName": "Metatheria (Marsupialia)",
+      "taxonomicRank": "order",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~130 MYA",
+      "estimatedOriginMya": 130,
+      "sourceVideo": {
+        "videoRef": "Reference Video 5 (Hominins & Modern Mammals)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 9263 (Marsupialia)",
+        "Nilsson et al. (2010) PLoS Biology: Tracking the evolution of marsupials using retroposons"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Endemic Australasian and Ameridelphian mammals rearing undeveloped altricial neonates within maternal pouches.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "mammalia"
+    },
+    {
+      "id": "placentalia",
+      "commonName": "Placental Mammals",
+      "scientificName": "Eutheria (Placentalia)",
+      "taxonomicRank": "order",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~90 MYA",
+      "estimatedOriginMya": 90,
+      "sourceVideo": {
+        "videoRef": "Reference Video 5 (Hominins & Modern Mammals)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 9347 (Eutheria)",
+        "O'Leary et al. (2013) Science: The placental mammal ancestor and the post-K-Pg radiation"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Crown clade characterized by prolonged intrauterine gestation supported by a chorioallantoic placenta.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "mammalia"
+    },
+    {
+      "id": "mammuthus-primigenius",
+      "commonName": "Woolly Mammoth",
+      "scientificName": "Mammuthus primigenius",
+      "taxonomicRank": "species",
+      "rankSpecificity": "exact_species",
+      "status": "extinct",
+      "extinctionDateMya": 0.004,
+      "estimatedOrigin": "~0.4 MYA",
+      "estimatedOriginMya": 0.4,
+      "sourceVideo": {
+        "videoRef": "Reference Video 5 (Hominins & Modern Mammals)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 37349 (Mammuthus primigenius)",
+        "Paleobiology Database (PBDB) Taxon ID: 47879",
+        "Palkopoulou et al. (2015) Current Biology: Complete genomes reveal signatures of serious inbreeding in the last woolly mammoths"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Pleistocene proboscidean megafauna adapted to Mammoth Steppe environments; survived on Wrangel Island until ~4,000 years ago.",
+      "integrationStatus": "proposed_candidate_for_phase_2",
+      "parentId": "placentalia",
+      "imageRequirements": {
+        "proposedSource": "Wikimedia Commons / Royal Ontario Museum",
+        "authorCredit": "Dmitry Bogdanov",
+        "license": "CC-BY-3.0",
+        "attributionRequired": "Dmitry Bogdanov (Paleoart Reconstruction) / CC-BY-3.0",
+        "isReconstruction": true,
+        "assetUrl": "/assets/tree/mammoth.jpg"
+      }
+    },
+    {
+      "id": "smilodon-fatalis",
+      "commonName": "Saber-Toothed Cat",
+      "scientificName": "Smilodon fatalis",
+      "taxonomicRank": "species",
+      "rankSpecificity": "exact_species",
+      "status": "extinct",
+      "extinctionDateMya": 0.01,
+      "estimatedOrigin": "~1.6 MYA",
+      "estimatedOriginMya": 1.6,
+      "sourceVideo": {
+        "videoRef": "Reference Video 5 (Hominins & Modern Mammals)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "Paleobiology Database (PBDB) Taxon ID: 51614",
+        "La Brea Tar Pits & Museum Holotype Collection",
+        "Christiansen & Harris (2005) Journal of Morphology: Body size of Smilodon"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Machairodontine felid megafaunal apex predator of the Pleistocene Americas; renowned for hyper-elongated maxillary canine teeth.",
+      "integrationStatus": "proposed_candidate_for_phase_2",
+      "parentId": "carnivora",
+      "imageRequirements": {
+        "proposedSource": "Wikimedia Commons / La Brea Tar Pits",
+        "authorCredit": "Charles R. Knight / Public Domain",
+        "license": "Public Domain",
+        "attributionRequired": "Charles R. Knight (Paleoart Reconstruction) / Public Domain",
+        "isReconstruction": true,
+        "assetUrl": "/assets/tree/smilodon.jpg"
+      }
+    },
+    {
+      "id": "primates",
+      "commonName": "Primates",
+      "scientificName": "Primates",
+      "taxonomicRank": "order",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~55 MYA",
+      "estimatedOriginMya": 55,
+      "sourceVideo": {
+        "videoRef": "Reference Video 5 (Hominins & Modern Mammals)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 9443 (Primates)",
+        "Groves, C.P. (2005) Mammal Species of the World: A Taxonomic and Geographic Reference"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Euarchontoglires placental mammals characterized by enlarged cerebral cortices, stereoscopic forward-facing orbits, and grasping hands with nails.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "placentalia"
+    },
+    {
+      "id": "hominidae",
+      "commonName": "Great Apes",
+      "scientificName": "Hominidae",
+      "taxonomicRank": "family",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~15 MYA",
+      "estimatedOriginMya": 15,
+      "sourceVideo": {
+        "videoRef": "Reference Video 5 (Hominins & Modern Mammals)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 9604 (Hominidae)",
+        "Prado-Martinez et al. (2013) Nature: Great ape genetic diversity and population history"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Catarrhine hominoids including orangutans (Pongo), gorillas (Gorilla), chimpanzees and bonobos (Pan), and humans (Homo).",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "primates"
+    },
+    {
+      "id": "sahelanthropus-tchadensis",
+      "commonName": "Sahelanthropus",
+      "scientificName": "Sahelanthropus tchadensis",
+      "taxonomicRank": "species",
+      "rankSpecificity": "exact_species",
+      "status": "extinct",
+      "extinctionDateMya": 6.8,
+      "estimatedOrigin": "~7.0 MYA",
+      "estimatedOriginMya": 7.0,
+      "sourceVideo": {
+        "videoRef": "Reference Video 5 (Hominins & Modern Mammals)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "Brunet et al. (2002) Nature: A new hominid from the Upper Miocene of Chad, Central Africa",
+        "Smithsonian Human Origins Program Sahelanthropus Specimen (TM 266-01-060-1, 'Toumaï')",
+        "Paleobiology Database (PBDB) Taxon ID: 83074"
+      ],
+      "confidence": "medium",
+      "confidenceNotes": "One of the oldest known hominin candidates near the human-chimpanzee divergence; anterior position of the foramen magnum indicates habitual bipedal posture.",
+      "integrationStatus": "proposed_candidate_for_phase_2",
+      "parentId": "hominidae",
+      "imageRequirements": {
+        "proposedSource": "Smithsonian Human Origins / Mission Paléoanthropologique Franco-Tchadienne",
+        "authorCredit": "Didier Descouens / Wikimedia Commons",
+        "license": "CC-BY-SA-4.0",
+        "attributionRequired": "Didier Descouens (Fossil Cast) / CC-BY-SA 4.0",
+        "isReconstruction": false,
+        "assetUrl": "/assets/story/hominin-skulls.jpg"
+      }
+    },
+    {
+      "id": "australopithecus-afarensis",
+      "commonName": "Australopithecus afarensis ('Lucy')",
+      "scientificName": "Australopithecus afarensis",
+      "taxonomicRank": "species",
+      "rankSpecificity": "exact_species",
+      "status": "extinct",
+      "extinctionDateMya": 2.95,
+      "estimatedOrigin": "~3.85 MYA",
+      "estimatedOriginMya": 3.85,
+      "sourceVideo": {
+        "videoRef": "Reference Video 5 (Hominins & Modern Mammals)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "Johanson et al. (1978) Kirtlandia: A new species of the genus Australopithecus",
+        "Smithsonian National Museum of Natural History AL 288-1 ('Lucy')",
+        "Paleobiology Database (PBDB) Taxon ID: 83060"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Extensively documented Pliocene bipedal hominin possessing valgus knee angle and human-like pelvis combined with apelike cranial capacity (~380–500 cm³).",
+      "integrationStatus": "proposed_candidate_for_phase_2",
+      "parentId": "hominidae",
+      "imageRequirements": {
+        "proposedSource": "Smithsonian Human Origins Program",
+        "authorCredit": "Chip Clark / Smithsonian Institution",
+        "license": "Open Access Educational",
+        "attributionRequired": "Chip Clark / Smithsonian Institution",
+        "isReconstruction": false,
+        "assetUrl": "/assets/story/hominin-skulls.jpg"
+      }
+    },
+    {
+      "id": "homo-erectus",
+      "commonName": "Homo erectus",
+      "scientificName": "Homo erectus",
+      "taxonomicRank": "species",
+      "rankSpecificity": "exact_species",
+      "status": "extinct",
+      "extinctionDateMya": 0.11,
+      "estimatedOrigin": "~1.89 MYA",
+      "estimatedOriginMya": 1.89,
+      "sourceVideo": {
+        "videoRef": "Reference Video 5 (Hominins & Modern Mammals)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "Smithsonian Human Origins Program (KNM-WT 15000 'Turkana Boy')",
+        "Dubois, E. (1894) Pithecanthropus erectus",
+        "Paleobiology Database (PBDB) Taxon ID: 83082"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "First archaic hominin with modern body proportions, expanded cranial capacity (~900–1100 cm³), systematic Acheulean bifacial handaxe technology, and migration out of Africa.",
+      "integrationStatus": "proposed_candidate_for_phase_2",
+      "parentId": "hominidae",
+      "imageRequirements": {
+        "proposedSource": "Smithsonian Human Origins Program",
+        "authorCredit": "Smithsonian Institution / Chip Clark",
+        "license": "Open Access Educational",
+        "attributionRequired": "Smithsonian Human Origins Program",
+        "isReconstruction": false,
+        "assetUrl": "/assets/story/hominin-skulls.jpg"
+      }
+    },
+    {
+      "id": "homo-neanderthalensis",
+      "commonName": "Neanderthals",
+      "scientificName": "Homo neanderthalensis",
+      "taxonomicRank": "species",
+      "rankSpecificity": "exact_species",
+      "status": "extinct",
+      "extinctionDateMya": 0.04,
+      "estimatedOrigin": "~0.43 MYA",
+      "estimatedOriginMya": 0.43,
+      "sourceVideo": {
+        "videoRef": "Reference Video 5 (Hominins & Modern Mammals)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "Green et al. (2010) Science: A draft sequence of the Neandertal genome",
+        "Smithsonian Human Origins Program (Feldhofer 1, Shanidar, La Chapelle-aux-Saints)",
+        "NCBI Taxonomy ID: 63221 (Homo sapiens neanderthalensis)"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Eurasian Pleistocene hominin; genomic sequencing verified fertile interbreeding with non-African Homo sapiens (~1–2% introgressed DNA in modern non-African genomes).",
+      "integrationStatus": "proposed_candidate_for_phase_2",
+      "parentId": "hominidae",
+      "imageRequirements": {
+        "proposedSource": "Smithsonian Human Origins Program",
+        "authorCredit": "Smithsonian Institution / Chip Clark",
+        "license": "Open Access Educational",
+        "attributionRequired": "Smithsonian Human Origins Program",
+        "isReconstruction": false,
+        "assetUrl": "/assets/story/hominin-skulls.jpg"
+      }
+    },
+    {
+      "id": "homo-sapiens",
+      "commonName": "Humans",
+      "scientificName": "Homo sapiens",
+      "taxonomicRank": "species",
+      "rankSpecificity": "exact_species",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~300,000 YA",
+      "estimatedOriginMya": 0.3,
+      "sourceVideo": {
+        "videoRef": "Reference Video 5 (Hominins & Modern Mammals)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 9606 (Homo sapiens)",
+        "Hublin et al. (2017) Nature: New fossils from Jebel Irhoud, Morocco and the pan-African origin of Homo sapiens",
+        "Smithsonian Human Origins Program Species Database"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Anatomically modern humans — an extant terminal branch of hominine catarrhine primates. Strictly NOT an 'apex' or 'goal' of evolution.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "hominidae",
+      "imageRequirements": {
+        "proposedSource": "Smithsonian Human Origins Program",
+        "authorCredit": "Chip Clark / Smithsonian Institution",
+        "license": "Open Access Educational",
+        "attributionRequired": "Chip Clark / Smithsonian Human Origins Program",
+        "isReconstruction": false,
+        "assetUrl": "/assets/story/hominin-skulls.jpg"
+      }
+    },
+    {
+      "id": "carnivora",
+      "commonName": "Carnivora",
+      "scientificName": "Carnivora",
+      "taxonomicRank": "order",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~42 MYA",
+      "estimatedOriginMya": 42,
+      "sourceVideo": {
+        "videoRef": "Reference Video 5 (Hominins & Modern Mammals)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 33554 (Carnivora)",
+        "Flynn et al. (2005) Systematic Biology: Molecular phylogeny of the Carnivora"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Laurasiatherian placental mammals characterized by specialized shearing carnassial teeth (P4/M1).",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "placentalia"
+    },
+    {
+      "id": "felidae",
+      "commonName": "Cats",
+      "scientificName": "Felidae",
+      "taxonomicRank": "family",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~11 MYA",
+      "estimatedOriginMya": 11,
+      "sourceVideo": {
+        "videoRef": "Reference Video 5 (Hominins & Modern Mammals)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 9681 (Felidae)",
+        "Johnson et al. (2006) Science: The Late Miocene radiation of modern Felidae"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Feliform carnivorans specialized as obligate carnivores with protractile claws and hypercarnivorous dentition.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "carnivora"
+    },
+    {
+      "id": "panthera",
+      "commonName": "Big Cats",
+      "scientificName": "Panthera",
+      "taxonomicRank": "genus",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~11 MYA",
+      "estimatedOriginMya": 11,
+      "sourceVideo": {
+        "videoRef": "Reference Video 5 (Hominins & Modern Mammals)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 89398 (Panthera)",
+        "IUCN Cat Specialist Group"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Pantherine cats capable of roaring due to an incompletely ossified hyoid apparatus.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "felidae"
+    },
+    {
+      "id": "tiger",
+      "commonName": "Tiger",
+      "scientificName": "Panthera tigris",
+      "taxonomicRank": "species",
+      "rankSpecificity": "exact_species",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~2 MYA",
+      "estimatedOriginMya": 2,
+      "sourceVideo": {
+        "videoRef": "Reference Video 5 (Hominins & Modern Mammals)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 9694 (Panthera tigris)",
+        "IUCN Red List: Endangered (Panthera tigris)"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Largest living felid species, apex solitary forest predator across Asia.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "panthera"
+    },
+    {
+      "id": "lion",
+      "commonName": "Lion",
+      "scientificName": "Panthera leo",
+      "taxonomicRank": "species",
+      "rankSpecificity": "exact_species",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~2 MYA",
+      "estimatedOriginMya": 2,
+      "sourceVideo": {
+        "videoRef": "Reference Video 5 (Hominins & Modern Mammals)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 9689 (Panthera leo)",
+        "IUCN Red List: Vulnerable (Panthera leo)"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Only social felid living in stable matrilineal prides, sexually dimorphic maned males.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "panthera"
+    },
+    {
+      "id": "canidae",
+      "commonName": "Dogs & Wolves",
+      "scientificName": "Canidae",
+      "taxonomicRank": "family",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~40 MYA",
+      "estimatedOriginMya": 40,
+      "sourceVideo": {
+        "videoRef": "Reference Video 5 (Hominins & Modern Mammals)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 9608 (Canidae)",
+        "Lindblad-Toh et al. (2005) Nature: Genome sequence, comparative analysis and haplotype structure of the domestic dog"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Caniform carnivorans adapted to cursorial pursuit predation and complex cooperative pack behavior.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "carnivora"
+    },
+    {
+      "id": "ursidae",
+      "commonName": "Bears",
+      "scientificName": "Ursidae",
+      "taxonomicRank": "family",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~20 MYA",
+      "estimatedOriginMya": 20,
+      "sourceVideo": {
+        "videoRef": "Reference Video 5 (Hominins & Modern Mammals)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 9632 (Ursidae)",
+        "Krause et al. (2008) BMC Evolutionary Biology: Mitochondrial genomes reveal an explosive radiation of extinct and extant bears"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Caniform carnivorans with plantigrade locomotion and opportunistic omnivorous or herbivorous adaptations.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "carnivora"
+    },
+    {
+      "id": "cetacea",
+      "commonName": "Whales & Dolphins",
+      "scientificName": "Cetacea (Cetartiodactyla)",
+      "taxonomicRank": "order",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~50 MYA",
+      "estimatedOriginMya": 50,
+      "sourceVideo": {
+        "videoRef": "Reference Video 5 (Hominins & Modern Mammals)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 9721 (Cetacea)",
+        "Thewissen et al. (2007) Nature: Whales originated from aquatic artiodactyls in the Eocene of India"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Fully aquatic mammals cladistically nested within Artiodactyla (hippopotamus sister group).",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "placentalia"
+    },
+    {
+      "id": "artiodactyla",
+      "commonName": "Even-Toed Ungulates",
+      "scientificName": "Artiodactyla",
+      "taxonomicRank": "order",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~55 MYA",
+      "estimatedOriginMya": 55,
+      "sourceVideo": {
+        "videoRef": "Reference Video 5 (Hominins & Modern Mammals)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 91561 (Cetartiodactyla)",
+        "Price et al. (2005) Biological Reviews: A complete phylogeny of the whales, dolphins and even-toed ungulates"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Paraxonic ungulates bearing weight equally on the third and fourth digits, many featuring multi-chambered ruminant stomachs.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "placentalia"
+    },
+    {
+      "id": "rodentia",
+      "commonName": "Rodents",
+      "scientificName": "Rodentia",
+      "taxonomicRank": "order",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~65 MYA",
+      "estimatedOriginMya": 65,
+      "sourceVideo": {
+        "videoRef": "Reference Video 5 (Hominins & Modern Mammals)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 9989 (Rodentia)",
+        "Fabre et al. (2012) BMC Evolutionary Biology: A glimpse on the pattern of rodent diversification"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "The single most species-rich mammalian order (~40% of all mammals), characterized by a single pair of continuously growing incisors.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "placentalia"
+    },
+    {
+      "id": "chiroptera",
+      "commonName": "Bats",
+      "scientificName": "Chiroptera",
+      "taxonomicRank": "order",
+      "rankSpecificity": "broader_clade_or_group",
+      "status": "living",
+      "extinctionDateMya": null,
+      "estimatedOrigin": "~65 MYA",
+      "estimatedOriginMya": 65,
+      "sourceVideo": {
+        "videoRef": "Reference Video 5 (Hominins & Modern Mammals)",
+        "accessibilityStatus": "inaccessible_in_environment",
+        "timestampVerifiable": false,
+        "timestamp": null
+      },
+      "verificationSources": [
+        "NCBI Taxonomy ID: 9397 (Chiroptera)",
+        "Teeling et al. (2005) Science: A molecular phylogeny for bats illuminates biogeography and the fossil record"
+      ],
+      "confidence": "high",
+      "confidenceNotes": "Only mammals with powered wing flight, utilizing ultrasonic laryngeal echolocation for nocturnal navigation and prey capture.",
+      "integrationStatus": "integrated_in_phase_1",
+      "parentId": "placentalia"
+    }
+  ]
+}
