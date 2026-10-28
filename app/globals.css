@@ -165,6 +165,32 @@ body {
   filter: drop-shadow(0 0 12px var(--node-selected-glow));
 }
 
+.node-point-target,
+.node-title-target {
+  cursor: pointer;
+}
+
+.node-title-target:hover .node-label {
+  fill: var(--text-primary);
+}
+
+/* Keyboard accessibility focus indicator */
+.tree-node:focus-visible {
+  outline: none;
+}
+
+.tree-node:focus-visible .tree-node-circle {
+  stroke: var(--accent-primary);
+  stroke-width: 2.5px;
+  filter: drop-shadow(0 0 8px var(--accent-primary));
+}
+
+.tree-node:focus-visible .node-label {
+  fill: var(--text-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 /* ── Branch Paths ─────────────────────────────────────────── */
 .branch-path {
   fill: none;
@@ -189,7 +215,8 @@ body {
   font-weight: 500;
   fill: var(--text-secondary);
   transition: fill var(--transition-fast);
-  pointer-events: none;
+  cursor: pointer;
+  pointer-events: auto;
 }
 
 .node-label.selected,
@@ -202,7 +229,8 @@ body {
   font-weight: 400;
   fill: var(--text-tertiary);
   font-style: italic;
-  pointer-events: none;
+  cursor: pointer;
+  pointer-events: auto;
 }
 
 /* ── Panel Slide-in ───────────────────────────────────────── */

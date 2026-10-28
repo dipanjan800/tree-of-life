@@ -5,9 +5,11 @@ import React, {
   useCallback,
   useRef,
   useEffect,
+  useMemo,
 } from "react";
 import type { TaxonNode, ViewportTransform } from "@/types/taxonomy";
 import { TREE_DATA } from "@/data/tree";
+import { computeTreeLayout } from "@/lib/tree-layout";
 import TreeCanvas, { type TreeCanvasControls } from "@/components/tree/TreeCanvas";
 import TreeControls from "@/components/tree/TreeControls";
 import TreeMinimap from "@/components/tree/TreeMinimap";
@@ -16,6 +18,7 @@ import TaxonPanel from "@/components/panel/TaxonPanel";
 import PreLucaPanel from "@/components/panel/PreLucaPanel";
 import EvolutionTimeline from "@/components/timeline/EvolutionTimeline";
 import LanguageSelector from "@/components/ui/LanguageSelector";
+import NodeHoverPreview from "@/components/preview/NodeHoverPreview";
 import { useLanguage } from "@/lib/i18n";
 
 const TIMELINE_HEIGHT = 52;
@@ -75,6 +78,40 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
     return () => ro.disconnect();
   }, []);
 
+  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Pre-compute layout coordinates for reactive hover preview positioning
+  const layoutNodes = useMemo(() => computeTreeLayout(TREE_DATA), []);
+  const hoveredLayoutNode = hoveredNodeId ? layoutNodes.get(hoveredNodeId) ?? null : null;
+  const hoveredTaxonNode = hoveredNodeId ? TREE_DATA.nodes[hoveredNodeId] ?? null : null;
+
+  const hoveredNodePosition = useMemo(() => {
+    if (!hoveredLayoutNode) return null;
+    return {
+      x: transform.x + hoveredLayoutNode.x * transform.scale,
+      y: transform.y + hoveredLayoutNode.y * transform.scale,
+      scale: transform.scale,
+    };
+  }, [hoveredLayoutNode, transform]);
+
+  // Clean up hover timer on unmount
+  useEffect(() => {
+    return () => {
+      if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+    };
+  }, []);
+
+  // Escape key closes preview
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setHoveredNodeId(null);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   const handleNodeSelect = useCallback(
     (nodeId: string) => {
       const node = TREE_DATA.nodes[nodeId];
@@ -86,7 +123,37 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
   );
 
   const handleNodeHover = useCallback((nodeId: string | null) => {
-    setHoveredNodeId(nodeId);
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+
+    if (nodeId) {
+      setHoveredNodeId(nodeId);
+    } else {
+      // 200ms grace period to allow moving pointer from node to preview card without flicker
+      hoverTimeoutRef.current = setTimeout(() => {
+        setHoveredNodeId(null);
+        hoverTimeoutRef.current = null;
+      }, 200);
+    }
+  }, []);
+
+  const handlePreviewMouseEnter = useCallback(() => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+  }, []);
+
+  const handlePreviewMouseLeave = useCallback(() => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+    }
+    hoverTimeoutRef.current = setTimeout(() => {
+      setHoveredNodeId(null);
+      hoverTimeoutRef.current = null;
+    }, 200);
   }, []);
 
   const handleSearchResult = useCallback(
@@ -375,6 +442,20 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
           onOpenPreLuca={() => setShowPreLuca(true)}
         />
 
+        {/* Smart Hover / Tap Preview Card */}
+        <NodeHoverPreview
+          node={hoveredTaxonNode}
+          nodePosition={hoveredNodePosition}
+          viewportDimensions={{
+            width: viewportDimensions.width,
+            height: canvasHeight,
+          }}
+          isPanelOpen={Boolean(selectedNode)}
+          onOpenDetails={handleNodeSelect}
+          onMouseEnter={handlePreviewMouseEnter}
+          onMouseLeave={handlePreviewMouseLeave}
+        />
+
         {/* Right controls */}
         <TreeControls
           controls={canvasControls}
@@ -410,23 +491,7 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
           onOpenStory={onOpenStory}
         />
 
-        {/* Disclaimer watermark */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: `${TIMELINE_HEIGHT + 8}px`,
-            left: "50%",
-            transform: "translateX(-50%)",
-            fontSize: "9.5px",
-            color: "var(--text-tertiary)",
-            letterSpacing: "0.04em",
-            opacity: 0.6,
-            pointerEvents: "none",
-            whiteSpace: "nowrap",
-          }}
-        >
-          Conceptual visualization · Scientific data integration in future phases
-        </div>
+
       </div>
 
       {/* ── Timeline ────────────────────────────────────────── */}

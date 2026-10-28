@@ -102,98 +102,151 @@ const TreeNode = React.memo(function TreeNode({
     Boolean(node.scientificName && node.scientificName !== node.name) &&
     (isSelected || isHovered || zoomScale >= 1.25);
 
+  const handleSelect = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const isTouch = (e.nativeEvent as PointerEvent)?.pointerType === "touch";
+    if (isTouch) {
+      if (!isHovered) {
+        onHover(node.id);
+        return;
+      }
+    }
+    onSelect(node.id);
+  };
+
+  const nameLen = node.name.length;
+  const sciLen = showScientificName && node.scientificName ? node.scientificName.length : 0;
+  const textCharCount = Math.max(nameLen, sciLen);
+  const hitBoxWidth = Math.min(185, Math.max(60, textCharCount * 7.5 + 16));
+
   return (
     <g
-      className="tree-node"
+      className={`tree-node ${isSelected ? "selected" : ""} ${isHovered ? "hovered" : ""}`}
       transform={`translate(${node.x}, ${node.y})`}
-      onClick={() => onSelect(node.id)}
+      onClick={handleSelect}
       onMouseEnter={() => onHover(node.id)}
       onMouseLeave={() => onHover(null)}
+      onFocus={() => onHover(node.id)}
+      onBlur={() => onHover(null)}
       opacity={opacity}
       role="button"
       aria-label={`${node.name}${node.scientificName ? `, ${node.scientificName}` : ""}`}
       tabIndex={0}
       onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") onSelect(node.id);
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onSelect(node.id);
+        }
       }}
     >
-      {/* Glow ring for selected/hovered */}
-      {(isSelected || isHovered) && (
+      {/* 1. Circular Node Point target */}
+      <g
+        className="node-point-target"
+        onClick={handleSelect}
+        style={{ cursor: "pointer" }}
+        role="presentation"
+      >
+        {/* Glow ring for selected/hovered */}
+        {(isSelected || isHovered) && (
+          <circle
+            cx={0}
+            cy={0}
+            r={nodeRadius + 5}
+            fill={isSelected ? `${accentColor.replace(")", ", 0.15)")}` : "rgba(255,255,255,0.04)"}
+            style={{ filter: isSelected ? `drop-shadow(0 0 8px ${accentColor})` : "none" }}
+          />
+        )}
+
+        {/* Main node circle */}
         <circle
           cx={0}
           cy={0}
-          r={nodeRadius + 5}
-          fill={isSelected ? `${accentColor.replace(")", ", 0.15)")}` : "rgba(255,255,255,0.04)"}
-          style={{ filter: isSelected ? `drop-shadow(0 0 8px ${accentColor})` : "none" }}
-        />
-      )}
-
-      {/* Main node circle */}
-      <circle
-        cx={0}
-        cy={0}
-        r={nodeRadius}
-        fill={
-          isSelected
-            ? accentColor
-            : isHighlighted
-            ? accentColorDim
-            : "rgba(255,255,255,0.12)"
-        }
-        stroke={
-          isSelected
-            ? accentColor
-            : isHighlighted || isHovered
-            ? accentColorDim
-            : "rgba(255,255,255,0.18)"
-        }
-        strokeWidth={isSelected ? 0 : 1}
-        style={{
-          transition: "r 200ms ease, fill 200ms ease, filter 200ms ease",
-          filter: isSelected
-            ? `drop-shadow(0 0 6px ${accentColor})`
-            : isHovered
-            ? "drop-shadow(0 0 4px rgba(255,255,255,0.3))"
-            : "none",
-        }}
-      />
-
-      {/* Name label (conditioned on Progressive LOD) */}
-      {showLabel && (
-        <text
-          x={14}
-          y={showScientificName ? -3 : 4}
-          className={`node-label ${isSelected || isHighlighted ? "selected" : ""}`}
-          style={{
-            fill: isSelected
+          r={nodeRadius}
+          className="tree-node-circle"
+          fill={
+            isSelected
+              ? accentColor
+              : isHighlighted
+              ? accentColorDim
+              : "rgba(255,255,255,0.12)"
+          }
+          stroke={
+            isSelected
               ? accentColor
               : isHighlighted || isHovered
-              ? "var(--text-primary)"
-              : "var(--text-secondary)",
-            fontSize: isSelected ? "12.5px" : isMajorNode ? "12px" : "11px",
-            fontWeight: isSelected || isMajorNode ? "600" : "500",
-            letterSpacing: isMajorNode ? "0.02em" : "0",
-            transition: "fill 200ms ease, font-size 200ms ease",
-          }}
-        >
-          {node.name}
-        </text>
-      )}
-
-      {/* Scientific name label (conditioned on zoom scale or selection) */}
-      {showScientificName && (
-        <text
-          x={14}
-          y={10}
-          className="node-sublabel"
+              ? accentColorDim
+              : "rgba(255,255,255,0.18)"
+          }
+          strokeWidth={isSelected ? 0 : 1}
           style={{
-            fill: isSelected ? "rgba(168, 196, 232, 0.7)" : "var(--text-tertiary)",
-            fontSize: "10px",
-            fontStyle: "italic",
+            transition: "r 200ms ease, fill 200ms ease, filter 200ms ease",
+            filter: isSelected
+              ? `drop-shadow(0 0 6px ${accentColor})`
+              : isHovered
+              ? "drop-shadow(0 0 4px rgba(255,255,255,0.3))"
+              : "none",
           }}
+        />
+      </g>
+
+      {/* 2. Node Title Text target */}
+      {showLabel && (
+        <g
+          className="node-title-target"
+          onClick={handleSelect}
+          style={{ cursor: "pointer" }}
+          role="presentation"
         >
-          {node.scientificName}
-        </text>
+          {/* Expanded transparent hit target for comfortable text clicking */}
+          <rect
+            x={10}
+            y={showScientificName ? -15 : -12}
+            width={hitBoxWidth}
+            height={showScientificName ? 30 : 24}
+            fill="transparent"
+            style={{ cursor: "pointer", pointerEvents: "all" }}
+          />
+
+          {/* Name label (conditioned on Progressive LOD) */}
+          <text
+            x={14}
+            y={showScientificName ? -3 : 4}
+            className={`node-label ${isSelected || isHighlighted ? "selected" : ""}`}
+            style={{
+              fill: isSelected
+                ? accentColor
+                : isHighlighted || isHovered
+                ? "var(--text-primary)"
+                : "var(--text-secondary)",
+              fontSize: isSelected ? "12.5px" : isMajorNode ? "12px" : "11px",
+              fontWeight: isSelected || isMajorNode ? "600" : "500",
+              letterSpacing: isMajorNode ? "0.02em" : "0",
+              cursor: "pointer",
+              pointerEvents: "auto",
+              transition: "fill 200ms ease, font-size 200ms ease",
+            }}
+          >
+            {node.name}
+          </text>
+
+          {/* Scientific name label (conditioned on zoom scale or selection) */}
+          {showScientificName && (
+            <text
+              x={14}
+              y={10}
+              className="node-sublabel"
+              style={{
+                fill: isSelected ? "rgba(168, 196, 232, 0.7)" : "var(--text-tertiary)",
+                fontSize: "10px",
+                fontStyle: "italic",
+                cursor: "pointer",
+                pointerEvents: "auto",
+              }}
+            >
+              {node.scientificName}
+            </text>
+          )}
+        </g>
       )}
 
       {/* Extinct indicator (shown when label is visible) */}
@@ -208,6 +261,7 @@ const TreeNode = React.memo(function TreeNode({
             fontWeight: "600",
             letterSpacing: "0.08em",
             opacity: isSelected || isHovered ? 1 : 0.65,
+            pointerEvents: "none",
           }}
         >
           †
@@ -282,6 +336,10 @@ export default function TreeCanvas({
   // Pan state
   const isPanningRef = useRef(false);
   const lastPanPosRef = useRef({ x: 0, y: 0 });
+  const onNodeHoverRef = useRef(onNodeHover);
+  useEffect(() => {
+    onNodeHoverRef.current = onNodeHover;
+  });
 
   // Compute layout
   const layoutNodes = useMemo(
@@ -516,6 +574,7 @@ export default function TreeCanvas({
 
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
+      onNodeHoverRef.current(null);
       const rect = container.getBoundingClientRect();
       const mouseX = e.clientX - rect.left;
       const mouseY = e.clientY - rect.top;
@@ -543,11 +602,13 @@ export default function TreeCanvas({
     isPanningRef.current = true;
     lastPanPosRef.current = { x: e.clientX, y: e.clientY };
     (e.currentTarget as HTMLElement).style.cursor = "grabbing";
+    onNodeHoverRef.current(null);
   }, []);
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent) => {
       if (!isPanningRef.current) return;
+      onNodeHoverRef.current(null);
       const dx = e.clientX - lastPanPosRef.current.x;
       const dy = e.clientY - lastPanPosRef.current.y;
       lastPanPosRef.current = { x: e.clientX, y: e.clientY };
