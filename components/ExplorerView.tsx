@@ -79,7 +79,8 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
 
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // ── Mobile 5-Second Inactivity Auto-Hide for Controls ─────
+  // ── Mobile 2.5-Second Inactivity Auto-Hide for Controls ─────
+  const MOBILE_CONTROLS_AUTOHIDE_MS = 2500;
   const [isControlsVisibleMobile, setIsControlsVisibleMobile] = useState(false);
   const autoHideTimerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -99,7 +100,7 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
     autoHideTimerRef.current = setTimeout(() => {
       setIsControlsVisibleMobile(false);
       autoHideTimerRef.current = null;
-    }, 5000);
+    }, MOBILE_CONTROLS_AUTOHIDE_MS);
   }, [viewportDimensions.width, clearAutoHideTimer]);
 
   // Clean up auto-hide timer on unmount
