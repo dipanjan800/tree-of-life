@@ -8,9 +8,11 @@ import {
   getStatusLabel,
   getStatusColor,
   formatMya,
+  toBengaliDigits,
 } from "@/lib/tree-utils";
 import { TREE_DATA } from "@/data/tree";
 import { useLanguage } from "@/lib/i18n";
+import TaxonIcon from "@/components/ui/TaxonIcon";
 
 function getEvidenceInfo(type?: EvidenceType): { label: string; color: string } {
   switch (type) {
@@ -63,7 +65,7 @@ export default function TaxonPanel({
   onNavigate,
   onOpenPreLuca,
 }: TaxonPanelProps) {
-  const { t, localizeTaxon, ui } = useLanguage();
+  const { t, localizeTaxon, ui, locale } = useLanguage();
   const [displayNode, setDisplayNode] = useState<TaxonNode | null>(node);
   const [prevNode, setPrevNode] = useState<TaxonNode | null>(node);
   const [isClosing, setIsClosing] = useState(false);
@@ -181,9 +183,7 @@ export default function TaxonPanel({
 
         {/* Emoji + Rank badge */}
         <div className="flex items-center gap-2.5 mb-3">
-          {displayNode.iconEmoji && (
-            <span style={{ fontSize: "24px", lineHeight: 1 }}>{displayNode.iconEmoji}</span>
-          )}
+          <TaxonIcon node={displayNode} size={24} />
           <div
             style={{
               fontSize: "10px",
@@ -213,7 +213,7 @@ export default function TaxonPanel({
             paddingRight: "36px",
           }}
         >
-          {displayNode.name}
+          {displayName}
         </h2>
 
         {/* Scientific name */}
@@ -252,11 +252,13 @@ export default function TaxonPanel({
               {statusText}
             </span>
           </div>
-          {displayNode.estimatedOrigin && (
+          {(displayNode.estimatedOrigin || displayNode.estimatedOriginMya !== undefined) && (
             <>
               <span style={{ color: "var(--surface-border-hover)", fontSize: "11px" }}>·</span>
               <span style={{ fontSize: "11.5px", color: "var(--text-tertiary)" }}>
-                {displayNode.estimatedOrigin}
+                {locale === "en"
+                  ? (displayNode.estimatedOrigin || formatMya(displayNode.estimatedOriginMya, locale))
+                  : formatMya(displayNode.estimatedOriginMya, locale)}
               </span>
             </>
           )}
@@ -286,7 +288,7 @@ export default function TaxonPanel({
                   color: "#c084fc",
                 }}
               >
-                Deep-Time Antecedents
+                {t("taxonPanel.deepTimeAntecedents", "Deep-Time Antecedents")}
               </span>
             </div>
             <p
@@ -297,7 +299,9 @@ export default function TaxonPanel({
                 marginBottom: "12px",
               }}
             >
-              LUCA is the inferred common ancestor of all modern surviving cellular life (~3.8 BYA), but was preceded by billions of years of cosmic history, planetary accretion, and prebiotic chemistry.
+              {locale === "bn-IN"
+                ? "লুকা হলো সমস্ত পরিচিত জীবিত কোষীয় জীবনের সাধারণ পূর্বপুরুষ (~৩.৮ বিলিয়ন বছর আগে), তবে এরও পূর্বে শত শত মিলিয়ন বছর ধরে মহাজাগতিক বিবর্তন, পৃথিবীর বৃদ্ধি ও প্রাক-জৈব রসায়নের সমৃদ্ধ ইতিহাস ছিল।"
+                : "LUCA is the inferred common ancestor of all modern surviving cellular life (~3.8 BYA), but was preceded by billions of years of cosmic history, planetary accretion, and prebiotic chemistry."}
             </p>
             <button
               onClick={onOpenPreLuca}
@@ -350,7 +354,7 @@ export default function TaxonPanel({
                 marginBottom: "10px",
               }}
             >
-              About
+              {t("taxonPanel.about", "About")}
             </h3>
             <p
               style={{
@@ -383,7 +387,7 @@ export default function TaxonPanel({
                   color: "var(--text-tertiary)",
                 }}
               >
-                Scientific Basis
+                {t("taxonPanel.scientificBasis", "Scientific Basis")}
               </h3>
               {displayNode.evidenceType && (
                 <span
@@ -439,7 +443,7 @@ export default function TaxonPanel({
                   color: "#f59e0b",
                 }}
               >
-                Ancient Admixture & Gene Flow
+                {t("taxonPanel.ancientAdmixtureTitle", "Ancient Admixture & Gene Flow")}
               </h3>
               <span
                 style={{
@@ -454,73 +458,82 @@ export default function TaxonPanel({
                   border: "1px solid rgba(245, 158, 11, 0.25)",
                 }}
               >
-                Reticulate Introgression
+                {t("taxonPanel.reticulateIntrogression", "Reticulate Introgression")}
               </span>
             </div>
-            {displayNode.admixtureEvents.map((evt, idx) => (
-              <div
-                key={idx}
-                style={{
-                  marginTop: idx > 0 ? "10px" : "6px",
-                  padding: "10px 12px",
-                  borderRadius: "6px",
-                  background: "rgba(255, 255, 255, 0.025)",
-                  border: "1px solid rgba(245, 158, 11, 0.2)",
-                }}
-              >
-                <div className="flex items-center justify-between mb-1">
-                  <button
-                    onClick={() => onNavigate(evt.targetTaxonId)}
-                    style={{
-                      fontSize: "12px",
-                      fontWeight: 600,
-                      color: "#fbbf24",
-                      textAlign: "left",
-                      cursor: "pointer",
-                      background: "none",
-                      border: "none",
-                      padding: 0,
-                      textDecoration: "underline",
-                      textUnderlineOffset: "2px",
-                    }}
-                    title={`View ${evt.targetTaxonName}`}
-                  >
-                    {evt.targetTaxonName} →
-                  </button>
-                  <span
-                    style={{
-                      fontSize: "9.5px",
-                      fontWeight: 700,
-                      color: "#fef3c7",
-                      background: "rgba(245, 158, 11, 0.2)",
-                      padding: "1px 5px",
-                      borderRadius: "3px",
-                    }}
-                  >
-                    {evt.percentageRange}
-                  </span>
-                </div>
+            {displayNode.admixtureEvents.map((evt, idx) => {
+              const locEvt = loc?.admixtureEvents?.[idx];
+              const targetTaxonName = locEvt?.targetTaxonName || evt.targetTaxonName;
+              const percentageRange = locEvt?.percentageRange || evt.percentageRange;
+              const period = locEvt?.period || evt.period;
+              const geography = locEvt?.geography || evt.geography;
+              const significance = locEvt?.significance || evt.significance;
+
+              return (
                 <div
+                  key={idx}
                   style={{
-                    fontSize: "11px",
-                    color: "var(--text-tertiary)",
-                    marginBottom: "4px",
+                    marginTop: idx > 0 ? "10px" : "6px",
+                    padding: "10px 12px",
+                    borderRadius: "6px",
+                    background: "rgba(255, 255, 255, 0.025)",
+                    border: "1px solid rgba(245, 158, 11, 0.2)",
                   }}
                 >
-                  {evt.period} · {evt.geography}
+                  <div className="flex items-center justify-between mb-1">
+                    <button
+                      onClick={() => onNavigate(evt.targetTaxonId)}
+                      style={{
+                        fontSize: "12px",
+                        fontWeight: 600,
+                        color: "#fbbf24",
+                        textAlign: "left",
+                        cursor: "pointer",
+                        background: "none",
+                        border: "none",
+                        padding: 0,
+                        textDecoration: "underline",
+                        textUnderlineOffset: "2px",
+                      }}
+                      title={`View ${targetTaxonName}`}
+                    >
+                      {targetTaxonName} →
+                    </button>
+                    <span
+                      style={{
+                        fontSize: "9.5px",
+                        fontWeight: 700,
+                        color: "#fef3c7",
+                        background: "rgba(245, 158, 11, 0.2)",
+                        padding: "1px 5px",
+                        borderRadius: "3px",
+                      }}
+                    >
+                      {percentageRange}
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "11px",
+                      color: "var(--text-tertiary)",
+                      marginBottom: "4px",
+                    }}
+                  >
+                    {period} · {geography}
+                  </div>
+                  <p
+                    style={{
+                      fontSize: "11.5px",
+                      lineHeight: "1.5",
+                      color: "var(--text-secondary)",
+                      margin: 0,
+                    }}
+                  >
+                    {significance}
+                  </p>
                 </div>
-                <p
-                  style={{
-                    fontSize: "11.5px",
-                    lineHeight: "1.5",
-                    color: "var(--text-secondary)",
-                    margin: 0,
-                  }}
-                >
-                  {evt.significance}
-                </p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 
@@ -542,7 +555,7 @@ export default function TaxonPanel({
                   color: "var(--text-tertiary)",
                 }}
               >
-                Visual Provenance
+                {t("taxonPanel.visualProvenance", "Visual Provenance")}
               </h3>
               <span
                 style={{
@@ -554,7 +567,7 @@ export default function TaxonPanel({
                   color: "var(--text-tertiary)",
                 }}
               >
-                {displayNode.visualAsset.license}
+                {loc?.visualAsset?.licenseText || displayNode.visualAsset.license}
               </span>
             </div>
             {displayNode.visualAsset.isReconstruction && (
@@ -567,14 +580,14 @@ export default function TaxonPanel({
                   marginBottom: "4px",
                 }}
               >
-                * Artistic reconstruction (not a photograph)
+                {t("taxonPanel.artisticReconstruction", "* Artistic reconstruction (not a photograph)")}
               </div>
             )}
             <div style={{ fontSize: "11px", color: "var(--text-secondary)", lineHeight: 1.4 }}>
-              {displayNode.visualAsset.caption || displayNode.visualAsset.altText}
+              {loc?.visualAsset?.caption || displayNode.visualAsset.caption || loc?.visualAsset?.altText || displayNode.visualAsset.altText}
             </div>
             <div style={{ fontSize: "10px", color: "var(--text-tertiary)", marginTop: "3px" }}>
-              Source: {displayNode.visualAsset.sourceName} · {displayNode.visualAsset.authorCredit}
+              {t("taxonPanel.sourceLabel", "Source:")} {displayNode.visualAsset.sourceName} · {displayNode.visualAsset.authorCredit}
             </div>
           </div>
         )}
@@ -596,7 +609,7 @@ export default function TaxonPanel({
               marginBottom: "14px",
             }}
           >
-            Evolutionary Lineage
+            {t("taxonPanel.evolutionaryLineage", "Evolutionary Lineage")}
           </h3>
           <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
             {classification.map((entry, i) => {
@@ -720,7 +733,7 @@ export default function TaxonPanel({
                 marginBottom: "10px",
               }}
             >
-              Includes ({children.length})
+              {t("taxonPanel.includes", "Includes")} ({locale === "bn-IN" ? toBengaliDigits(children.length) : children.length})
             </h3>
             <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
               {children.slice(0, 8).map((child: TaxonNode) => {
@@ -763,15 +776,13 @@ export default function TaxonPanel({
                     <span style={{ fontSize: "13px", color: "var(--text-secondary)" }}>
                       {localizeTaxon(child)?.name || child.name}
                     </span>
-                    {child.iconEmoji && (
-                      <span style={{ marginLeft: "auto", fontSize: "13px" }}>{child.iconEmoji}</span>
-                    )}
+                    <TaxonIcon node={child} size={14} style={{ marginLeft: "auto" }} />
                   </button>
                 );
               })}
               {children.length > 8 && (
                 <p style={{ fontSize: "11px", color: "var(--text-tertiary)", padding: "4px 10px" }}>
-                  + {children.length - 8} more…
+                  + {locale === "bn-IN" ? toBengaliDigits(children.length - 8) : children.length - 8} {t("taxonPanel.moreDescendants", "more…")}
                 </p>
               )}
             </div>
@@ -791,10 +802,10 @@ export default function TaxonPanel({
                 marginBottom: "8px",
               }}
             >
-              Evolutionary Origin
+              {t("taxonPanel.evolutionaryOrigin", "Evolutionary Origin")}
             </h3>
             <p style={{ fontSize: "13px", color: "var(--text-secondary)" }}>
-              {formatMya(displayNode.estimatedOriginMya)}
+              {formatMya(displayNode.estimatedOriginMya, locale)}
             </p>
           </div>
         )}

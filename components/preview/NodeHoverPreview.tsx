@@ -10,6 +10,7 @@ import {
   formatMya,
 } from "@/lib/tree-utils";
 import { useLanguage } from "@/lib/i18n";
+import TaxonIcon from "@/components/ui/TaxonIcon";
 
 interface NodeHoverPreviewProps {
   node: TaxonNode | null;
@@ -32,7 +33,7 @@ export default function NodeHoverPreview({
   onMouseEnter,
   onMouseLeave,
 }: NodeHoverPreviewProps) {
-  const { t, localizeTaxon, ui } = useLanguage();
+  const { t, localizeTaxon, ui, locale } = useLanguage();
 
   const [displayNode, setDisplayNode] = useState<TaxonNode | null>(node);
   const [displayPos, setDisplayPos] = useState<typeof nodePosition>(nodePosition);
@@ -134,11 +135,12 @@ export default function NodeHoverPreview({
     ? ui.organismStatus[displayNode.status] || getStatusLabel(displayNode.status)
     : null;
 
-  const originDate = displayNode.estimatedOrigin
-    ? displayNode.estimatedOrigin
-    : displayNode.estimatedOriginMya
-    ? formatMya(displayNode.estimatedOriginMya)
-    : null;
+  const originDate =
+    displayNode.estimatedOriginMya !== undefined
+      ? (locale === "en" && displayNode.estimatedOrigin
+          ? displayNode.estimatedOrigin
+          : formatMya(displayNode.estimatedOriginMya, locale))
+      : displayNode.estimatedOrigin ?? null;
 
   const showScientificName = Boolean(
     displayNode.scientificName && displayNode.scientificName !== displayNode.name
@@ -198,11 +200,7 @@ export default function NodeHoverPreview({
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "6px", minWidth: 0, flex: 1 }}>
-            {displayNode.iconEmoji && (
-              <span style={{ fontSize: "14px", lineHeight: 1, flexShrink: 0 }}>
-                {displayNode.iconEmoji}
-              </span>
-            )}
+            <TaxonIcon node={displayNode} size={15} />
             <h4
               style={{
                 fontSize: "13px",

@@ -9,9 +9,16 @@ import { useLanguage } from "@/lib/i18n";
 interface TreeSearchProps {
   onSelectResult: (node: TaxonNode) => void;
   onClose?: () => void;
+  className?: string;
+  style?: React.CSSProperties;
 }
 
-export default function TreeSearch({ onSelectResult, onClose }: TreeSearchProps) {
+export default function TreeSearch({
+  onSelectResult,
+  onClose,
+  className,
+  style,
+}: TreeSearchProps) {
   const { dict, localizeTaxon, t, ui } = useLanguage();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -88,10 +95,14 @@ export default function TreeSearch({ onSelectResult, onClose }: TreeSearchProps)
   }, []);
 
   return (
-    <div ref={containerRef} className="relative" style={{ width: "300px" }}>
+    <div
+      ref={containerRef}
+      className={`relative w-full ${className || ""}`}
+      style={style}
+    >
       {/* Search input */}
       <div
-        className="relative flex items-center"
+        className="relative flex items-center w-full"
         style={{
           background: "rgba(255,255,255,0.05)",
           border: `1px solid ${isOpen ? "rgba(61,142,248,0.4)" : "var(--surface-border)"}`,
@@ -100,7 +111,10 @@ export default function TreeSearch({ onSelectResult, onClose }: TreeSearchProps)
         }}
       >
         {/* Search icon */}
-        <div className="absolute left-3 flex items-center" style={{ color: "var(--text-tertiary)" }}>
+        <div
+          className="absolute left-3 flex items-center pointer-events-none"
+          style={{ color: "var(--text-tertiary)" }}
+        >
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
             <circle cx="6" cy="6" r="4.5" stroke="currentColor" strokeWidth="1.3" />
             <path d="M9.5 9.5L12.5 12.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
@@ -131,10 +145,14 @@ export default function TreeSearch({ onSelectResult, onClose }: TreeSearchProps)
             border: "none",
             outline: "none",
             width: "100%",
-            padding: "9px 36px 9px 36px",
+            minWidth: 0,
+            padding: "8px 34px 8px 34px",
             color: "var(--text-primary)",
             fontSize: "13px",
             fontFamily: "inherit",
+            textOverflow: "ellipsis",
+            overflow: "hidden",
+            whiteSpace: "nowrap",
           }}
         />
 
@@ -147,11 +165,11 @@ export default function TreeSearch({ onSelectResult, onClose }: TreeSearchProps)
               background: "none",
               border: "none",
               cursor: "pointer",
-              padding: "2px",
+              padding: "4px",
               borderRadius: "4px",
             }}
             onClick={handleClear}
-            aria-label="Clear search"
+            aria-label={t("common.clear", "Clear search")}
           >
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
               <path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
@@ -166,14 +184,13 @@ export default function TreeSearch({ onSelectResult, onClose }: TreeSearchProps)
           id="search-results"
           role="listbox"
           aria-label={t("search.matchingTaxa", "Matching Taxa")}
-          className="absolute top-full mt-1.5 w-full glass-panel rounded-xl overflow-hidden"
+          className="absolute top-full mt-1.5 w-full glass-panel rounded-xl overflow-hidden shadow-2xl"
           style={{
             zIndex: 100,
-            boxShadow: "0 16px 48px rgba(0,0,0,0.5)",
             border: "1px solid var(--surface-border)",
           }}
         >
-          <div style={{ maxHeight: "360px", overflowY: "auto" }}>
+          <div style={{ maxHeight: "min(360px, 60vh)", overflowY: "auto" }}>
             {results.map((result, i) => {
               const { node } = result;
               const loc = localizeTaxon(node);

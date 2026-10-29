@@ -43,6 +43,7 @@ export interface UIStrings {
     searchPlaceholder: string;
     preLucaBtn: string;
     preLucaBtnAria: string;
+    preLucaShort?: string;
     storyBtn: string;
     storyBtnAria: string;
     explorerPhase: string;
@@ -113,6 +114,15 @@ export interface UIStrings {
     confidenceNoteTitle: string;
     admixtureSignificance: string;
     openFullDetails: string;
+    evolutionaryOrigin: string;
+    ancientAdmixtureTitle: string;
+    reticulateIntrogression: string;
+    visualProvenance: string;
+    artisticReconstruction: string;
+    sourceLabel: string;
+    evolutionaryLineage: string;
+    includes: string;
+    moreDescendants: string;
   };
   preLuca: {
     panelTitle: string;
@@ -165,12 +175,29 @@ export interface UIStrings {
   organismStatus: Record<Organism, string>;
 }
 
+export interface LocalizedAdmixtureEvent {
+  targetTaxonId: string;
+  targetTaxonName: string;
+  percentageRange: string;
+  period: string;
+  geography: string;
+  significance: string;
+}
+
+export interface LocalizedVisualAsset {
+  caption?: string;
+  altText?: string;
+  licenseText?: string;
+}
+
 export interface LocalizedTaxon {
   id: string;
   name: string;
   description?: string;
   confidenceNotes?: string;
   commonNames?: string[];
+  admixtureEvents?: LocalizedAdmixtureEvent[];
+  visualAsset?: LocalizedVisualAsset;
 }
 
 export interface LocalizedStoryStage {

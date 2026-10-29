@@ -407,7 +407,7 @@ const nodes: TaxonNode[] = [
       "Biomarker analysis of fossilized organic molecules (cholesteroid steranes) extracted from White Sea specimens definitively established Dickinsonia as an early macroscopic animal rather than a lichen or fungus.",
     description:
       "An enigmatic, soft-bodied Ediacaran organism with ribbed, quilted symmetry. Resting on primeval seafloor microbial mats, Dickinsonia represents one of the earliest confirmed multicellular animals in Earth's history.",
-    iconEmoji: "🪼",
+    iconEmoji: "🏵️",
     colorHue: 175,
     visualAsset: {
       id: "dickinsonia-specimen",

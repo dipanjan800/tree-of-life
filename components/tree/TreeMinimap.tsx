@@ -14,6 +14,7 @@ interface TreeMinimapProps {
   onViewportChange: (transform: ViewportTransform) => void;
   visible: boolean;
   isPanelOpen?: boolean;
+  isMobileVisible?: boolean;
 }
 
 export default function TreeMinimap({
@@ -24,11 +25,15 @@ export default function TreeMinimap({
   onViewportChange,
   visible,
   isPanelOpen = false,
+  isMobileVisible = false,
 }: TreeMinimapProps) {
   const { t } = useLanguage();
   const svgRef = useRef<SVGSVGElement>(null);
   const isDragging = useRef(false);
   const lastDragPos = useRef({ x: 0, y: 0 });
+
+  const isMobile = viewportWidth < 640;
+  const isVisible = visible && (!isMobile || isMobileVisible) && (!isPanelOpen || !isMobile);
 
   const isCompact = viewportWidth < 768 || viewportHeight < 650;
   const mmWidth = isCompact ? 140 : 190;
@@ -142,12 +147,14 @@ export default function TreeMinimap({
         WebkitBackdropFilter: "blur(20px) saturate(180%)",
         border: "1px solid var(--surface-border)",
         boxShadow: "0 8px 24px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.3)",
-        opacity: visible && (!isPanelOpen || viewportWidth >= 640) ? 1 : 0,
-        pointerEvents: visible && (!isPanelOpen || viewportWidth >= 640) ? "auto" : "none",
+        opacity: isVisible ? 1 : 0,
+        pointerEvents: isVisible ? "auto" : "none",
+        visibility: isVisible ? "visible" : "hidden",
         transition:
-          "right 320ms cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 250ms ease, width 200ms ease, height 200ms ease",
+          "right 320ms cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94), visibility 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94), width 200ms ease, height 200ms ease",
       }}
       aria-label={t("minimap.ariaLabel", "Minimap — click to navigate")}
+      aria-hidden={!isVisible}
     >
       {/* Label */}
       <div

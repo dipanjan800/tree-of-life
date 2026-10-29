@@ -22,7 +22,6 @@ import NodeHoverPreview from "@/components/preview/NodeHoverPreview";
 import { useLanguage } from "@/lib/i18n";
 
 const TIMELINE_HEIGHT = 52;
-const TOPBAR_HEIGHT = 58;
 
 interface ExplorerViewProps {
   onBack?: () => void;
@@ -79,6 +78,58 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
   }, []);
 
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // ── Mobile 5-Second Inactivity Auto-Hide for Controls ─────
+  const [isControlsVisibleMobile, setIsControlsVisibleMobile] = useState(false);
+  const autoHideTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const clearAutoHideTimer = useCallback(() => {
+    if (autoHideTimerRef.current) {
+      clearTimeout(autoHideTimerRef.current);
+      autoHideTimerRef.current = null;
+    }
+  }, []);
+
+  const triggerControlsActivity = useCallback(() => {
+    if (viewportDimensions.width >= 640) return;
+
+    setIsControlsVisibleMobile((prev) => (!prev ? true : prev));
+    clearAutoHideTimer();
+
+    autoHideTimerRef.current = setTimeout(() => {
+      setIsControlsVisibleMobile(false);
+      autoHideTimerRef.current = null;
+    }, 5000);
+  }, [viewportDimensions.width, clearAutoHideTimer]);
+
+  // Clean up auto-hide timer on unmount
+  useEffect(() => {
+    return () => {
+      clearAutoHideTimer();
+    };
+  }, [clearAutoHideTimer]);
+
+  // Capture touch and pointer activity on canvas area to reveal controls on mobile
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container || viewportDimensions.width >= 640) return;
+
+    const handleTouchOrPointer = () => {
+      triggerControlsActivity();
+    };
+
+    container.addEventListener("touchstart", handleTouchOrPointer, { capture: true, passive: true });
+    container.addEventListener("touchmove", handleTouchOrPointer, { capture: true, passive: true });
+    container.addEventListener("touchend", handleTouchOrPointer, { capture: true, passive: true });
+    container.addEventListener("pointerdown", handleTouchOrPointer, { capture: true, passive: true });
+
+    return () => {
+      container.removeEventListener("touchstart", handleTouchOrPointer, { capture: true });
+      container.removeEventListener("touchmove", handleTouchOrPointer, { capture: true });
+      container.removeEventListener("touchend", handleTouchOrPointer, { capture: true });
+      container.removeEventListener("pointerdown", handleTouchOrPointer, { capture: true });
+    };
+  }, [viewportDimensions.width, triggerControlsActivity]);
 
   // Pre-compute layout coordinates for reactive hover preview positioning
   const layoutNodes = useMemo(() => computeTreeLayout(TREE_DATA), []);
@@ -198,7 +249,10 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
 
   const handleTransformChange = useCallback((t: ViewportTransform) => {
     setTransform(t);
-  }, []);
+    if (viewportDimensions.width < 640) {
+      triggerControlsActivity();
+    }
+  }, [viewportDimensions.width, triggerControlsActivity]);
 
   const handleMinimapNavigate = useCallback((t: ViewportTransform) => {
     setExternalTransform({ ...t });
@@ -209,7 +263,7 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
     setCanvasControls(controls);
   }, []);
 
-  const canvasHeight = viewportDimensions.height - TOPBAR_HEIGHT - TIMELINE_HEIGHT;
+  const canvasHeight = viewportDimensions.height;
 
   return (
     <div
@@ -218,66 +272,95 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
     >
       {/* ── Top Bar ─────────────────────────────────────────── */}
       <header
-        className="glass-panel flex items-center gap-4 px-5 shrink-0"
+        className="glass-panel flex flex-col justify-center px-3.5 py-2 sm:py-0 sm:px-5 gap-2 sm:gap-4 shrink-0 sm:h-[58px]"
         style={{
-          height: `${TOPBAR_HEIGHT}px`,
           borderBottom: "1px solid var(--surface-border)",
           borderRadius: 0,
           zIndex: 40,
           position: "relative",
         }}
       >
-        {/* Logo / Title */}
-        <div
-          className={`flex items-center gap-3 shrink-0 ${onBack ? "cursor-pointer hover:opacity-85 transition-opacity" : ""}`}
-          onClick={onBack}
-          role={onBack ? "button" : undefined}
-          tabIndex={onBack ? 0 : undefined}
-        >
-          {/* Tree icon */}
-          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
-            <circle cx="4" cy="11" r="2.5" fill="var(--accent-primary)" opacity="0.9" />
-            <circle cx="11" cy="5" r="2" fill="var(--accent-living)" opacity="0.8" />
-            <circle cx="11" cy="17" r="2" fill="#f59e0b" opacity="0.7" />
-            <circle cx="18" cy="2" r="1.5" fill="var(--accent-living)" opacity="0.6" />
-            <circle cx="18" cy="8" r="1.5" fill="#60a5fa" opacity="0.6" />
-            <circle cx="18" cy="14" r="1.5" fill="#f59e0b" opacity="0.6" />
-            <circle cx="18" cy="20" r="1.5" fill="#a78bfa" opacity="0.6" />
-            <line x1="6.5" y1="11" x2="9" y2="5" stroke="rgba(255,255,255,0.2)" strokeWidth="1" />
-            <line x1="6.5" y1="11" x2="9" y2="17" stroke="rgba(255,255,255,0.2)" strokeWidth="1" />
-            <line x1="13" y1="5" x2="16.5" y2="2" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
-            <line x1="13" y1="5" x2="16.5" y2="8" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
-            <line x1="13" y1="17" x2="16.5" y2="14" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
-            <line x1="13" y1="17" x2="16.5" y2="20" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
-          </svg>
+        {/* Mobile Top Row: Branding (left) + Actions (right) */}
+        <div className="flex items-center justify-between w-full sm:w-auto min-w-0 shrink-0">
+          {/* Logo / Title */}
+          <div
+            className={`flex items-center gap-2.5 sm:gap-3 shrink-0 ${onBack ? "cursor-pointer hover:opacity-85 transition-opacity" : ""}`}
+            onClick={onBack}
+            role={onBack ? "button" : undefined}
+            tabIndex={onBack ? 0 : undefined}
+          >
+            {/* Tree icon */}
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true" className="shrink-0">
+              <circle cx="4" cy="11" r="2.5" fill="var(--accent-primary)" opacity="0.9" />
+              <circle cx="11" cy="5" r="2" fill="var(--accent-living)" opacity="0.8" />
+              <circle cx="11" cy="17" r="2" fill="#f59e0b" opacity="0.7" />
+              <circle cx="18" cy="2" r="1.5" fill="var(--accent-living)" opacity="0.6" />
+              <circle cx="18" cy="8" r="1.5" fill="#60a5fa" opacity="0.6" />
+              <circle cx="18" cy="14" r="1.5" fill="#f59e0b" opacity="0.6" />
+              <circle cx="18" cy="20" r="1.5" fill="#a78bfa" opacity="0.6" />
+              <line x1="6.5" y1="11" x2="9" y2="5" stroke="rgba(255,255,255,0.2)" strokeWidth="1" />
+              <line x1="6.5" y1="11" x2="9" y2="17" stroke="rgba(255,255,255,0.2)" strokeWidth="1" />
+              <line x1="13" y1="5" x2="16.5" y2="2" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
+              <line x1="13" y1="5" x2="16.5" y2="8" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
+              <line x1="13" y1="17" x2="16.5" y2="14" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
+              <line x1="13" y1="17" x2="16.5" y2="20" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
+            </svg>
 
-          <div>
-            <div
+            <div className="min-w-0">
+              <div
+                style={{
+                  fontSize: "14px",
+                  fontWeight: 700,
+                  letterSpacing: "-0.02em",
+                  color: "var(--text-primary)",
+                  lineHeight: 1.2,
+                }}
+              >
+                {t("common.treeOfLife", "Tree of Life")}
+              </div>
+              <div
+                className="hidden sm:block"
+                style={{
+                  fontSize: "10px",
+                  color: "var(--text-tertiary)",
+                  letterSpacing: "0.04em",
+                  lineHeight: 1.2,
+                }}
+              >
+                {t("common.tagline", "Evolutionary History of Life")}
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile Right Actions: Pre-LUCA launcher + LanguageSelector */}
+          <div className="flex sm:hidden items-center gap-2 shrink-0">
+            <button
+              onClick={() => setShowPreLuca(true)}
+              aria-label={t("topbar.preLucaBtnAria", "Explore Pre-LUCA History (Cosmic Origins, Prebiotic Chemistry, and FUCA)")}
               style={{
-                fontSize: "14px",
-                fontWeight: 700,
-                letterSpacing: "-0.02em",
-                color: "var(--text-primary)",
-                lineHeight: 1.2,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "4px",
+                padding: "4px 8px",
+                borderRadius: "100px",
+                background: "rgba(168,85,247,0.1)",
+                border: "1px solid rgba(168,85,247,0.25)",
+                fontSize: "11px",
+                fontWeight: 600,
+                color: "#c084fc",
+                cursor: "pointer",
               }}
             >
-              {t("common.treeOfLife", "Tree of Life")}
-            </div>
-            <div
-              style={{
-                fontSize: "10px",
-                color: "var(--text-tertiary)",
-                letterSpacing: "0.04em",
-                lineHeight: 1.2,
-              }}
-            >
-              {t("common.tagline", "Evolutionary History of Life")}
-            </div>
+              <span>{t("topbar.preLucaShort", "Pre-LUCA")}</span>
+              <span style={{ fontSize: "10px" }}>✨</span>
+            </button>
+            <LanguageSelector compact align="right" />
           </div>
         </div>
 
-        {/* Divider */}
+        {/* Divider (Desktop only) */}
         <div
+          className="hidden sm:block"
           style={{
             width: 1,
             height: 30,
@@ -287,14 +370,14 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
         />
 
         {/* Search */}
-        <div className="flex-1 flex items-center max-w-sm">
+        <div className="w-full sm:flex-1 sm:max-w-xs md:max-w-sm min-w-0">
           <TreeSearch
             onSelectResult={handleSearchResult}
           />
         </div>
 
-        {/* Right controls */}
-        <div className="flex items-center gap-2 ml-auto shrink-0">
+        {/* Right controls (Desktop only) */}
+        <div className="hidden sm:flex items-center gap-2 ml-auto shrink-0">
           {/* Selected node indicator */}
           {selectedNode && (
             <div
@@ -449,6 +532,7 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
           registerControls={registerControls}
           initialFocusNodeId={selectedNode?.id ?? "homo-sapiens"}
           onOpenPreLuca={() => setShowPreLuca(true)}
+          onInteraction={triggerControlsActivity}
         />
 
         {/* Smart Hover / Tap Preview Card */}
@@ -473,6 +557,8 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
           onToggleMinimap={() => setShowMinimap((v) => !v)}
           isPanelOpen={Boolean(selectedNode)}
           viewportWidth={viewportDimensions.width}
+          isMobileVisible={isControlsVisibleMobile}
+          onInteraction={triggerControlsActivity}
         />
 
         {/* Minimap */}
@@ -484,6 +570,7 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
           onViewportChange={handleMinimapNavigate}
           visible={showMinimap}
           isPanelOpen={Boolean(selectedNode)}
+          isMobileVisible={isControlsVisibleMobile}
         />
 
         {/* Right panel */}

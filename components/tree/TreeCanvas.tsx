@@ -38,6 +38,7 @@ interface TreeCanvasProps {
   registerControls?: (controls: TreeCanvasControls) => void;
   initialFocusNodeId?: string | null;
   onOpenPreLuca?: () => void;
+  onInteraction?: () => void;
 }
 
 export interface TreeCanvasControls {
@@ -319,9 +320,15 @@ export default function TreeCanvas({
   registerControls,
   initialFocusNodeId,
   onOpenPreLuca,
+  onInteraction,
 }: TreeCanvasProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const onInteractionRef = useRef(onInteraction);
+  useEffect(() => {
+    onInteractionRef.current = onInteraction;
+  }, [onInteraction]);
 
   // Current transform (used for rendering)
   const transformRef = useRef<ViewportTransform>({ x: 0, y: 0, scale: 0.7 });
@@ -606,6 +613,7 @@ export default function TreeCanvas({
 
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
+      onInteractionRef.current?.();
       onNodeHoverRef.current(null);
       const rect = container.getBoundingClientRect();
       const mouseX = e.clientX - rect.left;
@@ -631,6 +639,7 @@ export default function TreeCanvas({
   // ── Pan ─────────────────────────────────────────────────────
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     if (e.button !== 0) return;
+    onInteractionRef.current?.();
     isPanningRef.current = true;
     lastPanPosRef.current = { x: e.clientX, y: e.clientY };
     (e.currentTarget as HTMLElement).style.cursor = "grabbing";
@@ -696,6 +705,7 @@ export default function TreeCanvas({
     const TAP_THRESHOLD = 8; // Movement threshold in px to cancel tap
 
     const handleTouchStart = (e: TouchEvent) => {
+      onInteractionRef.current?.();
       // 1. Two-finger pinch takes immediate priority over tap & pan
       if (e.touches.length === 2) {
         e.preventDefault();
@@ -749,6 +759,7 @@ export default function TreeCanvas({
 
     const handleTouchMove = (e: TouchEvent) => {
       if (gestureStateRef.current === "idle") return;
+      onInteractionRef.current?.();
       // Prevent browser default window scrolling while interacting with tree canvas
       e.preventDefault();
 
@@ -844,6 +855,7 @@ export default function TreeCanvas({
     };
 
     const handleTouchEnd = (e: TouchEvent) => {
+      onInteractionRef.current?.();
       lastTouchEndTimeRef.current = Date.now();
 
       // Check if tap completed

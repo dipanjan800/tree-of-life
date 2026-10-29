@@ -9,6 +9,8 @@ interface TreeControlsProps {
   onToggleMinimap: () => void;
   isPanelOpen?: boolean;
   viewportWidth?: number;
+  isMobileVisible?: boolean;
+  onInteraction?: () => void;
 }
 
 import { useLanguage } from "@/lib/i18n";
@@ -19,14 +21,39 @@ export default function TreeControls({
   onToggleMinimap,
   isPanelOpen = false,
   viewportWidth = 1024,
+  isMobileVisible = false,
+  onInteraction,
 }: TreeControlsProps) {
   const { t } = useLanguage();
-  const handleZoomIn = useCallback(() => controls?.zoomIn(), [controls]);
-  const handleZoomOut = useCallback(() => controls?.zoomOut(), [controls]);
-  const handleReset = useCallback(() => controls?.resetView(), [controls]);
-  const handleFit = useCallback(() => controls?.fitTree(), [controls]);
+  const [isFocused, setIsFocused] = React.useState(false);
+
+  const handleZoomIn = useCallback(() => {
+    onInteraction?.();
+    controls?.zoomIn();
+  }, [controls, onInteraction]);
+
+  const handleZoomOut = useCallback(() => {
+    onInteraction?.();
+    controls?.zoomOut();
+  }, [controls, onInteraction]);
+
+  const handleReset = useCallback(() => {
+    onInteraction?.();
+    controls?.resetView();
+  }, [controls, onInteraction]);
+
+  const handleFit = useCallback(() => {
+    onInteraction?.();
+    controls?.fitTree();
+  }, [controls, onInteraction]);
+
+  const handleToggleMinimap = useCallback(() => {
+    onInteraction?.();
+    onToggleMinimap();
+  }, [onToggleMinimap, onInteraction]);
 
   const isMobile = viewportWidth < 640;
+  const isVisible = !isMobile || isFocused || (isMobileVisible && !isPanelOpen);
 
   return (
     <div
@@ -42,18 +69,47 @@ export default function TreeControls({
         padding: "4px",
         gap: "2px",
         boxShadow: "0 8px 24px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.3)",
-        opacity: isPanelOpen && isMobile ? 0 : 1,
-        pointerEvents: isPanelOpen && isMobile ? "none" : "auto",
+        opacity: isVisible ? 1 : 0,
+        pointerEvents: isVisible ? "auto" : "none",
+        visibility: isVisible ? "visible" : "hidden",
         transition:
-          "right 320ms cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 250ms ease",
+          "right 320ms cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94), visibility 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94)",
       }}
       role="toolbar"
       aria-label={t("controls.toolbarAria", "Tree navigation controls")}
+      aria-hidden={!isVisible}
+      onFocus={() => {
+        setIsFocused(true);
+        onInteraction?.();
+      }}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget)) {
+          setIsFocused(false);
+          onInteraction?.();
+        }
+      }}
+      onTouchStart={(e) => {
+        e.stopPropagation();
+        onInteraction?.();
+      }}
+      onTouchMove={(e) => {
+        e.stopPropagation();
+        onInteraction?.();
+      }}
+      onTouchEnd={(e) => {
+        e.stopPropagation();
+        onInteraction?.();
+      }}
+      onClick={(e) => {
+        e.stopPropagation();
+        onInteraction?.();
+      }}
     >
       {/* Zoom In */}
       <button
         className="ctrl-btn"
         onClick={handleZoomIn}
+        tabIndex={isVisible ? 0 : -1}
         aria-label={t("controls.zoomIn", "Zoom in")}
         title={t("controls.zoomIn", "Zoom in")}
       >
@@ -71,6 +127,7 @@ export default function TreeControls({
       <button
         className="ctrl-btn"
         onClick={handleZoomOut}
+        tabIndex={isVisible ? 0 : -1}
         aria-label={t("controls.zoomOut", "Zoom out")}
         title={t("controls.zoomOut", "Zoom out")}
       >
@@ -99,6 +156,7 @@ export default function TreeControls({
       <button
         className="ctrl-btn"
         onClick={handleFit}
+        tabIndex={isVisible ? 0 : -1}
         aria-label={t("controls.fitTree", "Fit entire tree to screen")}
         title={t("controls.fitTreeTitle", "Fit entire tree (all 92 nodes)")}
       >
@@ -135,6 +193,7 @@ export default function TreeControls({
       <button
         className="ctrl-btn"
         onClick={handleReset}
+        tabIndex={isVisible ? 0 : -1}
         aria-label={t("controls.resetView", "Reset view to Human focus")}
         title={t("controls.resetViewTitle", "Reset view (Human focus)")}
       >
@@ -169,7 +228,8 @@ export default function TreeControls({
       {/* Minimap Toggle */}
       <button
         className={`ctrl-btn ${showMinimap ? "active" : ""}`}
-        onClick={onToggleMinimap}
+        onClick={handleToggleMinimap}
+        tabIndex={isVisible ? 0 : -1}
         aria-label={showMinimap ? t("controls.hideMinimap", "Hide minimap") : t("controls.showMinimap", "Show minimap")}
         aria-pressed={showMinimap}
         title={t("controls.toggleMinimapTitle", "Toggle minimap")}

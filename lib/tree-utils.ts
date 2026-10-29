@@ -133,8 +133,86 @@ export function searchNodes(
     .slice(0, limit);
 }
 
-export function formatMya(mya?: number): string {
-  if (mya === undefined || mya === null) return "Unknown";
+export function toBengaliDigits(input: string | number): string {
+  const bengaliDigits = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
+  return String(input).replace(/[0-9]/g, (digit) => bengaliDigits[parseInt(digit, 10)]);
+}
+
+export function toHindiDigits(input: string | number): string {
+  const hindiDigits = ["०", "१", "२", "३", "४", "५", "६", "७", "८", "९"];
+  return String(input).replace(/[0-9]/g, (digit) => hindiDigits[parseInt(digit, 10)]);
+}
+
+export function formatMya(mya?: number, locale = "en"): string {
+  if (mya === undefined || mya === null) {
+    switch (locale) {
+      case "bn-IN":
+        return "অজ্ঞাত";
+      case "hi-IN":
+        return "अज्ञात";
+      case "es":
+        return "Desconocido";
+      case "fr":
+        return "Inconnu";
+      default:
+        return "Unknown";
+    }
+  }
+
+  if (locale === "bn-IN") {
+    if (mya >= 1000) {
+      const bya = (mya / 1000).toFixed(1);
+      return `প্রায় ${toBengaliDigits(bya)} বিলিয়ন বছর আগে`;
+    }
+    if (mya < 1) {
+      const kya = Math.round(mya * 1000);
+      if (kya >= 100) {
+        const lakh = kya / 100;
+        const lakhStr = lakh % 1 === 0 ? lakh.toString() : lakh.toFixed(1);
+        return `প্রায় ${toBengaliDigits(lakhStr)} লক্ষ বছর আগে`;
+      }
+      return `প্রায় ${toBengaliDigits(kya)} হাজার বছর আগে`;
+    }
+    return `প্রায় ${toBengaliDigits(mya.toFixed(0))} মিলিয়ন বছর আগে`;
+  }
+
+  if (locale === "hi-IN") {
+    if (mya >= 1000) {
+      const bya = (mya / 1000).toFixed(1);
+      return `लगभग ${toHindiDigits(bya)} अरब वर्ष पूर्व`;
+    }
+    if (mya < 1) {
+      const kya = Math.round(mya * 1000);
+      if (kya >= 100) {
+        const lakh = kya / 100;
+        const lakhStr = lakh % 1 === 0 ? lakh.toString() : lakh.toFixed(1);
+        return `लगभग ${toHindiDigits(lakhStr)} लाख वर्ष पूर्व`;
+      }
+      return `लगभग ${toHindiDigits(kya)} हज़ार वर्ष पूर्व`;
+    }
+    return `लगभग ${toHindiDigits(mya.toFixed(0))} मिलियन वर्ष पूर्व`;
+  }
+
+  if (locale === "es") {
+    if (mya >= 1000) {
+      return `hace ${(mya / 1000).toFixed(1)} mil millones de años`;
+    }
+    if (mya < 1) {
+      return `hace ${(mya * 1000).toFixed(0)} mil años`;
+    }
+    return `hace ${mya.toFixed(0)} millones de años`;
+  }
+
+  if (locale === "fr") {
+    if (mya >= 1000) {
+      return `il y a ${(mya / 1000).toFixed(1).replace(".", ",")} milliards d'années`;
+    }
+    if (mya < 1) {
+      return `il y a ${(mya * 1000).toFixed(0)} mille ans`;
+    }
+    return `il y a ${mya.toFixed(0)} millions d'années`;
+  }
+
   if (mya >= 1000) {
     return `${(mya / 1000).toFixed(1)} billion years ago`;
   }

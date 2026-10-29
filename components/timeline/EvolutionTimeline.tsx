@@ -4,6 +4,7 @@ import React, { useMemo } from "react";
 import type { ViewportTransform, TreeData } from "@/types/taxonomy";
 import { computeTreeLayout, getTreeBounds } from "@/lib/tree-layout";
 import { useLanguage } from "@/lib/i18n";
+import { toBengaliDigits } from "@/lib/tree-utils";
 
 interface EvolutionTimelineProps {
   treeData: TreeData;
@@ -49,7 +50,7 @@ export default function EvolutionTimeline({
   transform,
   viewportWidth,
 }: EvolutionTimelineProps) {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const layoutNodes = useMemo(() => computeTreeLayout(treeData), [treeData]);
   const bounds = useMemo(() => getTreeBounds(layoutNodes), [layoutNodes]);
 
@@ -177,7 +178,11 @@ export default function EvolutionTimeline({
                 fontWeight: marker.isPresent || marker.isSpecial ? "600" : "500",
               }}
             >
-              {marker.mya === 0 ? t("timeline.present", "Present") : marker.label.replace("BYA", t("timeline.bya", "BYA")).replace("MYA", t("timeline.mya", "MYA"))}
+              {marker.mya === 0
+                ? t("timeline.present", "Present")
+                : locale === "bn-IN"
+                ? toBengaliDigits(marker.label.replace("BYA", " " + t("timeline.bya", "BYA")).replace("MYA", " " + t("timeline.mya", "MYA")))
+                : marker.label.replace("BYA", " " + t("timeline.bya", "BYA")).replace("MYA", " " + t("timeline.mya", "MYA"))}
             </text>
           </g>
         ))}
