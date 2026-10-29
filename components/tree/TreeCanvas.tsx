@@ -32,6 +32,7 @@ interface TreeCanvasProps {
   hoveredNodeId: string | null;
   onNodeSelect: (id: string) => void;
   onNodeHover: (id: string | null) => void;
+  onNodePreview?: (id: string) => void;
   externalTransform?: ViewportTransform | null;
   onTransformChange?: (t: ViewportTransform) => void;
   registerControls?: (controls: TreeCanvasControls) => void;
@@ -58,6 +59,7 @@ interface TreeNodeProps {
   zoomScale: number;
   onSelect: (id: string) => void;
   onHover: (id: string | null) => void;
+  isRecentTouch: () => boolean;
 }
 
 const TreeNode = React.memo(function TreeNode({
@@ -69,6 +71,7 @@ const TreeNode = React.memo(function TreeNode({
   zoomScale,
   onSelect,
   onHover,
+  isRecentTouch,
 }: TreeNodeProps) {
   const accentColor = getNodeAccentColor(node);
   const accentColorDim = getNodeAccentColor(node, 0.35);
@@ -104,12 +107,11 @@ const TreeNode = React.memo(function TreeNode({
 
   const handleSelect = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const isTouch = (e.nativeEvent as PointerEvent)?.pointerType === "touch";
+    // On touch devices, taps are processed by the touch gesture state machine.
+    // Suppress synthesized ghost clicks within 500ms of a touch interaction.
+    const isTouch = (e.nativeEvent as PointerEvent)?.pointerType === "touch" || isRecentTouch();
     if (isTouch) {
-      if (!isHovered) {
-        onHover(node.id);
-        return;
-      }
+      return;
     }
     onSelect(node.id);
   };
@@ -122,6 +124,7 @@ const TreeNode = React.memo(function TreeNode({
   return (
     <g
       className={`tree-node ${isSelected ? "selected" : ""} ${isHovered ? "hovered" : ""}`}
+      data-node-id={node.id}
       transform={`translate(${node.x}, ${node.y})`}
       onClick={handleSelect}
       onMouseEnter={() => onHover(node.id)}
@@ -310,6 +313,7 @@ export default function TreeCanvas({
   hoveredNodeId,
   onNodeSelect,
   onNodeHover,
+  onNodePreview,
   externalTransform,
   onTransformChange,
   registerControls,
@@ -340,6 +344,34 @@ export default function TreeCanvas({
   useEffect(() => {
     onNodeHoverRef.current = onNodeHover;
   });
+
+  const onNodePreviewRef = useRef(onNodePreview ?? onNodeHover);
+  useEffect(() => {
+    onNodePreviewRef.current = onNodePreview ?? onNodeHover;
+  });
+
+  const onOpenPreLucaRef = useRef(onOpenPreLuca);
+  useEffect(() => {
+    onOpenPreLucaRef.current = onOpenPreLuca;
+  });
+
+  // Touch gesture state machine
+  const gestureStateRef = useRef<"idle" | "possible_tap" | "pan" | "pinch">("idle");
+  const touchStartPosRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const lastTouchPosRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const touchedNodeIdRef = useRef<string | null>(null);
+  const touchedPreLucaRef = useRef<boolean>(false);
+  const lastTouchEndTimeRef = useRef<number>(0);
+
+  // Pinch zoom tracking
+  const initialPinchDistRef = useRef<number>(0);
+  const initialPinchMidpointRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const pinchStartScaleRef = useRef<number>(1);
+  const pinchStartTransformRef = useRef<ViewportTransform>({ x: 0, y: 0, scale: 1 });
+
+  const isRecentTouch = useCallback(() => {
+    return Date.now() - lastTouchEndTimeRef.current < 500;
+  }, []);
 
   // Compute layout
   const layoutNodes = useMemo(
@@ -656,6 +688,215 @@ export default function TreeCanvas({
     [setTargetTransform]
   );
 
+  // ── Mobile Touch Interactions (Pinch Zoom, Touch Pan & Two-Step Tap) ──
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const TAP_THRESHOLD = 8; // Movement threshold in px to cancel tap
+
+    const handleTouchStart = (e: TouchEvent) => {
+      // 1. Two-finger pinch takes immediate priority over tap & pan
+      if (e.touches.length === 2) {
+        e.preventDefault();
+        gestureStateRef.current = "pinch";
+        touchedNodeIdRef.current = null;
+        touchedPreLucaRef.current = false;
+        onNodeHoverRef.current(null);
+
+        const t0 = e.touches[0];
+        const t1 = e.touches[1];
+        const dist = Math.hypot(t0.clientX - t1.clientX, t0.clientY - t1.clientY);
+        initialPinchDistRef.current = Math.max(dist, 1);
+
+        const midX = (t0.clientX + t1.clientX) / 2;
+        const midY = (t0.clientY + t1.clientY) / 2;
+        initialPinchMidpointRef.current = { x: midX, y: midY };
+
+        pinchStartScaleRef.current = targetTransformRef.current.scale;
+        pinchStartTransformRef.current = { ...targetTransformRef.current };
+        return;
+      }
+
+      // 2. Single-finger touch start
+      if (e.touches.length === 1) {
+        const touch = e.touches[0];
+        touchStartPosRef.current = { x: touch.clientX, y: touch.clientY };
+        lastTouchPosRef.current = { x: touch.clientX, y: touch.clientY };
+
+        const targetEl = document.elementFromPoint(touch.clientX, touch.clientY);
+        const nodeEl = targetEl?.closest(".tree-node");
+        const nodeId = nodeEl?.getAttribute("data-node-id");
+        const isPreLuca = Boolean(targetEl?.closest("[data-preluca='true']"));
+
+        if (nodeId) {
+          gestureStateRef.current = "possible_tap";
+          touchedNodeIdRef.current = nodeId;
+          touchedPreLucaRef.current = false;
+        } else if (isPreLuca) {
+          gestureStateRef.current = "possible_tap";
+          touchedNodeIdRef.current = null;
+          touchedPreLucaRef.current = true;
+        } else {
+          gestureStateRef.current = "pan";
+          touchedNodeIdRef.current = null;
+          touchedPreLucaRef.current = false;
+          // Tapping empty canvas dismisses active preview
+          onNodeHoverRef.current(null);
+        }
+      }
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (gestureStateRef.current === "idle") return;
+      // Prevent browser default window scrolling while interacting with tree canvas
+      e.preventDefault();
+
+      // If a second finger touches during move, seamlessly transition to pinch zoom
+      if (e.touches.length === 2) {
+        if (gestureStateRef.current !== "pinch") {
+          gestureStateRef.current = "pinch";
+          touchedNodeIdRef.current = null;
+          touchedPreLucaRef.current = false;
+          onNodeHoverRef.current(null);
+
+          const t0 = e.touches[0];
+          const t1 = e.touches[1];
+          initialPinchDistRef.current = Math.max(Math.hypot(t0.clientX - t1.clientX, t0.clientY - t1.clientY), 1);
+          initialPinchMidpointRef.current = { x: (t0.clientX + t1.clientX) / 2, y: (t0.clientY + t1.clientY) / 2 };
+          pinchStartScaleRef.current = targetTransformRef.current.scale;
+          pinchStartTransformRef.current = { ...targetTransformRef.current };
+        }
+
+        const t0 = e.touches[0];
+        const t1 = e.touches[1];
+        const currentDist = Math.hypot(t0.clientX - t1.clientX, t0.clientY - t1.clientY);
+        const currentMidX = (t0.clientX + t1.clientX) / 2;
+        const currentMidY = (t0.clientY + t1.clientY) / 2;
+
+        const rect = container.getBoundingClientRect();
+        const startTransform = pinchStartTransformRef.current;
+        const startScale = pinchStartScaleRef.current;
+
+        const scaleRatio = currentDist / initialPinchDistRef.current;
+        const newScale = clamp(startScale * scaleRatio, MIN_ZOOM, MAX_ZOOM);
+
+        // Center zoom anchored around the pinch midpoint
+        const initialMidX = initialPinchMidpointRef.current.x - rect.left;
+        const initialMidY = initialPinchMidpointRef.current.y - rect.top;
+
+        const worldX = (initialMidX - startTransform.x) / startScale;
+        const worldY = (initialMidY - startTransform.y) / startScale;
+
+        const currentMidOffsetX = currentMidX - initialPinchMidpointRef.current.x;
+        const currentMidOffsetY = currentMidY - initialPinchMidpointRef.current.y;
+
+        const newX = initialMidX + currentMidOffsetX - worldX * newScale;
+        const newY = initialMidY + currentMidOffsetY - worldY * newScale;
+
+        const newTransform = { x: newX, y: newY, scale: newScale };
+        targetTransformRef.current = newTransform;
+        transformRef.current = newTransform;
+        setRenderTransform(newTransform);
+        onTransformChange?.(newTransform);
+        return;
+      }
+
+      if (e.touches.length === 1) {
+        const touch = e.touches[0];
+
+        if (gestureStateRef.current === "possible_tap") {
+          const moveDist = Math.hypot(
+            touch.clientX - touchStartPosRef.current.x,
+            touch.clientY - touchStartPosRef.current.y
+          );
+
+          if (moveDist > TAP_THRESHOLD) {
+            // Cancel tap and transition to pan!
+            gestureStateRef.current = "pan";
+            touchedNodeIdRef.current = null;
+            touchedPreLucaRef.current = false;
+            onNodeHoverRef.current(null);
+            lastTouchPosRef.current = { x: touch.clientX, y: touch.clientY };
+          } else {
+            // Under movement threshold: do not move viewport during tap attempt
+            return;
+          }
+        }
+
+        if (gestureStateRef.current === "pan") {
+          const dx = touch.clientX - lastTouchPosRef.current.x;
+          const dy = touch.clientY - lastTouchPosRef.current.y;
+          lastTouchPosRef.current = { x: touch.clientX, y: touch.clientY };
+
+          const current = targetTransformRef.current;
+          const newTransform = {
+            x: current.x + dx,
+            y: current.y + dy,
+            scale: current.scale,
+          };
+          targetTransformRef.current = newTransform;
+          transformRef.current = newTransform;
+          setRenderTransform(newTransform);
+          onTransformChange?.(newTransform);
+        }
+      }
+    };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      lastTouchEndTimeRef.current = Date.now();
+
+      // Check if tap completed
+      if (gestureStateRef.current === "possible_tap") {
+        e.preventDefault(); // Stop synthesized ghost clicks
+        const tappedId = touchedNodeIdRef.current;
+        const isPreLuca = touchedPreLucaRef.current;
+        touchedNodeIdRef.current = null;
+        touchedPreLucaRef.current = false;
+        gestureStateRef.current = "idle";
+
+        if (tappedId) {
+          // On mobile: show preview popup first!
+          onNodePreviewRef.current(tappedId);
+        } else if (isPreLuca) {
+          onOpenPreLucaRef.current?.();
+        }
+        return;
+      }
+
+      // If one finger remains after pinch, smoothly continue panning
+      if (e.touches.length === 1 && gestureStateRef.current === "pinch") {
+        gestureStateRef.current = "pan";
+        lastTouchPosRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        return;
+      }
+
+      if (e.touches.length === 0) {
+        gestureStateRef.current = "idle";
+        touchedNodeIdRef.current = null;
+        touchedPreLucaRef.current = false;
+      }
+    };
+
+    const handleTouchCancel = () => {
+      gestureStateRef.current = "idle";
+      touchedNodeIdRef.current = null;
+      touchedPreLucaRef.current = false;
+    };
+
+    container.addEventListener("touchstart", handleTouchStart, { passive: false });
+    container.addEventListener("touchmove", handleTouchMove, { passive: false });
+    container.addEventListener("touchend", handleTouchEnd, { passive: false });
+    container.addEventListener("touchcancel", handleTouchCancel, { passive: false });
+
+    return () => {
+      container.removeEventListener("touchstart", handleTouchStart);
+      container.removeEventListener("touchmove", handleTouchMove);
+      container.removeEventListener("touchend", handleTouchEnd);
+      container.removeEventListener("touchcancel", handleTouchCancel);
+    };
+  }, [onTransformChange]);
+
   // ── Cleanup ─────────────────────────────────────────────────
   useEffect(() => {
     return () => {
@@ -670,7 +911,7 @@ export default function TreeCanvas({
     <div
       ref={containerRef}
       className="relative w-full h-full overflow-hidden"
-      style={{ cursor: "grab", background: "transparent" }}
+      style={{ cursor: "grab", background: "transparent", touchAction: "none" }}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
@@ -705,6 +946,7 @@ export default function TreeCanvas({
             return (
               <g
                 className="cursor-pointer group"
+                data-preluca="true"
                 onClick={onOpenPreLuca}
                 role="button"
                 tabIndex={0}
@@ -820,6 +1062,7 @@ export default function TreeCanvas({
                   zoomScale={transform.scale}
                   onSelect={onNodeSelect}
                   onHover={onNodeHover}
+                  isRecentTouch={isRecentTouch}
                 />
               );
             })}

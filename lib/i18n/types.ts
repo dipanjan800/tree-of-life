@@ -112,6 +112,7 @@ export interface UIStrings {
     noParent: string;
     confidenceNoteTitle: string;
     admixtureSignificance: string;
+    openFullDetails: string;
   };
   preLuca: {
     panelTitle: string;

@@ -108,6 +108,7 @@ export const UI_TRANSLATIONS: Record<Locale, UIStrings> = {
       noParent: "Basal root of the biological tree (LUCA).",
       confidenceNoteTitle: "Scientific Note",
       admixtureSignificance: "Significance",
+      openFullDetails: "Click to open full details",
     },
     preLuca: {
       panelTitle: "Pre-LUCA History & Antecedents",
@@ -292,6 +293,7 @@ export const UI_TRANSLATIONS: Record<Locale, UIStrings> = {
       noParent: "জীববৃক্ষের মূল ভিত্তি নোড (লুকা)।",
       confidenceNoteTitle: "বৈজ্ঞানিক পর্যালোচনা",
       admixtureSignificance: "তাৎপর্য",
+      openFullDetails: "সম্পূর্ণ বিবরণ খুলতে এখানে চাপুন",
     },
     preLuca: {
       panelTitle: "প্রাক-লুকা ইতিহাস ও আদি পূর্বসূরি",
@@ -476,6 +478,7 @@ export const UI_TRANSLATIONS: Record<Locale, UIStrings> = {
       noParent: "जैविक वृक्ष का आधारभूत मूल नोड (लूका)।",
       confidenceNoteTitle: "वैज्ञानिक समीक्षा",
       admixtureSignificance: "महत्व",
+      openFullDetails: "पूरा विवरण देखने के लिए यहां क्लिक करें",
     },
     preLuca: {
       panelTitle: "प्री-लूका इतिहास एवं आदि पूर्ववर्ती",
@@ -660,6 +663,7 @@ export const UI_TRANSLATIONS: Record<Locale, UIStrings> = {
       noParent: "Raíz basal del árbol biológico (LUCA).",
       confidenceNoteTitle: "Nota Científica",
       admixtureSignificance: "Significado",
+      openFullDetails: "Haga clic para abrir los detalles completos",
     },
     preLuca: {
       panelTitle: "Historia Pre-LUCA y Antecedentes",
@@ -844,6 +848,7 @@ export const UI_TRANSLATIONS: Record<Locale, UIStrings> = {
       noParent: "Racine basale de l'arbre biologique (LUCA).",
       confidenceNoteTitle: "Note Scientifique",
       admixtureSignificance: "Signification",
+      openFullDetails: "Cliquez pour ouvrir tous les détails",
     },
     preLuca: {
       panelTitle: "Histoire Pré-LUCA et Antécédents",

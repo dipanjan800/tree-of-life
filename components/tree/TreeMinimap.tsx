@@ -126,22 +126,28 @@ export default function TreeMinimap({
 
   return (
     <div
-      className="absolute glass-panel rounded-lg overflow-hidden z-35"
+      className="absolute glass-panel rounded-lg overflow-hidden"
       style={{
         bottom: isCompact ? "12px" : "16px",
         right: isPanelOpen
-          ? "clamp(12px, calc(100vw - 380px), 356px)"
+          ? "calc(min(100%, 360px) + 16px)"
           : isCompact
           ? "12px"
           : "16px",
+        zIndex: 35,
         width: mmWidth,
         height: mmHeight,
-        opacity: visible ? 1 : 0,
-        pointerEvents: visible ? "auto" : "none",
+        background: "rgba(10, 15, 24, 0.88)",
+        backdropFilter: "blur(20px) saturate(180%)",
+        WebkitBackdropFilter: "blur(20px) saturate(180%)",
+        border: "1px solid var(--surface-border)",
+        boxShadow: "0 8px 24px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.3)",
+        opacity: visible && (!isPanelOpen || viewportWidth >= 640) ? 1 : 0,
+        pointerEvents: visible && (!isPanelOpen || viewportWidth >= 640) ? "auto" : "none",
         transition:
           "right 320ms cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 250ms ease, width 200ms ease, height 200ms ease",
       }}
-      aria-label="Minimap — click to navigate"
+      aria-label={t("minimap.ariaLabel", "Minimap — click to navigate")}
     >
       {/* Label */}
       <div
@@ -155,7 +161,7 @@ export default function TreeMinimap({
           pointerEvents: "none",
         }}
       >
-        Minimap
+        {t("minimap.label", "Minimap")}
       </div>
 
       <svg

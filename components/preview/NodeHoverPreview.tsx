@@ -17,6 +17,7 @@ interface NodeHoverPreviewProps {
   viewportDimensions: { width: number; height: number };
   isPanelOpen: boolean;
   onOpenDetails: (nodeId: string) => void;
+  onClose?: () => void;
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
 }
@@ -27,6 +28,7 @@ export default function NodeHoverPreview({
   viewportDimensions,
   isPanelOpen,
   onOpenDetails,
+  onClose,
   onMouseEnter,
   onMouseLeave,
 }: NodeHoverPreviewProps) {
@@ -64,18 +66,31 @@ export default function NodeHoverPreview({
     }
   }, [isClosing]);
 
-  const CARD_WIDTH = Math.min(276, Math.max(240, viewportDimensions.width - 32));
-  const CARD_HEIGHT = 142;
+  const isMobile = viewportDimensions.width < 640;
+  const CARD_WIDTH = isMobile
+    ? Math.min(360, viewportDimensions.width - 24)
+    : Math.min(286, Math.max(240, viewportDimensions.width - 32));
+  const CARD_HEIGHT = isMobile ? 156 : 148;
 
   const isCompact = viewportDimensions.width < 768;
   const maxAvailableRight =
     isPanelOpen && !isCompact
-      ? viewportDimensions.width - 345
+      ? viewportDimensions.width - 376
       : viewportDimensions.width - 16;
 
   // Intelligent positioning relative to the node
   const stylePosition = useMemo(() => {
     if (!displayPos) return null;
+
+    if (isMobile) {
+      // On narrow mobile screens, ensure the card never covers the tapped node
+      const isNodeInBottomHalf = displayPos.y > viewportDimensions.height * 0.52;
+      const top = isNodeInBottomHalf
+        ? Math.max(16, Math.min(displayPos.y - CARD_HEIGHT - 22, viewportDimensions.height * 0.22))
+        : Math.min(viewportDimensions.height - CARD_HEIGHT - 16, Math.max(displayPos.y + 36, viewportDimensions.height * 0.44));
+      const left = Math.max(12, (viewportDimensions.width - CARD_WIDTH) / 2);
+      return { left, top };
+    }
 
     let left = displayPos.x + 16;
     // By default, place above the node
@@ -104,7 +119,7 @@ export default function NodeHoverPreview({
     top = Math.max(12, Math.min(top, maxTop));
 
     return { left, top };
-  }, [displayPos, CARD_WIDTH, CARD_HEIGHT, maxAvailableRight, viewportDimensions.height]);
+  }, [displayPos, isMobile, CARD_WIDTH, CARD_HEIGHT, maxAvailableRight, viewportDimensions.height, viewportDimensions.width]);
 
   if (!displayNode || !stylePosition) return null;
 
@@ -131,29 +146,28 @@ export default function NodeHoverPreview({
 
   return (
     <div
-      role="tooltip"
+      role="region"
       aria-label={`${displayName} preview`}
       className="group"
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      onClick={(e) => {
-        e.stopPropagation();
-        onOpenDetails(displayNode.id);
-      }}
+      onTouchStart={(e) => e.stopPropagation()}
+      onTouchMove={(e) => e.stopPropagation()}
+      onTouchEnd={(e) => e.stopPropagation()}
+      onClick={(e) => e.stopPropagation()}
       style={{
         position: "absolute",
         left: `${stylePosition.left}px`,
         top: `${stylePosition.top}px`,
         width: `${CARD_WIDTH}px`,
         zIndex: 25,
-        cursor: "pointer",
-        background: "rgba(13, 17, 23, 0.92)",
-        backdropFilter: "blur(18px) saturate(180%)",
-        WebkitBackdropFilter: "blur(18px) saturate(180%)",
+        background: "rgba(13, 17, 23, 0.94)",
+        backdropFilter: "blur(20px) saturate(180%)",
+        WebkitBackdropFilter: "blur(20px) saturate(180%)",
         border: "1px solid var(--surface-border)",
         borderRadius: "var(--radius-md)",
         boxShadow:
-          "0 14px 34px -4px rgba(0, 0, 0, 0.65), 0 0 1px 1px rgba(255, 255, 255, 0.08)",
+          "0 14px 34px -4px rgba(0, 0, 0, 0.7), 0 0 1px 1px rgba(255, 255, 255, 0.08)",
         overflow: "hidden",
         pointerEvents: "auto",
         opacity: isVisible ? 1 : 0,
@@ -174,7 +188,7 @@ export default function NodeHoverPreview({
       />
 
       <div style={{ padding: "10px 12px 10px 12px" }}>
-        {/* Header: Name + Rank */}
+        {/* Header: Name + Rank + Close button */}
         <div
           style={{
             display: "flex",
@@ -183,7 +197,7 @@ export default function NodeHoverPreview({
             gap: "8px",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: "6px", minWidth: 0 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "6px", minWidth: 0, flex: 1 }}>
             {displayNode.iconEmoji && (
               <span style={{ fontSize: "14px", lineHeight: 1, flexShrink: 0 }}>
                 {displayNode.iconEmoji}
@@ -196,9 +210,7 @@ export default function NodeHoverPreview({
                 color: "var(--text-primary)",
                 margin: 0,
                 lineHeight: 1.3,
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
+                wordBreak: "break-word",
               }}
               title={displayName}
             >
@@ -206,22 +218,49 @@ export default function NodeHoverPreview({
             </h4>
           </div>
 
-          <span
-            style={{
-              flexShrink: 0,
-              fontSize: "9.5px",
-              fontWeight: 600,
-              color: "var(--text-tertiary)",
-              background: "rgba(255, 255, 255, 0.05)",
-              border: "1px solid var(--surface-border)",
-              borderRadius: "4px",
-              padding: "1.5px 6px",
-              textTransform: "uppercase",
-              letterSpacing: "0.04em",
-            }}
-          >
-            {rankLabel}
-          </span>
+          <div style={{ display: "flex", alignItems: "center", gap: "6px", flexShrink: 0 }}>
+            <span
+              style={{
+                fontSize: "9.5px",
+                fontWeight: 600,
+                color: "var(--text-tertiary)",
+                background: "rgba(255, 255, 255, 0.05)",
+                border: "1px solid var(--surface-border)",
+                borderRadius: "4px",
+                padding: "1.5px 6px",
+                textTransform: "uppercase",
+                letterSpacing: "0.04em",
+              }}
+            >
+              {rankLabel}
+            </span>
+
+            {/* Clear way to dismiss without opening full details */}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onClose?.();
+              }}
+              aria-label={t("common.close", "Close")}
+              style={{
+                background: "rgba(255, 255, 255, 0.06)",
+                border: "1px solid var(--surface-border)",
+                borderRadius: "4px",
+                width: "22px",
+                height: "22px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "var(--text-secondary)",
+                cursor: "pointer",
+                fontSize: "11px",
+                lineHeight: 1,
+              }}
+            >
+              ✕
+            </button>
+          </div>
         </div>
 
         {/* Sub-header: Scientific Name, Status, Origin */}
@@ -301,33 +340,36 @@ export default function NodeHoverPreview({
           </p>
         )}
 
-        {/* Subtle bottom action prompt */}
-        <div
+        {/* Prominent, touch-friendly primary action button */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onOpenDetails(displayNode.id);
+          }}
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            marginTop: "8px",
-            paddingTop: "6px",
-            borderTop: "1px solid rgba(255, 255, 255, 0.05)",
-            fontSize: "10px",
-            fontWeight: 500,
+            width: "100%",
+            marginTop: "10px",
+            padding: "8px 12px",
+            minHeight: "38px",
+            borderRadius: "6px",
+            background: "var(--accent-primary-dim)",
+            border: "1px solid rgba(61, 142, 248, 0.4)",
+            fontSize: "11px",
+            fontWeight: 600,
             color: "var(--accent-primary)",
+            cursor: "pointer",
+            transition: "all 150ms ease",
           }}
         >
-          <span>
-            {t("preview.clickForDetails", "Click to open full details")}
+          <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            {t("taxonPanel.openFullDetails", "Click to open full details")}
           </span>
-          <span
-            style={{
-              transition: "transform 150ms ease",
-              display: "inline-block",
-            }}
-            className="group-hover:translate-x-0.5"
-          >
-            →
-          </span>
-        </div>
+          <span style={{ fontSize: "14px", marginLeft: "8px", flexShrink: 0 }}>→</span>
+        </button>
       </div>
     </div>
   );

@@ -139,6 +139,14 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
     }
   }, []);
 
+  const handleNodePreview = useCallback((nodeId: string) => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+    setHoveredNodeId(nodeId);
+  }, []);
+
   const handlePreviewMouseEnter = useCallback(() => {
     if (hoverTimeoutRef.current) {
       clearTimeout(hoverTimeoutRef.current);
@@ -435,6 +443,7 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
           hoveredNodeId={hoveredNodeId}
           onNodeSelect={handleNodeSelect}
           onNodeHover={handleNodeHover}
+          onNodePreview={handleNodePreview}
           externalTransform={externalTransform}
           onTransformChange={handleTransformChange}
           registerControls={registerControls}
@@ -452,6 +461,7 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
           }}
           isPanelOpen={Boolean(selectedNode)}
           onOpenDetails={handleNodeSelect}
+          onClose={() => setHoveredNodeId(null)}
           onMouseEnter={handlePreviewMouseEnter}
           onMouseLeave={handlePreviewMouseLeave}
         />
@@ -462,6 +472,7 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
           showMinimap={showMinimap}
           onToggleMinimap={() => setShowMinimap((v) => !v)}
           isPanelOpen={Boolean(selectedNode)}
+          viewportWidth={viewportDimensions.width}
         />
 
         {/* Minimap */}

@@ -8,6 +8,7 @@ interface TreeControlsProps {
   showMinimap: boolean;
   onToggleMinimap: () => void;
   isPanelOpen?: boolean;
+  viewportWidth?: number;
 }
 
 import { useLanguage } from "@/lib/i18n";
@@ -17,6 +18,7 @@ export default function TreeControls({
   showMinimap,
   onToggleMinimap,
   isPanelOpen = false,
+  viewportWidth = 1024,
 }: TreeControlsProps) {
   const { t } = useLanguage();
   const handleZoomIn = useCallback(() => controls?.zoomIn(), [controls]);
@@ -24,13 +26,26 @@ export default function TreeControls({
   const handleReset = useCallback(() => controls?.resetView(), [controls]);
   const handleFit = useCallback(() => controls?.fitTree(), [controls]);
 
+  const isMobile = viewportWidth < 640;
+
   return (
     <div
-      className="absolute top-[calc(50%-70px)] -translate-y-1/2 flex flex-col gap-1.5"
+      className="absolute top-[calc(50%-70px)] -translate-y-1/2 flex flex-col items-center"
       style={{
-        right: isPanelOpen ? "clamp(12px, calc(100vw - 380px), 356px)" : "16px",
+        right: isPanelOpen ? "calc(min(100%, 360px) + 16px)" : "16px",
         zIndex: 35,
-        transition: "right 320ms cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+        background: "rgba(10, 15, 24, 0.88)",
+        backdropFilter: "blur(20px) saturate(180%)",
+        WebkitBackdropFilter: "blur(20px) saturate(180%)",
+        border: "1px solid var(--surface-border)",
+        borderRadius: "10px",
+        padding: "4px",
+        gap: "2px",
+        boxShadow: "0 8px 24px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.3)",
+        opacity: isPanelOpen && isMobile ? 0 : 1,
+        pointerEvents: isPanelOpen && isMobile ? "none" : "auto",
+        transition:
+          "right 320ms cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 250ms ease",
       }}
       role="toolbar"
       aria-label={t("controls.toolbarAria", "Tree navigation controls")}
@@ -71,7 +86,13 @@ export default function TreeControls({
 
       {/* Divider */}
       <div
-        style={{ height: 1, background: "var(--surface-border)", margin: "2px 4px" }}
+        style={{
+          height: 1,
+          width: "20px",
+          background: "var(--surface-border)",
+          margin: "3px 0",
+          opacity: 0.7,
+        }}
       />
 
       {/* Fit */}
@@ -136,7 +157,13 @@ export default function TreeControls({
 
       {/* Divider */}
       <div
-        style={{ height: 1, background: "var(--surface-border)", margin: "2px 4px" }}
+        style={{
+          height: 1,
+          width: "20px",
+          background: "var(--surface-border)",
+          margin: "3px 0",
+          opacity: 0.7,
+        }}
       />
 
       {/* Minimap Toggle */}

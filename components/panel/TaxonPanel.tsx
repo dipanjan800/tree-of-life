@@ -112,17 +112,19 @@ export default function TaxonPanel({
         top: 0,
         right: 0,
         bottom: 0,
-        width: "340px",
+        width: "min(100%, 360px)",
+        maxWidth: "100%",
         zIndex: 30,
         transform: isVisible ? "translateX(0)" : "translateX(100%)",
         opacity: isVisible ? 1 : 0,
         transition: "transform 320ms cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 280ms ease",
         display: "flex",
         flexDirection: "column",
-        background: "rgba(8, 12, 16, 0.92)",
+        background: "rgba(8, 12, 16, 0.94)",
         backdropFilter: "blur(20px) saturate(180%)",
         WebkitBackdropFilter: "blur(20px) saturate(180%)",
         borderLeft: "1px solid var(--surface-border)",
+        boxShadow: "-8px 0 32px rgba(0, 0, 0, 0.6)",
       }}
       role="complementary"
       aria-label={`Information panel for ${displayName}`}
@@ -142,18 +144,20 @@ export default function TaxonPanel({
           aria-label={t("taxonPanel.closeAria", "Close information panel")}
           style={{
             position: "absolute",
-            top: "16px",
-            right: "16px",
-            background: "rgba(255,255,255,0.06)",
+            top: "14px",
+            right: "14px",
+            background: "rgba(255,255,255,0.08)",
             border: "1px solid var(--surface-border)",
             borderRadius: "6px",
-            width: "28px",
-            height: "28px",
+            width: "36px",
+            height: "36px",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             cursor: "pointer",
-            color: "var(--text-tertiary)",
+            color: "var(--text-secondary)",
+            fontSize: "14px",
+            zIndex: 10,
             transition: "all 150ms ease",
           }}
           onMouseEnter={(e) => {
@@ -795,20 +799,7 @@ export default function TaxonPanel({
           </div>
         )}
 
-        {/* Disclaimer */}
-        <div style={{ padding: "14px 22px 20px" }}>
-          <p
-            style={{
-              fontSize: "10.5px",
-              color: "var(--text-tertiary)",
-              lineHeight: 1.6,
-              borderLeft: "2px solid var(--surface-border)",
-              paddingLeft: "10px",
-            }}
-          >
-            {t("common.disclaimer", "Conceptual visualization — scientific data integration will be added in future phases.")}
-          </p>
-        </div>
+
       </div>
     </div>
   );
