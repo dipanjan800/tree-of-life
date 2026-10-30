@@ -74,10 +74,11 @@ export default function NodeHoverPreview({
   const CARD_HEIGHT = isMobile ? 156 : 148;
 
   const isCompact = viewportDimensions.width < 768;
+  // Account for TaxonPanel (360px) + gap (16px) + TreeControls (44px) + margin (16px) = 436px
   const maxAvailableRight =
     isPanelOpen && !isCompact
-      ? viewportDimensions.width - 376
-      : viewportDimensions.width - 16;
+      ? viewportDimensions.width - 436
+      : viewportDimensions.width - 76;
 
   // Intelligent positioning relative to the node
   const stylePosition = useMemo(() => {
@@ -162,7 +163,7 @@ export default function NodeHoverPreview({
         left: `${stylePosition.left}px`,
         top: `${stylePosition.top}px`,
         width: `${CARD_WIDTH}px`,
-        zIndex: 25,
+        zIndex: 36,
         background: "rgba(13, 17, 23, 0.94)",
         backdropFilter: "blur(20px) saturate(180%)",
         WebkitBackdropFilter: "blur(20px) saturate(180%)",

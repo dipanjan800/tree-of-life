@@ -264,17 +264,34 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
     setCanvasControls(controls);
   }, []);
 
-  const canvasHeight = viewportDimensions.height;
+  const isMobile = viewportDimensions.width < 640;
+  const TOPBAR_HEIGHT = 58;
+  const canvasHeight = viewportDimensions.height - (isMobile ? 88 : TOPBAR_HEIGHT) - TIMELINE_HEIGHT;
 
   return (
     <div
       className="flex flex-col"
-      style={{ height: "100vh", overflow: "hidden", background: "var(--bg-primary)" }}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100vh",
+        overflow: "hidden",
+        background: "var(--bg-primary)",
+      }}
     >
       {/* ── Top Bar ─────────────────────────────────────────── */}
       <header
-        className="glass-panel flex flex-col justify-center px-3.5 py-2 sm:py-0 sm:px-5 gap-2 sm:gap-4 shrink-0 sm:h-[58px]"
+        className="glass-panel shrink-0"
         style={{
+          display: "flex",
+          flexDirection: isMobile ? "column" : "row",
+          alignItems: isMobile ? "stretch" : "center",
+          justifyContent: isMobile ? "center" : "flex-start",
+          padding: isMobile ? "8px 14px" : "0 20px",
+          gap: isMobile ? "8px" : "16px",
+          height: isMobile ? "auto" : `${TOPBAR_HEIGHT}px`,
+          minHeight: isMobile ? "86px" : `${TOPBAR_HEIGHT}px`,
+          maxHeight: isMobile ? undefined : `${TOPBAR_HEIGHT}px`,
           borderBottom: "1px solid var(--surface-border)",
           borderRadius: 0,
           zIndex: 40,
@@ -282,7 +299,15 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
         }}
       >
         {/* Mobile Top Row: Branding (left) + Actions (right) */}
-        <div className="flex items-center justify-between w-full sm:w-auto min-w-0 shrink-0">
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: isMobile ? "space-between" : "flex-start",
+            width: isMobile ? "100%" : "auto",
+            flexShrink: 0,
+          }}
+        >
           {/* Logo / Title */}
           <div
             className={`flex items-center gap-2.5 sm:gap-3 shrink-0 ${onBack ? "cursor-pointer hover:opacity-85 transition-opacity" : ""}`}
@@ -300,7 +325,7 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
               <circle cx="18" cy="14" r="1.5" fill="#f59e0b" opacity="0.6" />
               <circle cx="18" cy="20" r="1.5" fill="#a78bfa" opacity="0.6" />
               <line x1="6.5" y1="11" x2="9" y2="5" stroke="rgba(255,255,255,0.2)" strokeWidth="1" />
-              <line x1="6.5" y1="11" x2="9" y2="17" stroke="rgba(255,255,255,0.2)" strokeWidth="1" />
+              <line x1="6.5" y1="11" x2="9" y2="5" stroke="rgba(255,255,255,0.2)" strokeWidth="1" />
               <line x1="13" y1="5" x2="16.5" y2="2" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
               <line x1="13" y1="5" x2="16.5" y2="8" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
               <line x1="13" y1="17" x2="16.5" y2="14" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
@@ -319,80 +344,98 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
               >
                 {t("common.treeOfLife", "Tree of Life")}
               </div>
-              <div
-                className="hidden sm:block"
-                style={{
-                  fontSize: "10px",
-                  color: "var(--text-tertiary)",
-                  letterSpacing: "0.04em",
-                  lineHeight: 1.2,
-                }}
-              >
-                {t("common.tagline", "Evolutionary History of Life")}
-              </div>
+              {!isMobile && (
+                <div
+                  style={{
+                    fontSize: "10px",
+                    color: "var(--text-tertiary)",
+                    letterSpacing: "0.04em",
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {t("common.tagline", "Evolutionary History of Life")}
+                </div>
+              )}
             </div>
           </div>
 
           {/* Mobile Right Actions: Pre-LUCA launcher + LanguageSelector */}
-          <div className="flex sm:hidden items-center gap-2 shrink-0">
-            <button
-              onClick={() => setShowPreLuca(true)}
-              aria-label={t("topbar.preLucaBtnAria", "Explore Pre-LUCA History (Cosmic Origins, Prebiotic Chemistry, and FUCA)")}
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "4px",
-                padding: "4px 8px",
-                borderRadius: "100px",
-                background: "rgba(168,85,247,0.1)",
-                border: "1px solid rgba(168,85,247,0.25)",
-                fontSize: "11px",
-                fontWeight: 600,
-                color: "#c084fc",
-                cursor: "pointer",
-              }}
-            >
-              <span>{t("topbar.preLucaShort", "Pre-LUCA")}</span>
-              <span style={{ fontSize: "10px" }}>✨</span>
-            </button>
-            <LanguageSelector compact align="right" />
-          </div>
+          {isMobile && (
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                onClick={() => setShowPreLuca(true)}
+                aria-label={t("topbar.preLucaBtnAria", "Explore Pre-LUCA History (Cosmic Origins, Prebiotic Chemistry, and FUCA)")}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  padding: "4px 8px",
+                  borderRadius: "100px",
+                  background: "rgba(168,85,247,0.1)",
+                  border: "1px solid rgba(168,85,247,0.25)",
+                  fontSize: "11px",
+                  fontWeight: 600,
+                  color: "#c084fc",
+                  cursor: "pointer",
+                }}
+              >
+                <span>{t("topbar.preLucaShort", "Pre-LUCA")}</span>
+                <span style={{ fontSize: "10px" }}>✨</span>
+              </button>
+              <LanguageSelector compact align="right" />
+            </div>
+          )}
         </div>
 
         {/* Divider (Desktop only) */}
-        <div
-          className="hidden sm:block"
-          style={{
-            width: 1,
-            height: 30,
-            background: "var(--surface-border)",
-            flexShrink: 0,
-          }}
-        />
+        {!isMobile && (
+          <div
+            style={{
+              width: 1,
+              height: 30,
+              background: "var(--surface-border)",
+              flexShrink: 0,
+            }}
+          />
+        )}
 
         {/* Search */}
-        <div className="w-full sm:flex-1 sm:max-w-xs md:max-w-sm min-w-0">
+        <div
+          style={{
+            width: isMobile ? "100%" : undefined,
+            flex: isMobile ? undefined : "1",
+            maxWidth: isMobile ? "100%" : "340px",
+            minWidth: 0,
+          }}
+        >
           <TreeSearch
             onSelectResult={handleSearchResult}
           />
         </div>
 
         {/* Right controls (Desktop only) */}
-        <div className="hidden sm:flex items-center gap-2 ml-auto shrink-0">
+        {!isMobile && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              marginLeft: "auto",
+              flexShrink: 0,
+            }}
+          >
           {/* Selected node indicator */}
           {selectedNode && (
             <div
+              className="hidden lg:flex items-center gap-2"
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
                 padding: "5px 12px",
                 background: "rgba(61,142,248,0.08)",
                 border: "1px solid rgba(61,142,248,0.2)",
                 borderRadius: "8px",
                 fontSize: "12.5px",
                 color: "var(--text-secondary)",
-                maxWidth: "200px",
+                maxWidth: "180px",
               }}
             >
               <div
@@ -484,6 +527,7 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
 
           {/* Phase indicator */}
           <div
+            className="hidden xl:block"
             style={{
               padding: "4px 10px",
               borderRadius: "6px",
@@ -500,13 +544,19 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
           </div>
           <LanguageSelector compact align="right" />
         </div>
+      )}
       </header>
 
       {/* ── Canvas Area ──────────────────────────────────────── */}
       <div
         ref={containerRef}
         className="relative flex-1 overflow-hidden"
-        style={{ background: "var(--bg-primary)" }}
+        style={{
+          position: "relative",
+          flex: 1,
+          overflow: "hidden",
+          background: "var(--bg-primary)",
+        }}
       >
         {/* Radial background glow */}
         <div
