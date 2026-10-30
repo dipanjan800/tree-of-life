@@ -54,10 +54,10 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
   });
   const [externalTransform, setExternalTransform] =
     useState<ViewportTransform | null>(null);
-  const [viewportDimensions, setViewportDimensions] = useState({
-    width: 1200,
-    height: 800,
-  });
+  const [viewportDimensions, setViewportDimensions] = useState(() => ({
+    width: typeof window !== "undefined" ? window.innerWidth : 1200,
+    height: typeof window !== "undefined" ? window.innerHeight : 800,
+  }));
 
   const [canvasControls, setCanvasControls] = useState<TreeCanvasControls | null>(null);
   const controlsRef = useRef<TreeCanvasControls | null>(null);
@@ -169,9 +169,17 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
       const node = TREE_DATA.nodes[nodeId];
       if (!node) return;
       setSelectedNode(node);
-      controlsRef.current?.focusNode(nodeId);
+      // Auto-centering on node selection is disabled in Desktop View (width >= 640px).
+      // The current zoom level, pan position, and viewport transform are preserved.
+      // Auto-centering is preserved for mobile viewports (< 640px).
+      const isMobileViewport =
+        viewportDimensions.width < 640 ||
+        (typeof window !== "undefined" && window.innerWidth < 640);
+      if (isMobileViewport) {
+        controlsRef.current?.focusNode(nodeId);
+      }
     },
-    []
+    [viewportDimensions.width]
   );
 
   const handleNodeHover = useCallback((nodeId: string | null) => {
@@ -424,127 +432,127 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
               flexShrink: 0,
             }}
           >
-          {/* Selected node indicator */}
-          {selectedNode && (
-            <div
-              className="hidden lg:flex items-center gap-2"
-              style={{
-                padding: "5px 12px",
-                background: "rgba(61,142,248,0.08)",
-                border: "1px solid rgba(61,142,248,0.2)",
-                borderRadius: "8px",
-                fontSize: "12.5px",
-                color: "var(--text-secondary)",
-                maxWidth: "180px",
-              }}
-            >
+            {/* Selected node indicator */}
+            {selectedNode && (
               <div
+                className="hidden lg:flex items-center gap-2"
                 style={{
-                  width: 6,
-                  height: 6,
-                  borderRadius: "50%",
-                  background: "var(--accent-primary)",
-                  flexShrink: 0,
-                }}
-              />
-              <span
-                style={{
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
+                  padding: "5px 12px",
+                  background: "rgba(61,142,248,0.08)",
+                  border: "1px solid rgba(61,142,248,0.2)",
+                  borderRadius: "8px",
+                  fontSize: "12.5px",
+                  color: "var(--text-secondary)",
+                  maxWidth: "180px",
                 }}
               >
-                {localizeTaxon(selectedNode)?.name || selectedNode.name}
-              </span>
-            </div>
-          )}
+                <div
+                  style={{
+                    width: 6,
+                    height: 6,
+                    borderRadius: "50%",
+                    background: "var(--accent-primary)",
+                    flexShrink: 0,
+                  }}
+                />
+                <span
+                  style={{
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {localizeTaxon(selectedNode)?.name || selectedNode.name}
+                </span>
+              </div>
+            )}
 
-          {/* Pre-LUCA History launcher */}
-          <button
-            onClick={() => setShowPreLuca(true)}
-            aria-label="Explore Pre-LUCA History (Cosmic Origins, Prebiotic Chemistry, and FUCA)"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "6px",
-              padding: "5px 12px",
-              borderRadius: "100px",
-              background: "rgba(168,85,247,0.1)",
-              border: "1px solid rgba(168,85,247,0.25)",
-              fontSize: "11px",
-              fontWeight: 600,
-              color: "#c084fc",
-              cursor: "pointer",
-              transition: "all 150ms ease",
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLElement).style.background = "rgba(168,85,247,0.2)";
-              (e.currentTarget as HTMLElement).style.borderColor = "#c084fc";
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLElement).style.background = "rgba(168,85,247,0.1)";
-              (e.currentTarget as HTMLElement).style.borderColor = "rgba(168,85,247,0.25)";
-            }}
-          >
-            <span>{t("topbar.preLucaBtn", "Pre-LUCA History")}</span>
-            <span style={{ fontSize: "10px" }}>✨</span>
-          </button>
-
-          {/* Story of Life launcher */}
-          {onOpenStory && (
+            {/* Pre-LUCA History launcher */}
             <button
-              onClick={onOpenStory}
-              aria-label="Launch The Story of Life cinematic narrative"
+              onClick={() => setShowPreLuca(true)}
+              aria-label="Explore Pre-LUCA History (Cosmic Origins, Prebiotic Chemistry, and FUCA)"
               style={{
                 display: "inline-flex",
                 alignItems: "center",
                 gap: "6px",
                 padding: "5px 12px",
                 borderRadius: "100px",
-                background: "rgba(61,142,248,0.1)",
-                border: "1px solid rgba(61,142,248,0.25)",
+                background: "rgba(168,85,247,0.1)",
+                border: "1px solid rgba(168,85,247,0.25)",
                 fontSize: "11px",
                 fontWeight: 600,
-                color: "var(--accent-primary)",
+                color: "#c084fc",
                 cursor: "pointer",
                 transition: "all 150ms ease",
               }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLElement).style.background = "rgba(61,142,248,0.2)";
-                (e.currentTarget as HTMLElement).style.borderColor = "var(--accent-primary)";
+                (e.currentTarget as HTMLElement).style.background = "rgba(168,85,247,0.2)";
+                (e.currentTarget as HTMLElement).style.borderColor = "#c084fc";
               }}
               onMouseLeave={(e) => {
-                (e.currentTarget as HTMLElement).style.background = "rgba(61,142,248,0.1)";
-                (e.currentTarget as HTMLElement).style.borderColor = "rgba(61,142,248,0.25)";
+                (e.currentTarget as HTMLElement).style.background = "rgba(168,85,247,0.1)";
+                (e.currentTarget as HTMLElement).style.borderColor = "rgba(168,85,247,0.25)";
               }}
             >
-              <span>{t("topbar.storyBtn", "The Story of Life")}</span>
-              <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                <path d="M2 5h6M5 2l3 3-3 3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+              <span>{t("topbar.preLucaBtn", "Pre-LUCA History")}</span>
+              <span style={{ fontSize: "10px" }}>✨</span>
             </button>
-          )}
 
-          {/* Phase indicator */}
-          <div
-            className="hidden xl:block"
-            style={{
-              padding: "4px 10px",
-              borderRadius: "6px",
-              background: "rgba(255,255,255,0.04)",
-              border: "1px solid var(--surface-border)",
-              fontSize: "10px",
-              fontWeight: 600,
-              color: "var(--text-tertiary)",
-              letterSpacing: "0.06em",
-              textTransform: "uppercase",
-            }}
-          >
-            {t("topbar.explorerPhase", "Evolutionary Explorer")}
+            {/* Story of Life launcher */}
+            {onOpenStory && (
+              <button
+                onClick={onOpenStory}
+                aria-label="Launch The Story of Life cinematic narrative"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  padding: "5px 12px",
+                  borderRadius: "100px",
+                  background: "rgba(61,142,248,0.1)",
+                  border: "1px solid rgba(61,142,248,0.25)",
+                  fontSize: "11px",
+                  fontWeight: 600,
+                  color: "var(--accent-primary)",
+                  cursor: "pointer",
+                  transition: "all 150ms ease",
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLElement).style.background = "rgba(61,142,248,0.2)";
+                  (e.currentTarget as HTMLElement).style.borderColor = "var(--accent-primary)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLElement).style.background = "rgba(61,142,248,0.1)";
+                  (e.currentTarget as HTMLElement).style.borderColor = "rgba(61,142,248,0.25)";
+                }}
+              >
+                <span>{t("topbar.storyBtn", "The Story of Life")}</span>
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                  <path d="M2 5h6M5 2l3 3-3 3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+            )}
+
+            {/* Phase indicator */}
+            <div
+              className="hidden xl:block"
+              style={{
+                padding: "4px 10px",
+                borderRadius: "6px",
+                background: "rgba(255,255,255,0.04)",
+                border: "1px solid var(--surface-border)",
+                fontSize: "10px",
+                fontWeight: 600,
+                color: "var(--text-tertiary)",
+                letterSpacing: "0.06em",
+                textTransform: "uppercase",
+              }}
+            >
+              {t("topbar.explorerPhase", "Evolutionary Explorer")}
+            </div>
+            <LanguageSelector compact align="right" />
           </div>
-          <LanguageSelector compact align="right" />
-        </div>
-      )}
+        )}
       </header>
 
       {/* ── Canvas Area ──────────────────────────────────────── */}
