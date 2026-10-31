@@ -33,8 +33,7 @@ export function DickinsoniaSvg({
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0 }}
-      aria-label="Dickinsonia costata icon"
-      role="img"
+      aria-hidden="true"
     >
       <defs>
         <radialGradient id={gradientId} cx="50%" cy="50%" r="50%">

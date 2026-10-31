@@ -113,7 +113,7 @@ export default function StoryOfLife({ onComplete, onSkip }: StoryOfLifeProps) {
         overflow: "hidden",
       }}
       role="region"
-      aria-label="The Story of Life Cinematic Narrative"
+      aria-label={t("story.narrativeAria", "The Story of Life Cinematic Narrative")}
     >
       {/* ── Ambient Radial Glow tailored to stage theme ───────── */}
       <div
@@ -167,7 +167,7 @@ export default function StoryOfLife({ onComplete, onSkip }: StoryOfLifeProps) {
 
         {/* Center: Interactive Stage Segmented Timeline */}
         <nav
-          aria-label="Story stages"
+          aria-label={t("story.stagesAria", "Story stages")}
           className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.06] backdrop-blur-md"
         >
           {STORY_STAGES.map((stage, idx) => {
@@ -216,7 +216,7 @@ export default function StoryOfLife({ onComplete, onSkip }: StoryOfLifeProps) {
           <button
             id="skip-story-btn"
             onClick={onSkip}
-            aria-label="Skip narrative and explore tree directly"
+            aria-label={t("story.skipToExplorer", "Skip to Tree Explorer")}
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[12px] font-medium transition-all duration-200"
             style={{
               background: "rgba(255, 255, 255, 0.05)",
@@ -523,7 +523,7 @@ export default function StoryOfLife({ onComplete, onSkip }: StoryOfLifeProps) {
           <button
             onClick={handlePrev}
             disabled={currentStageIndex === 0}
-            aria-label="Previous story stage"
+            aria-label={t("story.previousStage", "Previous story stage")}
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-[12.5px] font-medium transition-all duration-200"
             style={{
               background: "rgba(255, 255, 255, 0.05)",
@@ -595,7 +595,7 @@ export default function StoryOfLife({ onComplete, onSkip }: StoryOfLifeProps) {
           <button
             id="next-story-btn"
             onClick={handleNext}
-            aria-label={isFinalStage ? "Enter Tree Explorer" : "Continue to next stage"}
+            aria-label={isFinalStage ? t("story.enterExplorer", "Enter Tree Explorer") : t("story.nextStage", "Continue to next stage")}
             className="group inline-flex items-center gap-2.5 px-6 sm:px-8 py-2.5 sm:py-3 rounded-full text-[13px] font-semibold tracking-wide transition-all duration-300"
             style={{
               background: isFinalStage

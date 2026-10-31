@@ -3,6 +3,7 @@ import { uiTranslations } from "./ui";
 import { taxaHI } from "./taxa";
 import { storyHI } from "./story";
 import { prebioticHI } from "./prebiotic";
+import { claimsHI } from "./claims";
 
 export const hiINDictionary: TranslationDictionary = {
   locale: "hi-IN",
@@ -10,4 +11,5 @@ export const hiINDictionary: TranslationDictionary = {
   taxa: taxaHI,
   storyStages: storyHI,
   prebioticStages: prebioticHI,
+  claims: claimsHI,
 };

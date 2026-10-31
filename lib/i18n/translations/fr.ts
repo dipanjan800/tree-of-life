@@ -3,6 +3,7 @@ import { uiTranslations } from "./ui";
 import { taxaFR } from "./taxa";
 import { storyFR } from "./story";
 import { prebioticFR } from "./prebiotic";
+import { claimsFR } from "./claims";
 
 export const frDictionary: TranslationDictionary = {
   locale: "fr",
@@ -10,4 +11,5 @@ export const frDictionary: TranslationDictionary = {
   taxa: taxaFR,
   storyStages: storyFR,
   prebioticStages: prebioticFR,
+  claims: claimsFR,
 };

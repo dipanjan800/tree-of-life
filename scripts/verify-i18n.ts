@@ -136,7 +136,24 @@ assert(sciResults[0]?.node.id === "archaeopteryx-lithographica", "Latin scientif
 const idResults = searchNodes("tiktaalik-roseae", 5, DICTIONARIES["hi-IN"].taxa);
 assert(idResults[0]?.node.id === "tiktaalik-roseae", "Node ID search 'tiktaalik-roseae' works in Hindi context");
 
-// [8] Summary
+// [8] Scientific Evidence Claim Localization (All 7 Claims Across 5 Locales)
+console.log("\n[8] Scientific Evidence Claims Localization (7 Claims)");
+locales.forEach((loc) => {
+  const dict = DICTIONARIES[loc];
+  const claimCount = Object.keys(dict.claims).length;
+  assert(claimCount === 7, `Locale '${loc}' contains all 7 localized scientific claims`);
+
+  const jebel = dict.claims["claim-homo-sapiens-jebel-irhoud"];
+  assert(Boolean(jebel && jebel.statement && jebel.explanation), `Locale '${loc}': Jebel Irhoud claim has localized statement and explanation`);
+
+  const dickinsonia = dict.claims["claim-dickinsonia-biomarker-steranes"];
+  assert(Boolean(dickinsonia && dickinsonia.statement && dickinsonia.geologicalFormation), `Locale '${loc}': Dickinsonia claim has statement and geological formation`);
+
+  const fuca = dict.claims["claim-fuca-prebiotic-translation-candidate"];
+  assert(Boolean(fuca && fuca.statement), `Locale '${loc}': FUCA candidate claim localized`);
+});
+
+// [9] Summary
 console.log("\n=======================================================");
 console.log(`TOTAL CHECKS: ${totalPassed + totalFailed} | PASSED: ${totalPassed} | FAILED: ${totalFailed}`);
 if (totalFailed === 0) {

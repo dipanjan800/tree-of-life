@@ -538,7 +538,7 @@ export const taxaEN: Record<string, LocalizedTaxon> = {
     name: "Humans",
     description: "Anatomically modern humans — an extant terminal branch of hominine catarrhine primates, sharing common ancestry with chimpanzees and bonobos ~6–8 MYA. Not the 'apex' of evolution, but one branch among millions.",
     confidenceNotes: "Stratigraphically dated fossil cranial remains from Jebel Irhoud, Morocco (~315 ka) and Omo Kibish, Ethiopia (~233 ka). Genomic data proves ~98.8% sequence identity with Pan troglodytes.",
-    commonNames: ["Humans","Homo sapiens"],
+    commonNames: ["Human","Humans","Homo sapiens"],
   },
   "sahelanthropus-tchadensis": {
     id: "sahelanthropus-tchadensis",
@@ -3320,7 +3320,7 @@ export const taxaFR: Record<string, LocalizedTaxon> = {
     name: "Chauves-souris (Chiroptera)",
     description: "Seul ordre de mammifères ayant acquis le vol battu actif grâce au patagium tendu entre leurs doigts allongés.",
     confidenceNotes: "Remarquables fossiles éocènes complets (Icaronycteris).",
-    commonNames: ["chauves-souris","chiroptères"],
+    commonNames: ["chauve-souris","chauves-souris","chiroptères"],
   },
 };
 

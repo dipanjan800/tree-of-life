@@ -150,7 +150,7 @@ export default function NodeHoverPreview({
   return (
     <div
       role="region"
-      aria-label={`${displayName} preview`}
+      aria-label={`${displayName} ${t("taxonPanel.previewAria", "preview")}`}
       className="group"
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}

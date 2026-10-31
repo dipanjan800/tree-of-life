@@ -273,6 +273,8 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
   }, []);
 
   const isMobile = viewportDimensions.width < 640;
+  // Narrow desktop: 640–899px – show icon-only / short labels to prevent overflow
+  const isNarrowDesktop = !isMobile && viewportDimensions.width < 900;
   const TOPBAR_HEIGHT = 58;
   const canvasHeight = viewportDimensions.height - (isMobile ? 88 : TOPBAR_HEIGHT) - TIMELINE_HEIGHT;
 
@@ -411,9 +413,9 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
         <div
           style={{
             width: isMobile ? "100%" : undefined,
-            flex: isMobile ? undefined : "1",
+            flex: isMobile ? undefined : "1 1 160px",
             maxWidth: isMobile ? "100%" : "340px",
-            minWidth: 0,
+            minWidth: isMobile ? undefined : "120px",
           }}
         >
           <TreeSearch
@@ -429,7 +431,8 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
               alignItems: "center",
               gap: "8px",
               marginLeft: "auto",
-              flexShrink: 0,
+              flexShrink: 1,
+              minWidth: 0,
             }}
           >
             {/* Selected node indicator */}
@@ -470,7 +473,7 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
             {/* Pre-LUCA History launcher */}
             <button
               onClick={() => setShowPreLuca(true)}
-              aria-label="Explore Pre-LUCA History (Cosmic Origins, Prebiotic Chemistry, and FUCA)"
+              aria-label={t("topbar.preLucaBtnAria", "Explore Pre-LUCA History (Cosmic Origins, Prebiotic Chemistry, and FUCA)")}
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -484,6 +487,8 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
                 color: "#c084fc",
                 cursor: "pointer",
                 transition: "all 150ms ease",
+                flexShrink: 0,
+                whiteSpace: "nowrap",
               }}
               onMouseEnter={(e) => {
                 (e.currentTarget as HTMLElement).style.background = "rgba(168,85,247,0.2)";
@@ -494,7 +499,7 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
                 (e.currentTarget as HTMLElement).style.borderColor = "rgba(168,85,247,0.25)";
               }}
             >
-              <span>{t("topbar.preLucaBtn", "Pre-LUCA History")}</span>
+              <span>{isNarrowDesktop ? t("topbar.preLucaShort", "Pre-LUCA") : t("topbar.preLucaBtn", "Pre-LUCA History")}</span>
               <span style={{ fontSize: "10px" }}>✨</span>
             </button>
 
@@ -502,7 +507,7 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
             {onOpenStory && (
               <button
                 onClick={onOpenStory}
-                aria-label="Launch The Story of Life cinematic narrative"
+                aria-label={t("topbar.storyBtnAria", "Launch The Story of Life cinematic narrative")}
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
@@ -516,6 +521,8 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
                   color: "var(--accent-primary)",
                   cursor: "pointer",
                   transition: "all 150ms ease",
+                  flexShrink: 0,
+                  whiteSpace: "nowrap",
                 }}
                 onMouseEnter={(e) => {
                   (e.currentTarget as HTMLElement).style.background = "rgba(61,142,248,0.2)";
@@ -526,10 +533,12 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
                   (e.currentTarget as HTMLElement).style.borderColor = "rgba(61,142,248,0.25)";
                 }}
               >
-                <span>{t("topbar.storyBtn", "The Story of Life")}</span>
-                <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                  <path d="M2 5h6M5 2l3 3-3 3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
+                <span>{isNarrowDesktop ? t("topbar.storyShort", "Story") : t("topbar.storyBtn", "The Story of Life")}</span>
+                {!isNarrowDesktop && (
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                    <path d="M2 5h6M5 2l3 3-3 3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                )}
               </button>
             )}
 

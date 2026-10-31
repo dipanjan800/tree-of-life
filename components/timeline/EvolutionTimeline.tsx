@@ -117,7 +117,7 @@ export default function EvolutionTimeline({
         zIndex: 10,
         pointerEvents: "none",
       }}
-      aria-label="Evolutionary timeline"
+      aria-label={t("timeline.timelineAria", "Evolutionary timeline")}
     >
       <svg
         width="100%"

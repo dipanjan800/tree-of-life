@@ -22,11 +22,13 @@ import type {
   LocalizedTaxon,
   LocalizedStoryStage,
   LocalizedPrebioticStage,
+  LocalizedEvidenceClaim,
 } from "./types";
 import { DICTIONARIES, enDictionary } from "./translations";
 import type { TaxonNode } from "@/types/taxonomy";
 import type { StoryStage } from "@/data/story";
 import type { PrebioticStage } from "@/data/prebiotic";
+import type { ScientificClaim } from "@/types/evidence";
 
 interface LanguageContextType {
   locale: Locale;
@@ -37,6 +39,7 @@ interface LanguageContextType {
   localizeTaxon: (node: TaxonNode | null | undefined) => LocalizedTaxon | null;
   localizeStoryStage: (stage: StoryStage | null | undefined) => LocalizedStoryStage | null;
   localizePrebioticStage: (stage: PrebioticStage | null | undefined) => LocalizedPrebioticStage | null;
+  localizeClaim: (claim: ScientificClaim | null | undefined) => LocalizedEvidenceClaim | null;
 }
 
 const LanguageContext = createContext<LanguageContextType | null>(null);
@@ -81,21 +84,15 @@ function getInitialLocale(): Locale {
 }
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>(DEFAULT_LOCALE);
-  const [mounted, setMounted] = useState(false);
+  const [locale, setLocaleState] = useState<Locale>(getInitialLocale);
 
-  // Read initial locale on client mount
+  // Sync document lang and dir with locale
   useEffect(() => {
-    const init = getInitialLocale();
-    setLocaleState(init);
-    setMounted(true);
-
-    // Apply document lang and dir
     if (typeof document !== "undefined") {
-      document.documentElement.lang = init;
-      document.documentElement.dir = SUPPORTED_LOCALES[init]?.dir || "ltr";
+      document.documentElement.lang = locale;
+      document.documentElement.dir = SUPPORTED_LOCALES[locale]?.dir || "ltr";
     }
-  }, []);
+  }, [locale]);
 
   const setLocale = useCallback((newLocale: Locale) => {
     if (!(newLocale in SUPPORTED_LOCALES)) return;
@@ -126,10 +123,10 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const t = useCallback(
     (keyPath: string, fallback?: string): string => {
       const parts = keyPath.split(".");
-      let current: any = dict.ui;
+      let current: unknown = dict.ui;
       for (const p of parts) {
         if (current && typeof current === "object" && p in current) {
-          current = current[p];
+          current = (current as Record<string, unknown>)[p];
         } else {
           current = undefined;
           break;
@@ -139,10 +136,10 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       if (typeof current === "string") return current;
 
       // Fallback to English dictionary
-      let enCurrent: any = enDictionary.ui;
+      let enCurrent: unknown = enDictionary.ui;
       for (const p of parts) {
         if (enCurrent && typeof enCurrent === "object" && p in enCurrent) {
-          enCurrent = enCurrent[p];
+          enCurrent = (enCurrent as Record<string, unknown>)[p];
         } else {
           enCurrent = undefined;
           break;
@@ -223,6 +220,26 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     [dict]
   );
 
+  const localizeClaim = useCallback(
+    (claim: ScientificClaim | null | undefined): LocalizedEvidenceClaim | null => {
+      if (!claim) return null;
+      const localized = dict.claims?.[claim.id];
+      if (localized) return localized;
+
+      const fallback = enDictionary.claims?.[claim.id];
+      if (fallback) return fallback;
+
+      return {
+        id: claim.id,
+        statement: claim.statement,
+        explanation: claim.explanation,
+        uncertaintyOrLimitations: claim.uncertaintyOrLimitations,
+        geologicalFormation: claim.geologicalFormation,
+      };
+    },
+    [dict]
+  );
+
   const value = useMemo(
     () => ({
       locale,
@@ -233,8 +250,9 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       localizeTaxon,
       localizeStoryStage,
       localizePrebioticStage,
+      localizeClaim,
     }),
-    [locale, setLocale, t, dict, ui, localizeTaxon, localizeStoryStage, localizePrebioticStage]
+    [locale, setLocale, t, dict, ui, localizeTaxon, localizeStoryStage, localizePrebioticStage, localizeClaim]
   );
 
   return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;

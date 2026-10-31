@@ -3,6 +3,7 @@ import { uiTranslations } from "./ui";
 import { taxaBN } from "./taxa";
 import { storyBN } from "./story";
 import { prebioticBN } from "./prebiotic";
+import { claimsBN } from "./claims";
 
 export const bnINDictionary: TranslationDictionary = {
   locale: "bn-IN",
@@ -10,4 +11,5 @@ export const bnINDictionary: TranslationDictionary = {
   taxa: taxaBN,
   storyStages: storyBN,
   prebioticStages: prebioticBN,
+  claims: claimsBN,
 };

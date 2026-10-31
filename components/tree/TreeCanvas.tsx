@@ -18,6 +18,7 @@ import {
   computeNodeFocusTransform,
 } from "@/lib/tree-layout";
 import { getNodeAccentColor, clamp } from "@/lib/tree-utils";
+import { useLanguage } from "@/lib/i18n";
 
 // ── Constants ──────────────────────────────────────────────
 const MIN_ZOOM = 0.12;
@@ -106,6 +107,10 @@ const TreeNode = React.memo(function TreeNode({
     Boolean(node.scientificName && node.scientificName !== node.name) &&
     (isSelected || isHovered || zoomScale >= 1.25);
 
+  const { localizeTaxon } = useLanguage();
+  const loc = localizeTaxon(node);
+  const displayName = loc?.name || node.name;
+
   const handleSelect = (e: React.MouseEvent) => {
     e.stopPropagation();
     // On touch devices, taps are processed by the touch gesture state machine.
@@ -117,7 +122,7 @@ const TreeNode = React.memo(function TreeNode({
     onSelect(node.id);
   };
 
-  const nameLen = node.name.length;
+  const nameLen = displayName.length;
   const sciLen = showScientificName && node.scientificName ? node.scientificName.length : 0;
   const textCharCount = Math.max(nameLen, sciLen);
   const hitBoxWidth = Math.min(185, Math.max(60, textCharCount * 7.5 + 16));
@@ -134,7 +139,7 @@ const TreeNode = React.memo(function TreeNode({
       onBlur={() => onHover(null)}
       opacity={opacity}
       role="button"
-      aria-label={`${node.name}${node.scientificName ? `, ${node.scientificName}` : ""}`}
+      aria-label={`${displayName}${node.scientificName ? `, ${node.scientificName}` : ""}`}
       tabIndex={0}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
@@ -171,15 +176,15 @@ const TreeNode = React.memo(function TreeNode({
             isSelected
               ? accentColor
               : isHighlighted
-              ? accentColorDim
-              : "rgba(255,255,255,0.12)"
+                ? accentColorDim
+                : "rgba(255,255,255,0.12)"
           }
           stroke={
             isSelected
               ? accentColor
               : isHighlighted || isHovered
-              ? accentColorDim
-              : "rgba(255,255,255,0.18)"
+                ? accentColorDim
+                : "rgba(255,255,255,0.18)"
           }
           strokeWidth={isSelected ? 0 : 1}
           style={{
@@ -187,8 +192,8 @@ const TreeNode = React.memo(function TreeNode({
             filter: isSelected
               ? `drop-shadow(0 0 6px ${accentColor})`
               : isHovered
-              ? "drop-shadow(0 0 4px rgba(255,255,255,0.3))"
-              : "none",
+                ? "drop-shadow(0 0 4px rgba(255,255,255,0.3))"
+                : "none",
           }}
         />
       </g>
@@ -220,8 +225,8 @@ const TreeNode = React.memo(function TreeNode({
               fill: isSelected
                 ? accentColor
                 : isHighlighted || isHovered
-                ? "var(--text-primary)"
-                : "var(--text-secondary)",
+                  ? "var(--text-primary)"
+                  : "var(--text-secondary)",
               fontSize: isSelected ? "12.5px" : isMajorNode ? "12px" : "11px",
               fontWeight: isSelected || isMajorNode ? "600" : "500",
               letterSpacing: isMajorNode ? "0.02em" : "0",
@@ -230,7 +235,7 @@ const TreeNode = React.memo(function TreeNode({
               transition: "fill 200ms ease, font-size 200ms ease",
             }}
           >
-            {node.name}
+            {displayName}
           </text>
 
           {/* Scientific name label (conditioned on zoom scale or selection) */}
@@ -296,11 +301,11 @@ const TreeBranch = React.memo(function TreeBranch({
       style={
         isHighlighted
           ? {
-              stroke: accentColor,
-              strokeWidth: 2,
-              opacity: 1,
-              transition: "stroke 200ms ease, stroke-width 200ms ease",
-            }
+            stroke: accentColor,
+            strokeWidth: 2,
+            opacity: 1,
+            transition: "stroke 200ms ease, stroke-width 200ms ease",
+          }
           : { transition: "opacity 200ms ease" }
       }
     />
@@ -322,6 +327,7 @@ export default function TreeCanvas({
   onOpenPreLuca,
   onInteraction,
 }: TreeCanvasProps) {
+  const { t } = useLanguage();
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -342,7 +348,7 @@ export default function TreeCanvas({
   const targetTransformRef = useRef<ViewportTransform>({ x: 0, y: 0, scale: 0.7 });
   const animFrameRef = useRef<number>(0);
   const isAnimatingRef = useRef(false);
-  const animateRef = useRef<() => void>(() => {});
+  const animateRef = useRef<() => void>(() => { });
 
   // Pan state
   const isPanningRef = useRef(false);
@@ -929,7 +935,7 @@ export default function TreeCanvas({
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
       onDoubleClick={handleDoubleClick}
-      aria-label="Evolutionary tree canvas — drag to pan, scroll to zoom"
+      aria-label={t("controls.canvasAria", "Evolutionary tree canvas — drag to pan, scroll to zoom")}
     >
       <svg
         ref={svgRef}
@@ -962,7 +968,7 @@ export default function TreeCanvas({
                 onClick={onOpenPreLuca}
                 role="button"
                 tabIndex={0}
-                aria-label="Explore Pre-LUCA History (Cosmic Origins, Prebiotic Chemistry, and FUCA)"
+                aria-label={t("topbar.preLucaBtnAria", "Explore Pre-LUCA History (Cosmic Origins, Prebiotic Chemistry, and FUCA)")}
               >
                 {/* Dashed upstream connector line */}
                 <line

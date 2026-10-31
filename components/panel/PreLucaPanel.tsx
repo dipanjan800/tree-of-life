@@ -31,14 +31,14 @@ export default function PreLucaPanel({
     switch (certitude) {
       case "established_consensus":
         return {
-          label: "Established Science",
+          label: ui.certitudes?.established_consensus || "Established Science",
           color: "#10b981",
           bg: "rgba(16, 185, 129, 0.12)",
           border: "rgba(16, 185, 129, 0.3)",
         };
       case "active_hypothesis":
         return {
-          label: "Active Hypothesis",
+          label: ui.certitudes?.active_hypothesis || "Active Hypothesis",
           color: "#38bdf8",
           bg: "rgba(56, 189, 248, 0.12)",
           border: "rgba(56, 189, 248, 0.3)",
@@ -46,7 +46,7 @@ export default function PreLucaPanel({
       case "theoretical_construct":
       default:
         return {
-          label: "Theoretical Construct (Date Uncertain)",
+          label: ui.certitudes?.theoretical_construct || "Theoretical Construct (Date Uncertain)",
           color: "#f43f5e",
           bg: "rgba(244, 63, 94, 0.12)",
           border: "rgba(244, 63, 94, 0.3)",
@@ -60,7 +60,6 @@ export default function PreLucaPanel({
   const stageTitle = locStage?.title || currentStage.title;
   const stageSubtitle = locStage?.subtitle || currentStage.subtitle;
   const stageTimeRange = locStage?.timeRangeDisplay || currentStage.timeRangeDisplay;
-  const stageStatus = locStage?.statusLabel || currentStage.statusLabel;
   const stageNarrative = locStage?.narrativeOverview || currentStage.narrativeOverview;
   const stageEvidence = locStage?.empiricalEvidence || currentStage.empiricalEvidence;
   const stageUncertainty = locStage?.uncertaintyNotes || currentStage.uncertaintyNotes || [];
@@ -163,7 +162,7 @@ export default function PreLucaPanel({
 
         {/* ── Stage Selector Pills (Horizontal Track) ───────────── */}
         <nav
-          aria-label="Pre-LUCA Historical Stages"
+          aria-label={t("preLuca.stagesAria", "Pre-LUCA Historical Stages")}
           className="flex items-center gap-2 px-6 py-3 shrink-0 overflow-x-auto no-scrollbar"
           style={{
             borderBottom: "1px solid var(--surface-border)",

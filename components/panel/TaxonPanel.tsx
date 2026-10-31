@@ -13,6 +13,8 @@ import {
 import { TREE_DATA } from "@/data/tree";
 import { useLanguage } from "@/lib/i18n";
 import TaxonIcon from "@/components/ui/TaxonIcon";
+import { getClaimsForTaxon } from "@/data/evidence/claims";
+import EvidenceInspectorModal from "@/components/evidence/EvidenceInspectorModal";
 
 function getEvidenceInfo(type?: EvidenceType): { label: string; color: string } {
   switch (type) {
@@ -69,6 +71,7 @@ export default function TaxonPanel({
   const [displayNode, setDisplayNode] = useState<TaxonNode | null>(node);
   const [prevNode, setPrevNode] = useState<TaxonNode | null>(node);
   const [isClosing, setIsClosing] = useState(false);
+  const [isEvidenceModalOpen, setIsEvidenceModalOpen] = useState(false);
 
   if (node !== prevNode) {
     setPrevNode(node);
@@ -106,6 +109,7 @@ export default function TaxonPanel({
   const classification = getClassification(displayNode);
   const children = displayNode.childIds?.map((id: string) => TREE_DATA.nodes[id]).filter((n): n is TaxonNode => n !== undefined) ?? [];
   const statusColor = getStatusColor(displayNode.status);
+  const taxonClaims = displayNode ? getClaimsForTaxon(displayNode.id) : [];
 
   return (
     <div
@@ -129,7 +133,7 @@ export default function TaxonPanel({
         boxShadow: "-8px 0 32px rgba(0, 0, 0, 0.6)",
       }}
       role="complementary"
-      aria-label={`Information panel for ${displayName}`}
+      aria-label={`${t("taxonPanel.panelAria", "Information panel for")} ${displayName}`}
     >
       {/* Header */}
       <div
@@ -369,7 +373,7 @@ export default function TaxonPanel({
         )}
 
         {/* Scientific Basis & Evidence */}
-        {(displayNode.evidenceType || displayNode.confidenceNotes) && (
+        {(displayNode.evidenceType || displayNode.confidenceNotes || taxonClaims.length > 0) && (
           <div
             style={{
               padding: "16px 22px",
@@ -416,11 +420,55 @@ export default function TaxonPanel({
                   borderLeft: "2px solid var(--surface-border)",
                   paddingLeft: "8px",
                   marginTop: "6px",
+                  marginBottom: "8px",
                 }}
               >
                 {displayConfidence}
               </p>
             )}
+
+            {/* Evidence Inspector Trigger Button */}
+            <button
+              onClick={() => setIsEvidenceModalOpen(true)}
+              aria-label={
+                taxonClaims.length > 0
+                  ? `${ui.evidenceInspector.viewEvidenceBtn} (${taxonClaims.length})`
+                  : ui.evidenceInspector.modalTitle
+              }
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                marginTop: displayNode.confidenceNotes ? "6px" : "4px",
+                padding: "6px 12px",
+                borderRadius: "6px",
+                background: taxonClaims.length > 0 ? "rgba(61, 142, 248, 0.1)" : "rgba(255, 255, 255, 0.04)",
+                border: `1px solid ${taxonClaims.length > 0 ? "rgba(61, 142, 248, 0.25)" : "var(--surface-border)"}`,
+                color: taxonClaims.length > 0 ? "var(--accent-primary)" : "var(--text-secondary)",
+                fontSize: "11px",
+                fontWeight: 600,
+                cursor: "pointer",
+                transition: "all 150ms ease",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = taxonClaims.length > 0 ? "rgba(61, 142, 248, 0.2)" : "rgba(255, 255, 255, 0.08)";
+                if (taxonClaims.length > 0) e.currentTarget.style.borderColor = "var(--accent-primary)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = taxonClaims.length > 0 ? "rgba(61, 142, 248, 0.1)" : "rgba(255, 255, 255, 0.04)";
+                if (taxonClaims.length > 0) e.currentTarget.style.borderColor = "rgba(61, 142, 248, 0.25)";
+              }}
+            >
+              <span aria-hidden="true">🔬</span>
+              <span>
+                {taxonClaims.length > 0
+                  ? `${ui.evidenceInspector.viewEvidenceBtn} (${taxonClaims.length})`
+                  : ui.evidenceInspector.modalTitle}
+              </span>
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                <path d="M2 5h6M5 2l3 3-3 3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
           </div>
         )}
 
@@ -495,7 +543,7 @@ export default function TaxonPanel({
                         textDecoration: "underline",
                         textUnderlineOffset: "2px",
                       }}
-                      title={`View ${targetTaxonName}`}
+                      title={`${t("taxonPanel.viewTaxonTitle", "View")} ${targetTaxonName}`}
                     >
                       {targetTaxonName} →
                     </button>
@@ -812,6 +860,15 @@ export default function TaxonPanel({
 
 
       </div>
+
+      {/* Scientific Evidence Inspector Modal */}
+      <EvidenceInspectorModal
+        isOpen={isEvidenceModalOpen}
+        onClose={() => setIsEvidenceModalOpen(false)}
+        taxonId={displayNode.id}
+        taxonName={displayName}
+        customClaims={taxonClaims}
+      />
     </div>
   );
 }

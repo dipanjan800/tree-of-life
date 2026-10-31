@@ -19,3 +19,4 @@ export * from "./ui";
 export * from "./taxa";
 export * from "./story";
 export * from "./prebiotic";
+export * from "./claims";

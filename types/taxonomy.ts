@@ -67,6 +67,8 @@ export interface TaxonNode {
   confidenceNotes?: string;
   extinctionDateMya?: number;
   admixtureEvents?: AdmixtureEvent[];
+  // Associated scientific claims (Milestone 1)
+  claimIds?: string[];
   // child IDs — populated by layout engine, not raw data
   childIds?: string[];
   // display metadata

@@ -4,6 +4,7 @@
 
 import type { TaxonomicRank, EvidenceType, Organism } from "@/types/taxonomy";
 import type { ScientificCertitude } from "@/data/prebiotic";
+import type { EvidenceCategory } from "@/types/evidence";
 import type { Locale } from "./config";
 
 export interface UIStrings {
@@ -15,6 +16,7 @@ export interface UIStrings {
     error: string;
     back: string;
     close: string;
+    clear: string;
     share: string;
     disclaimer: string;
     sourceCode: string;
@@ -45,6 +47,7 @@ export interface UIStrings {
     preLucaBtnAria: string;
     preLucaShort?: string;
     storyBtn: string;
+    storyShort?: string;
     storyBtnAria: string;
     explorerPhase: string;
     homeAria: string;
@@ -61,6 +64,7 @@ export interface UIStrings {
     hideMinimap: string;
     toggleMinimapTitle: string;
     toolbarAria: string;
+    canvasAria: string;
   };
   minimap: {
     label: string;
@@ -92,6 +96,9 @@ export interface UIStrings {
   };
   taxonPanel: {
     closeAria: string;
+    panelAria: string;
+    viewTaxonTitle: string;
+    previewAria: string;
     rankLabel: string;
     estimatedOrigin: string;
     extinction: string;
@@ -129,6 +136,7 @@ export interface UIStrings {
     badge: string;
     flowSubtitle: string;
     closeAria: string;
+    stagesAria: string;
     geochemicalEvidence: string;
     certitudeStatus: string;
     scientificCitations: string;
@@ -155,6 +163,8 @@ export interface UIStrings {
     enterExplorer: string;
     replayStory: string;
     stageCounter: string;
+    stagesAria: string;
+    narrativeAria: string;
     keyMilestones: string;
     scientificNotes: string;
     imageAttribution: string;
@@ -168,6 +178,34 @@ export interface UIStrings {
     scientificReconstruction?: string;
     keyboardHint?: string;
     or?: string;
+  };
+  evidenceInspector: {
+    modalTitle: string;
+    modalSubtitle: string;
+    viewEvidenceBtn: string;
+    viewEvidenceCount: string;
+    closeBtn: string;
+    emptyTitle: string;
+    emptyDescription: string;
+    claimHeadline: string;
+    evidenceCategory: string;
+    uncertaintyTitle: string;
+    formationTitle: string;
+    specimensTitle: string;
+    referencesTitle: string;
+    verifiedSource: string;
+    unverifiedSource: string;
+    underReview: string;
+    verifiedClaim: string;
+    lastReviewed: string;
+    doiLabel: string;
+    doiPending: string;
+    showAuditDetails: string;
+    hideAuditDetails: string;
+    auditLogLabel: string;
+    translatedTitleLabel: string;
+    originalEnglishTitleLabel: string;
+    categories: Record<EvidenceCategory, string>;
   };
   ranks: Record<TaxonomicRank, string>;
   evidenceTypes: Record<EvidenceType, string>;
@@ -230,10 +268,21 @@ export interface LocalizedPrebioticStage {
   evidenceSummary?: string[];
 }
 
+export interface LocalizedEvidenceClaim {
+  id: string;
+  statement: string;
+  explanation: string;
+  uncertaintyOrLimitations?: string;
+  geologicalFormation?: string;
+  referenceExplanations?: Record<string, string>;
+  referenceVerificationNotes?: Record<string, string>;
+}
+
 export interface TranslationDictionary {
   locale: Locale;
   ui: UIStrings;
   taxa: Record<string, LocalizedTaxon>;
   storyStages: Record<string, LocalizedStoryStage>;
   prebioticStages: Record<string, LocalizedPrebioticStage>;
+  claims: Record<string, LocalizedEvidenceClaim>;
 }
