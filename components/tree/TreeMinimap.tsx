@@ -135,7 +135,7 @@ export default function TreeMinimap({
       style={{
         bottom: isCompact ? "12px" : "16px",
         right: isPanelOpen
-          ? "calc(min(100%, 360px) + 16px)"
+          ? "calc(min(100%, 380px) + 16px)"
           : isCompact
           ? "12px"
           : "16px",

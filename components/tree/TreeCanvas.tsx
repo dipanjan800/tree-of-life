@@ -245,9 +245,10 @@ const TreeNode = React.memo(function TreeNode({
               y={10}
               className="node-sublabel"
               style={{
-                fill: isSelected ? "rgba(168, 196, 232, 0.7)" : "var(--text-tertiary)",
-                fontSize: "10px",
+                fill: isSelected ? "rgba(186, 215, 255, 0.95)" : "var(--text-secondary)",
+                fontSize: "11px",
                 fontStyle: "italic",
+                fontWeight: "400",
                 cursor: "pointer",
                 pointerEvents: "auto",
               }}

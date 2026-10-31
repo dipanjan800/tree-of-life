@@ -252,8 +252,8 @@ export default function TreeSearch({
                     {node.scientificName && (
                       <div
                         style={{
-                          fontSize: "11px",
-                          color: "var(--text-tertiary)",
+                          fontSize: "12px",
+                          color: "var(--text-secondary)",
                           fontStyle: "italic",
                           whiteSpace: "nowrap",
                           overflow: "hidden",

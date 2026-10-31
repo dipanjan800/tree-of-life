@@ -225,9 +225,9 @@ body {
 }
 
 .node-sublabel {
-  font-size: 9.5px;
+  font-size: 11px;
   font-weight: 400;
-  fill: var(--text-tertiary);
+  fill: var(--text-secondary);
   font-style: italic;
   cursor: pointer;
   pointer-events: auto;

@@ -59,7 +59,7 @@ export default function TreeControls({
     <div
       className="absolute top-[calc(50%-70px)] -translate-y-1/2 flex flex-col items-center"
       style={{
-        right: isPanelOpen ? "calc(min(100%, 360px) + 16px)" : "16px",
+        right: isPanelOpen ? "calc(min(100%, 380px) + 16px)" : "16px",
         zIndex: 35,
         background: "rgba(10, 15, 24, 0.88)",
         backdropFilter: "blur(20px) saturate(180%)",

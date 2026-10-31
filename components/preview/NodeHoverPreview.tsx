@@ -74,10 +74,10 @@ export default function NodeHoverPreview({
   const CARD_HEIGHT = isMobile ? 156 : 148;
 
   const isCompact = viewportDimensions.width < 768;
-  // Account for TaxonPanel (360px) + gap (16px) + TreeControls (44px) + margin (16px) = 436px
+  // Account for TaxonPanel (380px) + gap (16px) + TreeControls (44px) + margin (16px) = 456px
   const maxAvailableRight =
     isPanelOpen && !isCompact
-      ? viewportDimensions.width - 436
+      ? viewportDimensions.width - 456
       : viewportDimensions.width - 76;
 
   // Intelligent positioning relative to the node
@@ -278,7 +278,9 @@ export default function NodeHoverPreview({
               style={{
                 fontStyle: "italic",
                 color: "var(--text-accent)",
-                fontWeight: 400,
+                fontSize: "13px",
+                fontWeight: 500,
+                letterSpacing: "0.01em",
               }}
             >
               {displayNode.scientificName}

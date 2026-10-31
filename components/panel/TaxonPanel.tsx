@@ -1,35 +1,26 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import type { TaxonNode, EvidenceType } from "@/types/taxonomy";
+import type { TaxonNode } from "@/types/taxonomy";
 import {
   getNodeAccentColor,
   getRankDisplay,
   getStatusLabel,
   getStatusColor,
-  formatMya,
-  toBengaliDigits,
 } from "@/lib/tree-utils";
-import { TREE_DATA } from "@/data/tree";
 import { useLanguage } from "@/lib/i18n";
 import TaxonIcon from "@/components/ui/TaxonIcon";
 import { getClaimsForTaxon } from "@/data/evidence/claims";
+import { getTaxonDossier } from "@/data/dossier";
 import EvidenceInspectorModal from "@/components/evidence/EvidenceInspectorModal";
-
-function getEvidenceInfo(type?: EvidenceType): { label: string; color: string } {
-  switch (type) {
-    case "fossil":
-      return { label: "Fossil Record", color: "#10b981" };
-    case "molecular_clock":
-      return { label: "Molecular Clock", color: "#3d8ef8" };
-    case "phylogenomic_inference":
-      return { label: "Phylogenomic Inference", color: "#8b5cf6" };
-    case "hypothesis":
-      return { label: "Active Hypothesis", color: "#f59e0b" };
-    default:
-      return { label: "Phylogenetic Analysis", color: "#60a5fa" };
-  }
-}
+import OrganismTabBar, { type OrganismTabId } from "./organism/OrganismTabBar";
+import OverviewTab from "./organism/OverviewTab";
+import ClassificationTab from "./organism/ClassificationTab";
+import EvolutionTab from "./organism/EvolutionTab";
+import MorphologyTab from "./organism/MorphologyTab";
+import TimelineTab from "./organism/TimelineTab";
+import EvidenceTab from "./organism/EvidenceTab";
+import SpecimensTab from "./organism/SpecimensTab";
 
 interface TaxonPanelProps {
   node: TaxonNode | null;
@@ -38,46 +29,26 @@ interface TaxonPanelProps {
   onOpenPreLuca?: () => void;
 }
 
-interface ClassificationEntry {
-  rank: string;
-  name: string;
-  id: string;
-}
-
-function getClassification(node: TaxonNode): ClassificationEntry[] {
-  const chain: ClassificationEntry[] = [];
-  let current: TaxonNode | null = node;
-
-  while (current) {
-    chain.unshift({
-      rank: getRankDisplay(current.rank),
-      name: current.name,
-      id: current.id,
-    });
-    if (!current.parentId) break;
-    current = TREE_DATA.nodes[current.parentId] ?? null;
-  }
-
-  return chain;
-}
-
 export default function TaxonPanel({
   node,
   onClose,
   onNavigate,
   onOpenPreLuca,
 }: TaxonPanelProps) {
-  const { t, localizeTaxon, ui, locale } = useLanguage();
+  const { t, localizeTaxon, ui } = useLanguage();
   const [displayNode, setDisplayNode] = useState<TaxonNode | null>(node);
   const [prevNode, setPrevNode] = useState<TaxonNode | null>(node);
   const [isClosing, setIsClosing] = useState(false);
   const [isEvidenceModalOpen, setIsEvidenceModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<OrganismTabId>("overview");
 
   if (node !== prevNode) {
     setPrevNode(node);
     if (node) {
       setDisplayNode(node);
       setIsClosing(false);
+      // Reset to overview when opening a new taxon
+      setActiveTab("overview");
     } else {
       setIsClosing(true);
     }
@@ -96,20 +67,24 @@ export default function TaxonPanel({
   if (!displayNode) return null;
 
   const isVisible = Boolean(node) && !isClosing;
-
   const loc = localizeTaxon(displayNode);
   const displayName = loc?.name || displayNode.name;
   const displayDescription = loc?.description || displayNode.description;
-  const displayConfidence = loc?.confidenceNotes || displayNode.confidenceNotes;
   const rankLabel = ui.ranks[displayNode.rank] || getRankDisplay(displayNode.rank);
-  const statusText = displayNode.status ? (ui.organismStatus[displayNode.status] || getStatusLabel(displayNode.status)) : "";
-  const evidenceText = displayNode.evidenceType ? (ui.evidenceTypes[displayNode.evidenceType] || getEvidenceInfo(displayNode.evidenceType).label) : "";
-
-  const accentColor = getNodeAccentColor(displayNode);
-  const classification = getClassification(displayNode);
-  const children = displayNode.childIds?.map((id: string) => TREE_DATA.nodes[id]).filter((n): n is TaxonNode => n !== undefined) ?? [];
   const statusColor = getStatusColor(displayNode.status);
-  const taxonClaims = displayNode ? getClaimsForTaxon(displayNode.id) : [];
+  const accentColor = getNodeAccentColor(displayNode);
+
+  // Retrieve curated scientific dossier and linked claims
+  const dossier = getTaxonDossier(displayNode.id);
+  const taxonClaims = getClaimsForTaxon(displayNode.id);
+
+  const hasEvidence = taxonClaims.length > 0;
+  const hasSpecimens = Boolean(dossier?.specimens && dossier.specimens.length > 0);
+  const hasMorphology = Boolean(
+    dossier?.morphology?.bodyPlan ||
+      (dossier?.morphology?.distinguishingFeatures && dossier.morphology.distinguishingFeatures.length > 0) ||
+      displayNode.visualAsset
+  );
 
   return (
     <div
@@ -118,7 +93,7 @@ export default function TaxonPanel({
         top: 0,
         right: 0,
         bottom: 0,
-        width: "min(100%, 360px)",
+        width: "min(100%, 380px)",
         maxWidth: "100%",
         zIndex: 30,
         transform: isVisible ? "translateX(0)" : "translateX(100%)",
@@ -126,22 +101,23 @@ export default function TaxonPanel({
         transition: "transform 320ms cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 280ms ease",
         display: "flex",
         flexDirection: "column",
-        background: "rgba(8, 12, 16, 0.94)",
-        backdropFilter: "blur(20px) saturate(180%)",
-        WebkitBackdropFilter: "blur(20px) saturate(180%)",
+        background: "rgba(8, 12, 16, 0.96)",
+        backdropFilter: "blur(24px) saturate(180%)",
+        WebkitBackdropFilter: "blur(24px) saturate(180%)",
         borderLeft: "1px solid var(--surface-border)",
-        boxShadow: "-8px 0 32px rgba(0, 0, 0, 0.6)",
+        boxShadow: "-12px 0 36px rgba(0, 0, 0, 0.65)",
       }}
       role="complementary"
       aria-label={`${t("taxonPanel.panelAria", "Information panel for")} ${displayName}`}
     >
-      {/* Header */}
+      {/* ── Top Header ────────────────────────────────────────── */}
       <div
         style={{
-          padding: "20px 22px 16px",
+          padding: "16px 18px 12px",
           borderBottom: "1px solid var(--surface-border)",
           position: "relative",
           flexShrink: 0,
+          background: "linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 100%)",
         }}
       >
         {/* Close button */}
@@ -155,8 +131,8 @@ export default function TaxonPanel({
             background: "rgba(255,255,255,0.08)",
             border: "1px solid var(--surface-border)",
             borderRadius: "6px",
-            width: "36px",
-            height: "36px",
+            width: "32px",
+            height: "32px",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -167,12 +143,12 @@ export default function TaxonPanel({
             transition: "all 150ms ease",
           }}
           onMouseEnter={(e) => {
-            (e.currentTarget as HTMLElement).style.color = "var(--text-primary)";
-            (e.currentTarget as HTMLElement).style.borderColor = "var(--surface-border-hover)";
+            e.currentTarget.style.color = "var(--text-primary)";
+            e.currentTarget.style.borderColor = "var(--surface-border-hover)";
           }}
           onMouseLeave={(e) => {
-            (e.currentTarget as HTMLElement).style.color = "var(--text-tertiary)";
-            (e.currentTarget as HTMLElement).style.borderColor = "var(--surface-border)";
+            e.currentTarget.style.color = "var(--text-secondary)";
+            e.currentTarget.style.borderColor = "var(--surface-border)";
           }}
         >
           <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
@@ -185,9 +161,9 @@ export default function TaxonPanel({
           </svg>
         </button>
 
-        {/* Emoji + Rank badge */}
-        <div className="flex items-center gap-2.5 mb-3">
-          <TaxonIcon node={displayNode} size={24} />
+        {/* Icon + Rank badge */}
+        <div className="flex items-center gap-2 mb-2 pr-10">
+          <TaxonIcon node={displayNode} size={22} />
           <div
             style={{
               fontSize: "10px",
@@ -196,672 +172,154 @@ export default function TaxonPanel({
               textTransform: "uppercase",
               color: accentColor,
               background: `${accentColor}18`,
-              padding: "3px 8px",
+              padding: "2px 7px",
               borderRadius: "4px",
               border: `1px solid ${accentColor}30`,
             }}
           >
             {rankLabel}
           </div>
+          {displayNode.status && (
+            <div
+              className="flex items-center gap-1.5"
+              style={{
+                fontSize: "10px",
+                color: statusColor,
+                fontWeight: 600,
+                textTransform: "uppercase",
+                letterSpacing: "0.06em",
+              }}
+            >
+              <div
+                style={{
+                  width: 5,
+                  height: 5,
+                  borderRadius: "50%",
+                  background: statusColor,
+                  flexShrink: 0,
+                }}
+              />
+              <span>{ui.organismStatus[displayNode.status] || getStatusLabel(displayNode.status)}</span>
+            </div>
+          )}
         </div>
 
-        {/* Name */}
+        {/* Taxon Titles */}
         <h2
           style={{
-            fontSize: "22px",
-            fontWeight: 600,
+            fontSize: "18px",
+            fontWeight: 700,
             color: "var(--text-primary)",
-            letterSpacing: "-0.02em",
             lineHeight: 1.2,
-            marginBottom: "4px",
+            letterSpacing: "-0.02em",
+            margin: 0,
             paddingRight: "36px",
           }}
         >
           {displayName}
         </h2>
 
-        {/* Scientific name */}
-        {displayNode.scientificName && displayNode.scientificName !== displayNode.name && (
+        {displayNode.scientificName && displayNode.scientificName !== displayName && (
           <p
             style={{
-              fontSize: "13px",
+              fontSize: "13.5px",
               fontStyle: "italic",
-              color: "var(--text-secondary)",
-              marginBottom: "8px",
+              color: "var(--text-accent)",
+              margin: "3px 0 0",
+              fontWeight: 500,
+              letterSpacing: "0.01em",
             }}
           >
             {displayNode.scientificName}
           </p>
         )}
-
-        {/* Status & Date row */}
-        <div className="flex items-center gap-3 mt-2">
-          <div className="flex items-center gap-1.5">
-            <div
-              style={{
-                width: 6,
-                height: 6,
-                borderRadius: "50%",
-                background: statusColor,
-                boxShadow: `0 0 6px ${statusColor}`,
-              }}
-            />
-            <span
-              style={{
-                fontSize: "11.5px",
-                fontWeight: 500,
-                color: statusColor,
-              }}
-            >
-              {statusText}
-            </span>
-          </div>
-          {(displayNode.estimatedOrigin || displayNode.estimatedOriginMya !== undefined) && (
-            <>
-              <span style={{ color: "var(--surface-border-hover)", fontSize: "11px" }}>·</span>
-              <span style={{ fontSize: "11.5px", color: "var(--text-tertiary)" }}>
-                {locale === "en"
-                  ? (displayNode.estimatedOrigin || formatMya(displayNode.estimatedOriginMya, locale))
-                  : formatMya(displayNode.estimatedOriginMya, locale)}
-              </span>
-            </>
-          )}
-        </div>
       </div>
 
-      {/* Scrollable content */}
-      <div style={{ flex: 1, overflowY: "auto", padding: "0" }}>
-        {/* Pre-LUCA Antecedents Educational Discovery Card (LUCA only) */}
-        {displayNode.id === "luca" && onOpenPreLuca && (
-          <div
-            style={{
-              padding: "16px 22px",
-              background: "linear-gradient(135deg, rgba(168, 85, 247, 0.08) 0%, rgba(6, 182, 212, 0.05) 100%)",
-              borderBottom: "1px solid var(--surface-border)",
-              borderLeft: "3px solid #a855f7",
-            }}
-          >
-            <div className="flex items-center gap-1.5 mb-1.5">
-              <span className="text-xs">✨</span>
-              <span
-                style={{
-                  fontSize: "10px",
-                  fontWeight: 700,
-                  letterSpacing: "0.1em",
-                  textTransform: "uppercase",
-                  color: "#c084fc",
-                }}
-              >
-                {t("taxonPanel.deepTimeAntecedents", "Deep-Time Antecedents")}
-              </span>
-            </div>
-            <p
-              style={{
-                fontSize: "12.5px",
-                lineHeight: "1.6",
-                color: "var(--text-secondary)",
-                marginBottom: "12px",
-              }}
-            >
-              {locale === "bn-IN"
-                ? "লুকা হলো সমস্ত পরিচিত জীবিত কোষীয় জীবনের সাধারণ পূর্বপুরুষ (~৩.৮ বিলিয়ন বছর আগে), তবে এরও পূর্বে শত শত মিলিয়ন বছর ধরে মহাজাগতিক বিবর্তন, পৃথিবীর বৃদ্ধি ও প্রাক-জৈব রসায়নের সমৃদ্ধ ইতিহাস ছিল।"
-                : "LUCA is the inferred common ancestor of all modern surviving cellular life (~3.8 BYA), but was preceded by billions of years of cosmic history, planetary accretion, and prebiotic chemistry."}
-            </p>
-            <button
-              onClick={onOpenPreLuca}
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "8px",
-                padding: "7px 15px",
-                borderRadius: "100px",
-                background: "rgba(168, 85, 247, 0.15)",
-                border: "1px solid rgba(168, 85, 247, 0.35)",
-                color: "#e9d5ff",
-                fontSize: "11px",
-                fontWeight: 600,
-                cursor: "pointer",
-                transition: "all 150ms ease",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = "rgba(168, 85, 247, 0.25)";
-                e.currentTarget.style.borderColor = "#c084fc";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "rgba(168, 85, 247, 0.15)";
-                e.currentTarget.style.borderColor = "rgba(168, 85, 247, 0.35)";
-              }}
-            >
-              <span>{t("taxonPanel.exploreAntecedents", "Explore Pre-LUCA History")}</span>
-              <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                <path d="M2 5h6M5 2l3 3-3 3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-          </div>
+      {/* ── Multi-Tab Dossier Bar ─────────────────────────────── */}
+      <OrganismTabBar
+        activeTab={activeTab}
+        onChangeTab={setActiveTab}
+        hasEvidence={hasEvidence}
+        hasSpecimens={hasSpecimens}
+        hasMorphology={hasMorphology}
+      />
+
+      {/* ── Tab Content Container (Scrollable) ────────────────── */}
+      <div
+        id={`dossier-panel-${activeTab}`}
+        role="tabpanel"
+        aria-labelledby={`dossier-tab-${activeTab}`}
+        className="flex-1 overflow-y-auto"
+        style={{
+          scrollbarWidth: "thin",
+          scrollbarColor: "rgba(255,255,255,0.1) transparent",
+        }}
+      >
+        {activeTab === "overview" && (
+          <OverviewTab
+            node={displayNode}
+            dossier={dossier}
+            displayName={displayName}
+            displayDescription={displayDescription}
+            accentColor={accentColor}
+            onOpenEvidence={() => setIsEvidenceModalOpen(true)}
+            evidenceCount={taxonClaims.length}
+          />
         )}
 
-        {/* Description */}
-        {displayNode.description && (
-          <div
-            style={{
-              padding: "18px 22px",
-              borderBottom: "1px solid var(--surface-border)",
-            }}
-          >
-            <h3
-              style={{
-                fontSize: "10px",
-                fontWeight: 700,
-                letterSpacing: "0.1em",
-                textTransform: "uppercase",
-                color: "var(--text-tertiary)",
-                marginBottom: "10px",
-              }}
-            >
-              {t("taxonPanel.about", "About")}
-            </h3>
-            <p
-              style={{
-                fontSize: "13px",
-                lineHeight: "1.65",
-                color: "var(--text-secondary)",
-              }}
-            >
-              {displayDescription}
-            </p>
-          </div>
+        {activeTab === "classification" && (
+          <ClassificationTab
+            node={displayNode}
+            onNavigate={onNavigate}
+            accentColor={accentColor}
+          />
         )}
 
-        {/* Scientific Basis & Evidence */}
-        {(displayNode.evidenceType || displayNode.confidenceNotes || taxonClaims.length > 0) && (
-          <div
-            style={{
-              padding: "16px 22px",
-              borderBottom: "1px solid var(--surface-border)",
-              background: "rgba(255, 255, 255, 0.015)",
-            }}
-          >
-            <div className="flex items-center justify-between mb-2">
-              <h3
-                style={{
-                  fontSize: "10px",
-                  fontWeight: 700,
-                  letterSpacing: "0.1em",
-                  textTransform: "uppercase",
-                  color: "var(--text-tertiary)",
-                }}
-              >
-                {t("taxonPanel.scientificBasis", "Scientific Basis")}
-              </h3>
-              {displayNode.evidenceType && (
-                <span
-                  style={{
-                    fontSize: "9.5px",
-                    fontWeight: 700,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.06em",
-                    padding: "2px 7px",
-                    borderRadius: "4px",
-                    color: getEvidenceInfo(displayNode.evidenceType).color,
-                    background: `${getEvidenceInfo(displayNode.evidenceType).color}15`,
-                    border: `1px solid ${getEvidenceInfo(displayNode.evidenceType).color}30`,
-                  }}
-                >
-                  {evidenceText}
-                </span>
-              )}
-            </div>
-            {displayNode.confidenceNotes && (
-              <p
-                style={{
-                  fontSize: "12px",
-                  lineHeight: "1.6",
-                  color: "var(--text-secondary)",
-                  borderLeft: "2px solid var(--surface-border)",
-                  paddingLeft: "8px",
-                  marginTop: "6px",
-                  marginBottom: "8px",
-                }}
-              >
-                {displayConfidence}
-              </p>
-            )}
-
-            {/* Evidence Inspector Trigger Button */}
-            <button
-              onClick={() => setIsEvidenceModalOpen(true)}
-              aria-label={
-                taxonClaims.length > 0
-                  ? `${ui.evidenceInspector.viewEvidenceBtn} (${taxonClaims.length})`
-                  : ui.evidenceInspector.modalTitle
-              }
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "6px",
-                marginTop: displayNode.confidenceNotes ? "6px" : "4px",
-                padding: "6px 12px",
-                borderRadius: "6px",
-                background: taxonClaims.length > 0 ? "rgba(61, 142, 248, 0.1)" : "rgba(255, 255, 255, 0.04)",
-                border: `1px solid ${taxonClaims.length > 0 ? "rgba(61, 142, 248, 0.25)" : "var(--surface-border)"}`,
-                color: taxonClaims.length > 0 ? "var(--accent-primary)" : "var(--text-secondary)",
-                fontSize: "11px",
-                fontWeight: 600,
-                cursor: "pointer",
-                transition: "all 150ms ease",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = taxonClaims.length > 0 ? "rgba(61, 142, 248, 0.2)" : "rgba(255, 255, 255, 0.08)";
-                if (taxonClaims.length > 0) e.currentTarget.style.borderColor = "var(--accent-primary)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = taxonClaims.length > 0 ? "rgba(61, 142, 248, 0.1)" : "rgba(255, 255, 255, 0.04)";
-                if (taxonClaims.length > 0) e.currentTarget.style.borderColor = "rgba(61, 142, 248, 0.25)";
-              }}
-            >
-              <span aria-hidden="true">🔬</span>
-              <span>
-                {taxonClaims.length > 0
-                  ? `${ui.evidenceInspector.viewEvidenceBtn} (${taxonClaims.length})`
-                  : ui.evidenceInspector.modalTitle}
-              </span>
-              <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                <path d="M2 5h6M5 2l3 3-3 3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-          </div>
+        {activeTab === "evolution" && (
+          <EvolutionTab
+            node={displayNode}
+            dossier={dossier}
+            onNavigate={onNavigate}
+            onOpenPreLuca={onOpenPreLuca}
+            accentColor={accentColor}
+          />
         )}
 
-        {/* Ancient Admixture & Gene Flow */}
-        {displayNode.admixtureEvents && displayNode.admixtureEvents.length > 0 && (
-          <div
-            style={{
-              padding: "16px 22px",
-              borderBottom: "1px solid var(--surface-border)",
-              background: "rgba(245, 158, 11, 0.03)",
-            }}
-          >
-            <div className="flex items-center justify-between mb-2">
-              <h3
-                style={{
-                  fontSize: "10px",
-                  fontWeight: 700,
-                  letterSpacing: "0.1em",
-                  textTransform: "uppercase",
-                  color: "#f59e0b",
-                }}
-              >
-                {t("taxonPanel.ancientAdmixtureTitle", "Ancient Admixture & Gene Flow")}
-              </h3>
-              <span
-                style={{
-                  fontSize: "9px",
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.05em",
-                  padding: "2px 6px",
-                  borderRadius: "4px",
-                  color: "#f59e0b",
-                  background: "rgba(245, 158, 11, 0.12)",
-                  border: "1px solid rgba(245, 158, 11, 0.25)",
-                }}
-              >
-                {t("taxonPanel.reticulateIntrogression", "Reticulate Introgression")}
-              </span>
-            </div>
-            {displayNode.admixtureEvents.map((evt, idx) => {
-              const locEvt = loc?.admixtureEvents?.[idx];
-              const targetTaxonName = locEvt?.targetTaxonName || evt.targetTaxonName;
-              const percentageRange = locEvt?.percentageRange || evt.percentageRange;
-              const period = locEvt?.period || evt.period;
-              const geography = locEvt?.geography || evt.geography;
-              const significance = locEvt?.significance || evt.significance;
-
-              return (
-                <div
-                  key={idx}
-                  style={{
-                    marginTop: idx > 0 ? "10px" : "6px",
-                    padding: "10px 12px",
-                    borderRadius: "6px",
-                    background: "rgba(255, 255, 255, 0.025)",
-                    border: "1px solid rgba(245, 158, 11, 0.2)",
-                  }}
-                >
-                  <div className="flex items-center justify-between mb-1">
-                    <button
-                      onClick={() => onNavigate(evt.targetTaxonId)}
-                      style={{
-                        fontSize: "12px",
-                        fontWeight: 600,
-                        color: "#fbbf24",
-                        textAlign: "left",
-                        cursor: "pointer",
-                        background: "none",
-                        border: "none",
-                        padding: 0,
-                        textDecoration: "underline",
-                        textUnderlineOffset: "2px",
-                      }}
-                      title={`${t("taxonPanel.viewTaxonTitle", "View")} ${targetTaxonName}`}
-                    >
-                      {targetTaxonName} →
-                    </button>
-                    <span
-                      style={{
-                        fontSize: "9.5px",
-                        fontWeight: 700,
-                        color: "#fef3c7",
-                        background: "rgba(245, 158, 11, 0.2)",
-                        padding: "1px 5px",
-                        borderRadius: "3px",
-                      }}
-                    >
-                      {percentageRange}
-                    </span>
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "11px",
-                      color: "var(--text-tertiary)",
-                      marginBottom: "4px",
-                    }}
-                  >
-                    {period} · {geography}
-                  </div>
-                  <p
-                    style={{
-                      fontSize: "11.5px",
-                      lineHeight: "1.5",
-                      color: "var(--text-secondary)",
-                      margin: 0,
-                    }}
-                  >
-                    {significance}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
+        {activeTab === "morphology" && (
+          <MorphologyTab
+            node={displayNode}
+            dossier={dossier}
+            accentColor={accentColor}
+          />
         )}
 
-        {/* Visual Context & Provenance */}
-        {displayNode.visualAsset && (
-          <div
-            style={{
-              padding: "14px 22px",
-              borderBottom: "1px solid var(--surface-border)",
-            }}
-          >
-            <div className="flex items-center justify-between mb-2">
-              <h3
-                style={{
-                  fontSize: "10px",
-                  fontWeight: 700,
-                  letterSpacing: "0.1em",
-                  textTransform: "uppercase",
-                  color: "var(--text-tertiary)",
-                }}
-              >
-                {t("taxonPanel.visualProvenance", "Visual Provenance")}
-              </h3>
-              <span
-                style={{
-                  fontSize: "9px",
-                  padding: "2px 6px",
-                  borderRadius: "4px",
-                  background: "rgba(255,255,255,0.06)",
-                  border: "1px solid var(--surface-border)",
-                  color: "var(--text-tertiary)",
-                }}
-              >
-                {loc?.visualAsset?.licenseText || displayNode.visualAsset.license}
-              </span>
-            </div>
-            {displayNode.visualAsset.isReconstruction && (
-              <div
-                style={{
-                  display: "inline-block",
-                  fontSize: "9.5px",
-                  fontWeight: 600,
-                  color: "var(--accent-extinct)",
-                  marginBottom: "4px",
-                }}
-              >
-                {t("taxonPanel.artisticReconstruction", "* Artistic reconstruction (not a photograph)")}
-              </div>
-            )}
-            <div style={{ fontSize: "11px", color: "var(--text-secondary)", lineHeight: 1.4 }}>
-              {loc?.visualAsset?.caption || displayNode.visualAsset.caption || loc?.visualAsset?.altText || displayNode.visualAsset.altText}
-            </div>
-            <div style={{ fontSize: "10px", color: "var(--text-tertiary)", marginTop: "3px" }}>
-              {t("taxonPanel.sourceLabel", "Source:")} {displayNode.visualAsset.sourceName} · {displayNode.visualAsset.authorCredit}
-            </div>
-          </div>
+        {activeTab === "timeline" && (
+          <TimelineTab
+            node={displayNode}
+            dossier={dossier}
+            accentColor={accentColor}
+          />
         )}
 
-        {/* Classification — Vertical Ancestry Trail */}
-        <div
-          style={{
-            padding: "18px 22px",
-            borderBottom: "1px solid var(--surface-border)",
-          }}
-        >
-          <h3
-            style={{
-              fontSize: "10px",
-              fontWeight: 700,
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-              color: "var(--text-tertiary)",
-              marginBottom: "14px",
-            }}
-          >
-            {t("taxonPanel.evolutionaryLineage", "Evolutionary Lineage")}
-          </h3>
-          <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
-            {classification.map((entry, i) => {
-              const isCurrentNode = entry.id === displayNode.id;
-              const isLast = i === classification.length - 1;
-              return (
-                <div key={entry.id} style={{ display: "flex", alignItems: "stretch", minHeight: 0 }}>
-                  {/* Left: Connector rail with node dot and vertical line */}
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      width: "20px",
-                      flexShrink: 0,
-                      marginRight: "10px",
-                    }}
-                  >
-                    {/* Dot */}
-                    <div
-                      style={{
-                        width: isCurrentNode ? 10 : 8,
-                        height: isCurrentNode ? 10 : 8,
-                        borderRadius: "50%",
-                        background: isCurrentNode ? accentColor : "rgba(255,255,255,0.18)",
-                        border: isCurrentNode ? `2px solid ${accentColor}` : "2px solid rgba(255,255,255,0.12)",
-                        boxShadow: isCurrentNode ? `0 0 8px ${accentColor}60` : "none",
-                        flexShrink: 0,
-                        marginTop: "8px",
-                        transition: "all 150ms ease",
-                      }}
-                    />
-                    {/* Vertical connector line (except on last item) */}
-                    {!isLast && (
-                      <div
-                        style={{
-                          flex: 1,
-                          width: "1.5px",
-                          background: isCurrentNode
-                            ? `linear-gradient(to bottom, ${accentColor}50, rgba(255,255,255,0.08))`
-                            : "rgba(255,255,255,0.08)",
-                          minHeight: "8px",
-                        }}
-                      />
-                    )}
-                  </div>
-
-                  {/* Right: Rank badge + Name as clickable button */}
-                  <button
-                    onClick={() => !isCurrentNode && onNavigate(entry.id)}
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "2px",
-                      background: isCurrentNode ? `${accentColor}10` : "transparent",
-                      border: isCurrentNode ? `1px solid ${accentColor}20` : "1px solid transparent",
-                      borderRadius: "8px",
-                      padding: "5px 10px 8px",
-                      marginBottom: isLast ? 0 : "2px",
-                      cursor: isCurrentNode ? "default" : "pointer",
-                      textAlign: "left",
-                      transition: "all 150ms ease",
-                      flex: 1,
-                      minWidth: 0,
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!isCurrentNode) {
-                        (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.04)";
-                        (e.currentTarget as HTMLElement).style.borderColor = "var(--surface-border)";
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!isCurrentNode) {
-                        (e.currentTarget as HTMLElement).style.background = "transparent";
-                        (e.currentTarget as HTMLElement).style.borderColor = "transparent";
-                      }
-                    }}
-                  >
-                    {/* Rank badge */}
-                    <span
-                      style={{
-                        fontSize: "9px",
-                        fontWeight: 700,
-                        color: isCurrentNode ? accentColor : "var(--text-tertiary)",
-                        textTransform: "uppercase",
-                        letterSpacing: "0.08em",
-                        lineHeight: 1.3,
-                      }}
-                    >
-                      {(TREE_DATA.nodes[entry.id] ? ui.ranks[TREE_DATA.nodes[entry.id].rank] : null) || entry.rank}
-                    </span>
-                    {/* Name */}
-                    <span
-                      style={{
-                        fontSize: "13px",
-                        fontWeight: isCurrentNode ? 600 : 400,
-                        color: isCurrentNode ? accentColor : "var(--text-secondary)",
-                        lineHeight: 1.3,
-                        wordBreak: "break-word",
-                      }}
-                    >
-                      {localizeTaxon(TREE_DATA.nodes[entry.id])?.name || entry.name}
-                    </span>
-                  </button>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Children / Descendants */}
-        {children.length > 0 && (
-          <div style={{ padding: "18px 22px", borderBottom: "1px solid var(--surface-border)" }}>
-            <h3
-              style={{
-                fontSize: "10px",
-                fontWeight: 700,
-                letterSpacing: "0.1em",
-                textTransform: "uppercase",
-                color: "var(--text-tertiary)",
-                marginBottom: "10px",
-              }}
-            >
-              {t("taxonPanel.includes", "Includes")} ({locale === "bn-IN" ? toBengaliDigits(children.length) : children.length})
-            </h3>
-            <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-              {children.slice(0, 8).map((child: TaxonNode) => {
-                if (!child) return null;
-                const childAccent = getNodeAccentColor(child);
-                return (
-                  <button
-                    key={child.id}
-                    onClick={() => onNavigate(child.id)}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "10px",
-                      background: "transparent",
-                      border: "1px solid transparent",
-                      borderRadius: "7px",
-                      padding: "6px 10px",
-                      cursor: "pointer",
-                      textAlign: "left",
-                      transition: "all 150ms ease",
-                    }}
-                    onMouseEnter={(e) => {
-                      (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.04)";
-                      (e.currentTarget as HTMLElement).style.borderColor = "var(--surface-border)";
-                    }}
-                    onMouseLeave={(e) => {
-                      (e.currentTarget as HTMLElement).style.background = "transparent";
-                      (e.currentTarget as HTMLElement).style.borderColor = "transparent";
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: 6,
-                        height: 6,
-                        borderRadius: "50%",
-                        background: childAccent,
-                        flexShrink: 0,
-                      }}
-                    />
-                    <span style={{ fontSize: "13px", color: "var(--text-secondary)" }}>
-                      {localizeTaxon(child)?.name || child.name}
-                    </span>
-                    <TaxonIcon node={child} size={14} style={{ marginLeft: "auto" }} />
-                  </button>
-                );
-              })}
-              {children.length > 8 && (
-                <p style={{ fontSize: "11px", color: "var(--text-tertiary)", padding: "4px 10px" }}>
-                  + {locale === "bn-IN" ? toBengaliDigits(children.length - 8) : children.length - 8} {t("taxonPanel.moreDescendants", "more…")}
-                </p>
-              )}
-            </div>
-          </div>
+        {activeTab === "evidence" && (
+          <EvidenceTab
+            node={displayNode}
+            claims={taxonClaims}
+            accentColor={accentColor}
+            onOpenInspectorModal={() => setIsEvidenceModalOpen(true)}
+          />
         )}
 
-        {/* Estimated origin detail */}
-        {displayNode.estimatedOriginMya !== undefined && (
-          <div style={{ padding: "18px 22px", borderBottom: "1px solid var(--surface-border)" }}>
-            <h3
-              style={{
-                fontSize: "10px",
-                fontWeight: 700,
-                letterSpacing: "0.1em",
-                textTransform: "uppercase",
-                color: "var(--text-tertiary)",
-                marginBottom: "8px",
-              }}
-            >
-              {t("taxonPanel.evolutionaryOrigin", "Evolutionary Origin")}
-            </h3>
-            <p style={{ fontSize: "13px", color: "var(--text-secondary)" }}>
-              {formatMya(displayNode.estimatedOriginMya, locale)}
-            </p>
-          </div>
+        {activeTab === "specimens" && (
+          <SpecimensTab
+            node={displayNode}
+            dossier={dossier}
+            accentColor={accentColor}
+          />
         )}
-
-
       </div>
 
-      {/* Scientific Evidence Inspector Modal */}
+      {/* ── Scientific Evidence Inspector Modal ───────────────── */}
       <EvidenceInspectorModal
         isOpen={isEvidenceModalOpen}
         onClose={() => setIsEvidenceModalOpen(false)}
