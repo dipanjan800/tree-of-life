@@ -40,6 +40,9 @@ interface TreeCanvasProps {
   initialFocusNodeId?: string | null;
   onOpenPreLuca?: () => void;
   onInteraction?: () => void;
+  conservationHighlightedIds?: Set<string>;
+  conservationDimmedIds?: Set<string>;
+  isConservationFilterActive?: boolean;
 }
 
 export interface TreeCanvasControls {
@@ -327,6 +330,9 @@ export default function TreeCanvas({
   initialFocusNodeId,
   onOpenPreLuca,
   onInteraction,
+  conservationHighlightedIds,
+  conservationDimmedIds,
+  isConservationFilterActive = false,
 }: TreeCanvasProps) {
   const { t } = useLanguage();
   const svgRef = useRef<SVGSVGElement>(null);
@@ -1036,22 +1042,28 @@ export default function TreeCanvas({
           {/* Branches (rendered first, below nodes) */}
           <g aria-hidden="true">
             {branches.map((branch) => {
+              const isConservationDimmed =
+                isConservationFilterActive &&
+                conservationDimmedIds &&
+                (conservationDimmedIds.has(branch.childId) || conservationDimmedIds.has(branch.parentId));
+
               const isHighlighted =
                 hasSelection &&
                 highlightedChain.has(branch.parentId) &&
                 highlightedChain.has(branch.childId);
 
               const isDimmed =
-                hasSelection &&
-                !isHighlighted &&
-                !highlightedDescendants.has(branch.childId);
+                isConservationDimmed ||
+                (hasSelection &&
+                  !isHighlighted &&
+                  !highlightedDescendants.has(branch.childId));
 
               return (
                 <TreeBranch
                   key={branch.id}
                   path={branch.path}
                   isHighlighted={isHighlighted}
-                  isDimmed={isDimmed}
+                  isDimmed={Boolean(isDimmed)}
                   accentColor={branch.childAccentColor}
                 />
               );
@@ -1063,12 +1075,23 @@ export default function TreeCanvas({
             {Array.from(layoutNodes.values()).map((node) => {
               const isSelected = node.id === selectedNodeId;
               const isHovered = node.id === hoveredNodeId;
+
+              // Conservation filter highlighting / dimming
+              const isConservationHighlighted =
+                isConservationFilterActive &&
+                Boolean(conservationHighlightedIds?.has(node.id));
+              const isConservationDimmed =
+                isConservationFilterActive &&
+                Boolean(conservationDimmedIds?.has(node.id));
+
               const isHighlighted =
-                hasSelection && highlightedChain.has(node.id);
+                isConservationHighlighted ||
+                (hasSelection && highlightedChain.has(node.id));
               const isDescendant =
                 hasSelection && highlightedDescendants.has(node.id);
               const isDimmed =
-                hasSelection && !isHighlighted && !isDescendant;
+                isConservationDimmed ||
+                (hasSelection && !isHighlighted && !isDescendant);
 
               return (
                 <TreeNode

@@ -19,6 +19,10 @@ import PreLucaPanel from "@/components/panel/PreLucaPanel";
 import EvolutionTimeline from "@/components/timeline/EvolutionTimeline";
 import LanguageSelector from "@/components/ui/LanguageSelector";
 import NodeHoverPreview from "@/components/preview/NodeHoverPreview";
+import ConservationToolbar from "@/components/conservation/ConservationToolbar";
+import ConservationModal from "@/components/conservation/MassExtinctionModal";
+import { getConservationVisualHighlights } from "@/data/conservation/filter-service";
+import type { ConservationViewMode, MassExtinctionId } from "@/types/conservation";
 import { useLanguage } from "@/lib/i18n";
 
 const TIMELINE_HEIGHT = 52;
@@ -45,6 +49,9 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
     const params = new URLSearchParams(window.location.search);
     return params.get("layer") === "pre-luca" || params.get("preluca") === "true";
   });
+  const [showConservationModal, setShowConservationModal] = useState(false);
+  const [conservationViewMode, setConservationViewMode] = useState<ConservationViewMode>("all");
+  const [selectedMassExtinction, setSelectedMassExtinction] = useState<MassExtinctionId | null>(null);
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
   const [showMinimap, setShowMinimap] = useState(true);
   const [transform, setTransform] = useState<ViewportTransform>({
@@ -136,6 +143,14 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
   const layoutNodes = useMemo(() => computeTreeLayout(TREE_DATA), []);
   const hoveredLayoutNode = hoveredNodeId ? layoutNodes.get(hoveredNodeId) ?? null : null;
   const hoveredTaxonNode = hoveredNodeId ? TREE_DATA.nodes[hoveredNodeId] ?? null : null;
+
+  // Compute active conservation highlights
+  const conservationHighlights = useMemo(() => {
+    return getConservationVisualHighlights(TREE_DATA.nodes, {
+      viewMode: conservationViewMode,
+      selectedMassExtinction,
+    });
+  }, [conservationViewMode, selectedMassExtinction]);
 
   const hoveredNodePosition = useMemo(() => {
     if (!hoveredLayoutNode) return null;
@@ -369,9 +384,28 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
             </div>
           </div>
 
-          {/* Mobile Right Actions: Pre-LUCA launcher + LanguageSelector */}
+          {/* Mobile Right Actions: Pre-LUCA + Conservation + LanguageSelector */}
           {isMobile && (
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center gap-1.5 shrink-0">
+              <button
+                onClick={() => setShowConservationModal(true)}
+                aria-label={t("topbar.conservationBtnAria", "Explore Mass Extinctions, Extinct Species, and Modern IUCN Red List Statuses")}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  padding: "4px 8px",
+                  borderRadius: "100px",
+                  background: "rgba(225,29,72,0.1)",
+                  border: "1px solid rgba(225,29,72,0.25)",
+                  fontSize: "11px",
+                  fontWeight: 600,
+                  color: "#fb7185",
+                  cursor: "pointer",
+                }}
+              >
+                <span>🛡️</span>
+              </button>
               <button
                 onClick={() => setShowPreLuca(true)}
                 aria-label={t("topbar.preLucaBtnAria", "Explore Pre-LUCA History (Cosmic Origins, Prebiotic Chemistry, and FUCA)")}
@@ -503,6 +537,39 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
               <span style={{ fontSize: "10px" }}>✨</span>
             </button>
 
+            {/* Conservation & Extinction launcher */}
+            <button
+              onClick={() => setShowConservationModal(true)}
+              aria-label={t("topbar.conservationBtnAria", "Explore Mass Extinctions, Extinct Species, and Modern IUCN Red List Statuses")}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                padding: "5px 12px",
+                borderRadius: "100px",
+                background: "rgba(225,29,72,0.1)",
+                border: "1px solid rgba(225,29,72,0.25)",
+                fontSize: "11px",
+                fontWeight: 600,
+                color: "#fb7185",
+                cursor: "pointer",
+                transition: "all 150ms ease",
+                flexShrink: 0,
+                whiteSpace: "nowrap",
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLElement).style.background = "rgba(225,29,72,0.2)";
+                (e.currentTarget as HTMLElement).style.borderColor = "#fb7185";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLElement).style.background = "rgba(225,29,72,0.1)";
+                (e.currentTarget as HTMLElement).style.borderColor = "rgba(225,29,72,0.25)";
+              }}
+            >
+              <span>{isNarrowDesktop ? t("topbar.conservationShort", "Extinction") : t("topbar.conservationBtn", "Conservation & Extinction")}</span>
+              <span style={{ fontSize: "10px" }}>🛡️</span>
+            </button>
+
             {/* Story of Life launcher */}
             {onOpenStory && (
               <button
@@ -601,6 +668,18 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
           initialFocusNodeId={selectedNode?.id ?? "homo-sapiens"}
           onOpenPreLuca={() => setShowPreLuca(true)}
           onInteraction={triggerControlsActivity}
+          conservationHighlightedIds={conservationHighlights.highlightedNodeIds}
+          conservationDimmedIds={conservationHighlights.dimmedNodeIds}
+          isConservationFilterActive={conservationHighlights.isFilterActive}
+        />
+
+        {/* Conservation & Mass Extinction Interactive Floating Toolbar */}
+        <ConservationToolbar
+          viewMode={conservationViewMode}
+          onViewModeChange={setConservationViewMode}
+          selectedMassExtinction={selectedMassExtinction}
+          onSelectMassExtinction={setSelectedMassExtinction}
+          onOpenExplorerModal={() => setShowConservationModal(true)}
         />
 
         {/* Smart Hover / Tap Preview Card */}
@@ -655,6 +734,13 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
           onClose={() => setShowPreLuca(false)}
           onFocusLuca={handleFocusLuca}
           onOpenStory={onOpenStory}
+        />
+
+        {/* Conservation & Extinction Explorer Modal */}
+        <ConservationModal
+          isOpen={showConservationModal}
+          onClose={() => setShowConservationModal(false)}
+          onNavigateTaxon={handleNavigate}
         />
 
 

@@ -6,6 +6,8 @@ import type { OrganismDossier } from "@/types/dossier";
 import { formatMya } from "@/lib/tree-utils";
 import { useLanguage } from "@/lib/i18n";
 import MissingDataIndicator from "./MissingDataIndicator";
+import ConservationDetailCard from "@/components/conservation/ConservationDetailCard";
+import { getModernConservationData } from "@/data/conservation/modern-iucn";
 
 interface OverviewTabProps {
   node: TaxonNode;
@@ -31,6 +33,7 @@ export default function OverviewTab({
   const habitat = dossier?.ecology?.habitat;
   const paleoEnvironment = dossier?.ecology?.paleoEnvironment;
   const paleoRegion = dossier?.ecology?.paleoContinentOrRegion;
+  const modernConservation = getModernConservationData(node.id);
   const statusLabel = node.status ? (ui.organismStatus[node.status] || node.status) : null;
 
   return (
@@ -156,6 +159,11 @@ export default function OverviewTab({
           />
         )}
       </div>
+
+      {/* Modern Conservation Status Card (When Authentically Evaluated) */}
+      {modernConservation && (
+        <ConservationDetailCard data={modernConservation} />
+      )}
 
       {/* Scientific Evidence Quick Access */}
       {evidenceCount > 0 && onOpenEvidence && (
