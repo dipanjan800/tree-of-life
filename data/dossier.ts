@@ -385,6 +385,56 @@ export const ORGANISM_DOSSIERS: Record<string, OrganismDossier> = {
     ],
   },
 
+  "mammuthus": {
+    taxonId: "mammuthus",
+    morphology: {
+      bodyPlan: "Large proboscideans characterized by compressed high-crowned molars, elongated curved tusks, and columnar graviportal limbs.",
+      distinguishingFeatures: [
+        "Hyper-elevated skull vertex providing biomechanical attachment for massive masticatory adductor and neck musculature",
+        "Elongated, spirally twisted incisors (tusks) with growth lines recording seasonal and developmental life history",
+        "Hypsodont molars with multiple transverse enamel loops adapted for grinding fibrous vegetation",
+        "Graviportal limb architecture with padded fibroelastic foot cushions supporting up to 8 metric tons body mass",
+      ],
+      adaptations: [
+        "Cold and steppe grassland ecological specializations evolving from ancestral Pliocene African lineages",
+        "Proboscidean elongated trunk (prehensile proboscis) with finger-like dorsal and ventral projections for high-precision grazing",
+      ],
+      traits: [
+        { category: "cranial", trait: "Deeply domed parietal-occipital cranial crest", isAutapomorphy: true },
+        { category: "dentition", trait: "Alternating parallel enamel lamellae plates", isAutapomorphy: true },
+      ],
+    },
+    stratigraphy: {
+      fadMya: 5.0,
+      ladMya: 0.004,
+      eon: "Phanerozoic",
+      era: "Cenozoic",
+      period: "Quaternary",
+      epoch: "Pliocene to Holocene",
+      icsStage: "Zanclean to Meghalayan",
+      datingMethod: "radiometric",
+      datingUncertainty: "Magnetostratigraphy and biostratigraphic correlation across Old World and New World localities",
+    },
+    ecology: {
+      habitat: "Steppe, savanna, and periglacial mammoth-steppe biomes across Eurasia, Africa, and North America.",
+      trophicLevel: "herbivore",
+      paleoEnvironment: "Pleistocene cold grasslands and Pliocene woodland-savanna ecotones.",
+      paleoContinentOrRegion: "Afro-Eurasia and North America.",
+    },
+    specimens: [
+      {
+        catalogNumber: "NHMUK PV M 2748",
+        museumOrRepository: "Natural History Museum",
+        locationCityCountry: "London, United Kingdom",
+        discoveryNotes: "Syntype mammoth molars and skeletal material from European Pleistocene river gravels.",
+      },
+    ],
+    innovations: [
+      "Trans-Beringian mammalian dispersal linking Old World and New World Pleistocene megafauna",
+      "Accelerated molar lamellar multiplication tracking late Cenozoic grassland expansion and climate cooling",
+    ],
+  },
+
   "mammuthus-primigenius": {
     taxonId: "mammuthus-primigenius",
     morphology: {

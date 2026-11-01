@@ -4,7 +4,7 @@
 // Zero external tracking, zero cloud telemetry, schema-versioned.
 // ============================================================
 
-import type { LearningProgressState, QuizResultSummary, QuizCategory } from "@/types/quiz";
+import type { LearningProgressState, QuizResultSummary } from "@/types/quiz";
 
 const STORAGE_KEY = "tree_of_life_learning_progress_v1";
 const CURRENT_VERSION = 1;
@@ -33,12 +33,14 @@ export const INITIAL_PROGRESS_STATE: LearningProgressState = {
   lastActive: Date.now(),
 };
 
+let memoryProgressState: LearningProgressState = { ...INITIAL_PROGRESS_STATE };
+
 /**
- * Safely load learning progress from localStorage.
+ * Safely load learning progress from localStorage (with memory fallback).
  */
 export function loadLearningProgress(): LearningProgressState {
   if (typeof window === "undefined") {
-    return INITIAL_PROGRESS_STATE;
+    return memoryProgressState;
   }
 
   try {
@@ -104,6 +106,8 @@ export function recordQuizCompletion(result: QuizResultSummary): LearningProgres
     lastActive: Date.now(),
   };
 
+  memoryProgressState = updatedState;
+
   try {
     if (typeof window !== "undefined") {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedState));
@@ -119,6 +123,7 @@ export function recordQuizCompletion(result: QuizResultSummary): LearningProgres
  * Reset all user learning progress to blank slate.
  */
 export function resetLearningProgress(): LearningProgressState {
+  memoryProgressState = { ...INITIAL_PROGRESS_STATE };
   try {
     if (typeof window !== "undefined") {
       localStorage.removeItem(STORAGE_KEY);

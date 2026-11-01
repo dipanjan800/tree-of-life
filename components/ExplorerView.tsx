@@ -21,6 +21,7 @@ import LanguageSelector from "@/components/ui/LanguageSelector";
 import NodeHoverPreview from "@/components/preview/NodeHoverPreview";
 import ConservationToolbar from "@/components/conservation/ConservationToolbar";
 import ConservationModal from "@/components/conservation/MassExtinctionModal";
+import LearningModal from "@/components/learn/LearningModal";
 import { getConservationVisualHighlights } from "@/data/conservation/filter-service";
 import type { ConservationViewMode, MassExtinctionId } from "@/types/conservation";
 import { useLanguage } from "@/lib/i18n";
@@ -50,6 +51,7 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
     return params.get("layer") === "pre-luca" || params.get("preluca") === "true";
   });
   const [showConservationModal, setShowConservationModal] = useState(false);
+  const [showLearningModal, setShowLearningModal] = useState(false);
   const [conservationViewMode, setConservationViewMode] = useState<ConservationViewMode>("all");
   const [selectedMassExtinction, setSelectedMassExtinction] = useState<MassExtinctionId | null>(null);
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
@@ -384,9 +386,28 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
             </div>
           </div>
 
-          {/* Mobile Right Actions: Pre-LUCA + Conservation + LanguageSelector */}
+          {/* Mobile Right Actions: Pre-LUCA + Conservation + Learn & Quiz + LanguageSelector */}
           {isMobile && (
             <div className="flex items-center gap-1.5 shrink-0">
+              <button
+                onClick={() => setShowLearningModal(true)}
+                aria-label={t("topbar.learnBtnAria", "Open Interactive Learning & Quiz Platform")}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  padding: "4px 8px",
+                  borderRadius: "100px",
+                  background: "rgba(56,189,248,0.1)",
+                  border: "1px solid rgba(56,189,248,0.25)",
+                  fontSize: "11px",
+                  fontWeight: 600,
+                  color: "#38bdf8",
+                  cursor: "pointer",
+                }}
+              >
+                <span>🎓</span>
+              </button>
               <button
                 onClick={() => setShowConservationModal(true)}
                 aria-label={t("topbar.conservationBtnAria", "Explore Mass Extinctions, Extinct Species, and Modern IUCN Red List Statuses")}
@@ -570,6 +591,39 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
               <span style={{ fontSize: "10px" }}>🛡️</span>
             </button>
 
+            {/* Learn & Quiz launcher */}
+            <button
+              onClick={() => setShowLearningModal(true)}
+              aria-label={t("topbar.learnBtnAria", "Open Interactive Learning & Quiz Platform")}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                padding: "5px 12px",
+                borderRadius: "100px",
+                background: "rgba(56,189,248,0.1)",
+                border: "1px solid rgba(56,189,248,0.25)",
+                fontSize: "11px",
+                fontWeight: 600,
+                color: "#38bdf8",
+                cursor: "pointer",
+                transition: "all 150ms ease",
+                flexShrink: 0,
+                whiteSpace: "nowrap",
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLElement).style.background = "rgba(56,189,248,0.2)";
+                (e.currentTarget as HTMLElement).style.borderColor = "#38bdf8";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLElement).style.background = "rgba(56,189,248,0.1)";
+                (e.currentTarget as HTMLElement).style.borderColor = "rgba(56,189,248,0.25)";
+              }}
+            >
+              <span>{isNarrowDesktop ? t("topbar.learnShort", "Quiz") : t("topbar.learnBtn", "Learn & Quiz")}</span>
+              <span style={{ fontSize: "10px" }}>🎓</span>
+            </button>
+
             {/* Story of Life launcher */}
             {onOpenStory && (
               <button
@@ -741,6 +795,12 @@ export default function ExplorerView({ onBack, onOpenStory }: ExplorerViewProps)
           isOpen={showConservationModal}
           onClose={() => setShowConservationModal(false)}
           onNavigateTaxon={handleNavigate}
+        />
+
+        {/* Interactive Learning & Quiz Modal */}
+        <LearningModal
+          isOpen={showLearningModal}
+          onClose={() => setShowLearningModal(false)}
         />
 
 
